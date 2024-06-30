@@ -4,9 +4,19 @@ import { Client, Databases, Query } from 'appwrite';
 import ProductSelector from './ProductSelector';
 import VariantList from './VariantList';
 import VariantDetails from './VariantDetails';
+import { Alert } from '@mui/material';
+import NewProduct from './NewProduct';
 
-const TotalCategory = () => {
-  const location = useLocation();
+const TotalCategory = ({ newModal }) => {
+
+        const location = useLocation();
+
+        useEffect(() => {
+                if (newModal) {
+                  alert('Hello');
+                }
+              }, [newModal]);
+  
   const { productIDs } = location.state || {};
   const [productImages, setProductImages] = useState({});
   const [variantImages, setVariantImages] = useState({});
@@ -14,6 +24,12 @@ const TotalCategory = () => {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [variantInfo, setVariantInfo] = useState({});
   const [documents, setDocuments] = useState([]);
+  const[showAddScreen,setShowAddScreen] = useState(false);
+
+        const handleShowAddScreen=()=>{
+                console.log('object');
+                setShowAddScreen(true);
+        }
 
   useEffect(() => {
     const client = new Client();
@@ -107,7 +123,7 @@ const TotalCategory = () => {
 
   const handleVariantClick = (variant) => {
     setSelectedVariant(variant);
-
+        setShowAddScreen(false);
     let foundItemInfo = null;
 
     for (const shopItem of documents) {
@@ -169,17 +185,19 @@ const TotalCategory = () => {
         productImages={productImages}
         setSelectedProductID={setSelectedProductID}
         setSelectedVariant={setSelectedVariant}
+        handleButtonClick={handleShowAddScreen}
       />
       <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '80%' }}>
         <VariantList
           variantImages={variantImages}
           handleVariantClick={handleVariantClick}
         />
-        <VariantDetails
+        {showAddScreen ? <NewProduct/> :<VariantDetails
           selectedVariant={selectedVariant}
           variantImages={variantImages}
           variantInfo={variantInfo}
-        />
+        />}
+        
       </div>
     </div>
   );

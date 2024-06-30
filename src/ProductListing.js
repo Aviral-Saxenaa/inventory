@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, Grid, Card, CardMedia, CardContent, Typography, CardActions } from '@mui/material';
 import { Client, Databases, Query } from 'appwrite';
 import { useNavigate } from 'react-router-dom';
-import EstimatedProduct from './EstimatedProduct';
 
 const ProductListing = () => {
   const [products, setProducts] = useState([]);

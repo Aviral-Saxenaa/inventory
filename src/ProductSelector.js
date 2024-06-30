@@ -1,7 +1,16 @@
 import React from 'react';
 import { IoIosAddCircle } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
 
-const ProductSelector = ({ productImages, setSelectedProductID, setSelectedVariant }) => {
+const ProductSelector = ({ productImages, setSelectedProductID, setSelectedVariant ,handleButtonClick}) => {
+        const navigate = useNavigate();
+
+        // const handleButtonClick = () => {
+        //         // Navigate to TotalCategory and pass productIDs as state
+        //         const newModal=true;
+        //         navigate('/total-category', { state: { newModal } });
+        //       };
+            
   return (
     <div
       style={{
@@ -39,6 +48,7 @@ const ProductSelector = ({ productImages, setSelectedProductID, setSelectedVaria
       ))}
       <IoIosAddCircle
         style={{ color: '#4CAF50', fontSize: '4rem', cursor: 'pointer' }}
+        onClick={handleButtonClick}
       />
     </div>
   );
