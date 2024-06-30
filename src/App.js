@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+// Pages
 import ProductListing from './ProductListing';
 import NewInventory from './NewInventory';
 import BarcodeScanner from './BarcodeScanner';
@@ -8,18 +10,24 @@ import EstimatedProduct from './EstimatedProduct';
 import TotalCategory from './TotalCategory';
 import Test from './Test';
 
+// Define route configuration
+const routes = [
+  { path: '/barcode-scanner', element: <BarcodeScanner />, label: 'Barcode Scanner' },
+  { path: '/product-listing', element: <ProductListing />, label: 'Product Listing' },
+  { path: '/new-inventory', element: <NewInventory />, label: 'New Inventory' },
+  { path: '/presentdb', element: <ProductCard />, label: 'Present DB' },
+  { path: '/estimatedpr', element: <EstimatedProduct />, label: 'Estimated Product' },
+  { path: '/total-category', element: <TotalCategory />, label: 'Total Category' },
+  { path: '/test', element: <Test />, label: 'Test' },
+];
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/barcode-scanner" element={<BarcodeScanner />} />
-        <Route path="/product-listing" element={<ProductListing />} />
-        <Route path="/new-inventory" element={<NewInventory />} />
-        <Route path="/presentdb" element={< ProductCard/>} />
-        <Route path="/estimatedpr" element={< EstimatedProduct/>} />
-        <Route path="/total-category" element={<TotalCategory />} />
-        <Route path="/test" element={<Test />} />
+        {routes.map(({ path, element }, index) => (
+          <Route key={index} path={path} element={element} />
+        ))}
       </Routes>
     </Router>
   );
