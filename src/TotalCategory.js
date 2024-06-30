@@ -11,7 +11,9 @@ const TotalCategory = () => {
   const [selectedProductID, setSelectedProductID] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [variantInfo, setVariantInfo] = useState({});
+  const [documents, setDocuments] = useState([]);
 
+  
   useEffect(() => {
     const client = new Client();
     const databases = new Databases(client);
@@ -78,62 +80,76 @@ const TotalCategory = () => {
       fetchVariantImages();
     }
   }, [selectedProductID]);
-
+ 
   useEffect(() => {
-    const handleSearch = async () => {
+    const fetchDocuments = async () => {
       const client = new Client();
       const databases = new Databases(client);
       const databaseId = 'data-level-1';
-      const collectionId = 'Shop_ItemsDB_testing'; // Collection to search for product IDs
+      const collectionId = 'Shop_ItemsDB_testing';
 
       client.setEndpoint('https://cloud.appwrite.io/v1').setProject('65773c8581b895f83d40');
 
       try {
-        console.log('Searching for product IDs:', productIDs); // Debugging log
+        console.log('Fetching documents with productIDs: ' + productIDs);
         const response = await databases.listDocuments(databaseId, collectionId, [
-          Query.contains('ProductIDs', '10.1'),
+          Query.contains('ProductIDs', productIDs),
         ]);
-        console.log('Search results:', response.documents);
+        console.log('Fetched documents:', response.documents);
+        setDocuments(response.documents);
       } catch (error) {
-        console.error('Error searching for products:', error);
+        console.error('Error fetching documents:', error);
       }
     };
 
     if (productIDs) {
-      handleSearch();
+      fetchDocuments();
     }
   }, [productIDs]);
+  
 
-  const handleVariantClick = async (variant) => {
-    console.log('variant has clicked');
+
+  
+  const handleVariantClick = (variant) => {
+    console.log('Variant has clicked:', variant);
     setSelectedVariant(variant);
 
-    const client = new Client();
-    const databases = new Databases(client);
-    const databaseId = 'data-level-1';
-    const collectionId = 'Shop_ItemsDB_testing';
+    let foundItemInfo = null;
 
-    client.setEndpoint('https://cloud.appwrite.io/v1').setProject('65773c8581b895f83d40');
+    for (const shopItem of documents) {
+      const extractDetail = (field, variant) => {
+        const item = shopItem[field].find(item => item.startsWith(variant + ':'));
+        return item ? item.split(':')[1] : null;
+       
+      };
 
-    try {
-      const response = await databases.listDocuments(databaseId, collectionId, [
-        Query.contains('ProductIDs', '10.1'),
-      ]);
-      console.log(response.documents);
-      if (response.documents.length > 0) {
-        const shopItem = response.documents[0];
-        const itemInfo = {
-          SP: shopItem['Shop_Items-SP'].find((item) => item.startsWith(variant))?.split(':')[1],
-          Stocks: shopItem['Shop_Items-Stocks'].find((item) => item.startsWith(variant))?.split(':')[1],
-          MRP: shopItem['Shop_Items-MRP'].find((item) => item.startsWith(variant))?.split(':')[1],
-          Weight: shopItem['Shop_Items-Weight'].find((item) => item.startsWith(variant))?.split(':')[1],
-        };
-        setVariantInfo(itemInfo);
+      const itemInfo = {
+        Variant:variant,
+        SP: extractDetail('Shop_Items-SP', variant),
+        Stocks: extractDetail('Shop_Items-Stocks', variant),
+        MRP: extractDetail('Shop_Items-MRP', variant),
+        Weight: extractDetail('Shop_Items-Weight', variant),
+    
+      };
+      console.log('here is item info'+ itemInfo);
+
+      if (itemInfo.SP && itemInfo.Stocks && itemInfo.MRP && itemInfo.Weight ) {
+        foundItemInfo = itemInfo;
+        break; // Stop searching once we found the item
       }
-    } catch (error) {
-      console.error('Error fetching variant info:', error);
+    }
+
+    if (foundItemInfo) {
+      console.log('Here is item info:', JSON.stringify(foundItemInfo, null, 2));
+      setVariantInfo(foundItemInfo);
+    } else {
+      console.log('Variant not found in any document.');
+      setVariantInfo({ SP: null, Stocks: null, MRP: null, Weight: null });
     }
   };
+
+
+  
 
   if (!productIDs) {
     return (
@@ -237,12 +253,13 @@ const TotalCategory = () => {
           <div style={{ backgroundColor: '#fff', color: '#000', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)', maxWidth: '600px', width: '25%' }}>
             {variantInfo.SP ? (
               <>
-                <div style={{ display: 'flex', marginBottom: '1rem', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', marginBottom: '1rem', justifyContent: 'space-between', alignItems: 'center',backgroundClip:'red' }}>
                   <div>
                     <img src={variantImages[selectedVariant]} alt={`Variant ${selectedVariant}`} style={{ maxWidth: '150px', maxHeight: '150px', borderRadius: '8px', border: '1px solid #ddd' }} />
                   </div>
                   <div style={{ textAlign: 'right', marginLeft: '1rem' }}>
                     <p style={{ margin: '0.5rem 0' }}><strong>SP:</strong> ₹{variantInfo.SP}</p>
+                    <p style={{ margin: '0.5rem 0' }}><strong>Variant ID:</strong> {variantInfo.Variant}</p>
                     <p style={{ margin: '0.5rem 0' }}><strong>MRP:</strong> ₹{variantInfo.MRP}</p>
                     <p style={{ margin: '0.5rem 0' }}><strong>Stocks:</strong> {variantInfo.Stocks}</p>
                     <p style={{ margin: '0.5rem 0' }}><strong>Weight:</strong> {variantInfo.Weight}</p>
