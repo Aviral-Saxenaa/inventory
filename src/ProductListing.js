@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, TextField, Button, Grid, Card, CardMedia, CardContent, Typography, CardActions } from '@mui/material';
 import { Client, Databases, Query } from 'appwrite';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import { GrLinkNext } from "react-icons/gr";
 import { useMediaQuery, useTheme } from '@mui/material';
 
@@ -12,7 +12,10 @@ const ProductListing = () => {
   const navigate = useNavigate();
   const nextButtonRef = useRef(null);
 
-  const barcodeName = 8901058005608;
+  // const barcodeName = 8901058005608;
+  const { state } = useLocation();
+  const { barcodeName } = state;
+
 
   const client = new Client();
   client
@@ -20,6 +23,8 @@ const ProductListing = () => {
     .setProject('65773c8581b895f83d40'); // Your project ID
 
   const databases = new Databases(client);
+
+  
 
   const handleSearch = async () => {
     try {

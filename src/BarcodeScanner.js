@@ -1,22 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Html5QrcodeScanner } from 'html5-qrcode';
+import { useNavigate } from 'react-router-dom';
 
 const BarcodeScanner = () => {
   const [barcodeInput, setBarcodeInput] = useState('');
+  const [scanResult, setScanResult] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const scanner = new Html5QrcodeScanner('reader', {
+      qrbox: {
+        width: 250,
+        height: 250
+      },
+      fps: 5,
+    });
+
+    scanner.render(success, error);
+
+    function success(result) {
+      scanner.clear();
+      setScanResult(result);
+      navigateToProductListing(result);
+    }
+
+    function error(err) {
+      console.warn(err);
+    }
+  }, []);
 
   const handleInputChange = (event) => {
     setBarcodeInput(event.target.value);
+    navigateToProductListing(event.target.value);
+  };
+
+  const navigateToProductListing = (value) => {
+    navigate('/product-listing', { state: { barcodeName: value } });
+  };
+
+  const handleSearch = () => {
+    navigateToProductListing(barcodeInput);
   };
 
   return (
     <Container>
       <Title>Scan Barcode</Title>
-      <RedBox>
-        <img
-          src="https://cdn.pixabay.com/photo/2014/04/02/16/19/barcode-306926__340.png"
-          alt="Barcode"
-        />
-      </RedBox>
+      {scanResult
+        ? <div>Success : <a href={"http://" + scanResult}>{scanResult}</a></div>
+        : <div id='reader'></div>}
       <OrText>OR</OrText>
       <InputContainer>
         <Input
@@ -25,7 +57,7 @@ const BarcodeScanner = () => {
           value={barcodeInput}
           onChange={handleInputChange}
         />
-        <Button>Search</Button>
+        <Button onClick={handleSearch}>Search</Button>
       </InputContainer>
     </Container>
   );
@@ -62,33 +94,6 @@ const Title = styled.h1`
 
   @media (max-width: 480px) {
     font-size: 1.5rem;
-  }
-`;
-
-const RedBox = styled.div`
-  width: 80%;
-  max-width: 500px;
-  height: 300px;
-  background-color: #f4f6fc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
-
-  img {
-    max-width: 70%;
-    max-height: 80%;
-    object-fit: contain;
-  }
-
-  @media (max-width: 768px) {
-    height: 250px;
-  }
-
-  @media (max-width: 480px) {
-    height: 200px;
   }
 `;
 
