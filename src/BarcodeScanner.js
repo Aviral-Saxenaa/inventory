@@ -52,7 +52,9 @@ const Container = styled.div`
 const Title = styled.h1`
   color: #058689;
   margin-bottom: 1.5rem;
-  font-size: 2rem;
+  font-size: 2.2rem;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 800;
 
   @media (max-width: 768px) {
     font-size: 1.75rem;

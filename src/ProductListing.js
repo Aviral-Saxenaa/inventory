@@ -3,7 +3,7 @@ import { Box, TextField, Button, Grid, Card, CardMedia, CardContent, Typography,
 import { Client, Databases, Query } from 'appwrite';
 import { useNavigate } from 'react-router-dom';
 import { GrLinkNext } from "react-icons/gr";
-
+import { useMediaQuery, useTheme } from '@mui/material';
 
 const ProductListing = () => {
   const [products, setProducts] = useState([]);
@@ -43,7 +43,7 @@ const ProductListing = () => {
     console.log('Selected Product Title:', product.product_title); // Log the selected product title
     queryAppwriteProducts(product.product_title);
     console.log('Added to cart:', product.product_title);
-    scrollToNextButton();
+    showNextButton();
   };
 
   const queryAppwriteProducts = async (productTitle) => {
@@ -70,9 +70,9 @@ const ProductListing = () => {
     navigate('/total-category', { state: { productIDs: appwriteProductIDs } });
   };
 
-  const scrollToNextButton = () => {
+  const showNextButton = () => {
     if (nextButtonRef.current) {
-      nextButtonRef.current.scrollIntoView({ behavior: 'smooth' });
+      nextButtonRef.current.style.display = 'flex';
     }
   };
 
@@ -90,6 +90,10 @@ const ProductListing = () => {
     console.log('appwriteProductIDs:', appwriteProductIDs);
   }, [appwriteProductIDs]);
 
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down(409));
+  const isMediumScreen = useMediaQuery(theme.breakpoints.between(410, 590));
+
   return (
     <Box
       sx={{
@@ -102,8 +106,8 @@ const ProductListing = () => {
         minHeight: '100vh'
       }}
     >
-      <Typography variant="h4" gutterBottom sx={{ color: '#333', fontWeight: 'bold', mt: 4 }}>
-        Add Similiar Product
+      <Typography variant="h4" gutterBottom sx={{ color: '#333', fontWeight: 'bold', mt: 4, fontWeight: "600" }}>
+        Add Similar Product
       </Typography>
       <Box
         sx={{
@@ -132,7 +136,16 @@ const ProductListing = () => {
       </Box>
       <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
         {products.map((product) => (
-          <Grid item xs={12} sm={6} md={4} key={product.product_id}>
+          <Grid 
+            item 
+            xs={12} 
+            sm={6} 
+            md={4} 
+            key={product.product_id}
+            sx={{
+              maxWidth: isSmallScreen ? '100%' : isMediumScreen ? '50%' : 'auto'
+            }}
+          >
             <Card sx={{ maxWidth: 345, backgroundColor: '#fff', borderRadius: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
               <CardMedia
                 component="img"
@@ -146,7 +159,8 @@ const ProductListing = () => {
                   {product.product_title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                  MRP: {product.offer.price}
+                  <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
+                  <span style={{ color: '#ff0000', fontSize: "1.4rem", color: "green" }}>{product.offer.price}</span>
                 </Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
@@ -164,16 +178,30 @@ const ProductListing = () => {
       </Grid>
 
       {appwriteProductIDs.length > 0 && (
-        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', width: '100%' }} ref={nextButtonRef}>
+        <Box
+          sx={{
+            mt: 2,
+            display: 'none',
+            justifyContent: 'center',
+            width: '100%',
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: '#fff',
+            boxShadow: '0 -2px 4px rgba(0, 0, 0, 0.1)',
+            p: 2
+          }}
+          ref={nextButtonRef}
+        >
           <Button
             variant="contained"
             onClick={handleTotalCategory}
             sx={{ backgroundColor: '#007bff', '&:hover': { backgroundColor: '#0056b3' } }}
             style={{ padding: "10px 80px" }}
           >
-            <Typography style={{ fontSize: "18px" ,marginRight:20}}>Next</Typography>
-            <GrLinkNext style={{fontSize:'23px',color:"#00356A"}}/>
-
+            <Typography style={{ fontSize: "18px", marginRight: 20 }}>Next</Typography>
+            <GrLinkNext style={{ fontSize: '23px', color: "#00356A" }} />
           </Button>
         </Box>
       )}

@@ -167,9 +167,9 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo }) => {
 
   useEffect(() => {
     if (variantInfo) {
-      setSPValue(variantInfo.SP || '');
+      setSPValue(`₹ ${variantInfo.SP}` || '');
       // setVariantIDValue(variantInfo.Variant || '');
-      setMRPValue(variantInfo.MRP || '');
+      setMRPValue(`₹ ${variantInfo.MRP}` || '');
       // setStocksValue(variantInfo.Stocks || '');
       setWeightValue(variantInfo.Weight || '');
     }
@@ -213,6 +213,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo }) => {
                     type="text"
                     value={spValue}
                     onChange={handleSPChange}
+                    style={{fontSize:"1.2rem",color:"green"}}
                   />
                 </DetailRow>
                 {/* <DetailRow>
@@ -229,6 +230,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo }) => {
                     type="text"
                     value={mrpValue}
                     onChange={handleMRPChange}
+                    style={{fontSize:"1.2rem",color:"green"}}
                   />
                 </DetailRow>
                 {/* <DetailRow>
@@ -245,6 +247,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo }) => {
                     type="text"
                     value={weightValue}
                     onChange={handleWeightChange}
+                    style={{fontSize:"1.2rem",color:"red"}}
                   />
                 </DetailRow>
               </DetailsContainer>
