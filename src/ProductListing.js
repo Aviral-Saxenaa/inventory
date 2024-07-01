@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, TextField, Button, Grid, Card, CardMedia, CardContent, Typography, CardActions } from '@mui/material';
 import { Client, Databases, Query } from 'appwrite';
 import { useNavigate } from 'react-router-dom';
+import { GrLinkNext } from "react-icons/gr";
+
 
 const ProductListing = () => {
   const [products, setProducts] = useState([]);
   const [selectedProductTitle, setSelectedProductTitle] = useState('');
   const [appwriteProductIDs, setAppwriteProductIDs] = useState([]);
   const navigate = useNavigate();
+  const nextButtonRef = useRef(null);
 
   const barcodeName = 8901058005608;
 
@@ -40,7 +43,7 @@ const ProductListing = () => {
     console.log('Selected Product Title:', product.product_title); // Log the selected product title
     queryAppwriteProducts(product.product_title);
     console.log('Added to cart:', product.product_title);
-    
+    scrollToNextButton();
   };
 
   const queryAppwriteProducts = async (productTitle) => {
@@ -67,6 +70,12 @@ const ProductListing = () => {
     navigate('/total-category', { state: { productIDs: appwriteProductIDs } });
   };
 
+  const scrollToNextButton = () => {
+    if (nextButtonRef.current) {
+      nextButtonRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   useEffect(() => {
     handleSearch();
   }, []);
@@ -82,11 +91,29 @@ const ProductListing = () => {
   }, [appwriteProductIDs]);
 
   return (
-    <Box sx={{ textAlign: 'center', p: 2, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: 2,
+        backgroundColor: '#f5f5f5',
+        minHeight: '100vh'
+      }}
+    >
       <Typography variant="h4" gutterBottom sx={{ color: '#333', fontWeight: 'bold', mt: 4 }}>
-        Product Search
+        Add Similiar Product
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          mb: 4,
+          width: '100%',
+          maxWidth: 600
+        }}
+      >
         <TextField
           type="text"
           value={barcodeName}
@@ -103,7 +130,7 @@ const ProductListing = () => {
           Search
         </Button>
       </Box>
-      <Grid container spacing={3} sx={{ justifyContent: 'center' }}>
+      <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
         {products.map((product) => (
           <Grid item xs={12} sm={6} md={4} key={product.product_id}>
             <Card sx={{ maxWidth: 345, backgroundColor: '#fff', borderRadius: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
@@ -119,7 +146,7 @@ const ProductListing = () => {
                   {product.product_title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                  Price: {product.offer.price}
+                  MRP: {product.offer.price}
                 </Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
@@ -128,26 +155,25 @@ const ProductListing = () => {
                   onClick={() => handleAddToCart(product)}
                   sx={{ backgroundColor: '#28a745', '&:hover': { backgroundColor: '#218838' } }}
                 >
-                  Add to Cart
+                  Confirm
                 </Button>
               </CardActions>
             </Card>
           </Grid>
         ))}
       </Grid>
-      {selectedProductTitle && (
-        <Typography variant="h6" gutterBottom sx={{ color: '#333', fontWeight: 'bold', mt: 2 }}>
-          Selected Product: {selectedProductTitle}
-        </Typography>
-      )}
+
       {appwriteProductIDs.length > 0 && (
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', width: '100%' }} ref={nextButtonRef}>
           <Button
             variant="contained"
             onClick={handleTotalCategory}
             sx={{ backgroundColor: '#007bff', '&:hover': { backgroundColor: '#0056b3' } }}
+            style={{ padding: "10px 80px" }}
           >
-            View Total Category
+            <Typography style={{ fontSize: "18px" ,marginRight:20}}>Next</Typography>
+            <GrLinkNext style={{fontSize:'23px',color:"#00356A"}}/>
+
           </Button>
         </Box>
       )}
