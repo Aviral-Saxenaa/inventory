@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-// Container component for the entire screen
 const Container = styled.div`
   background-color: #fbc02d;
-  width: 100%; // Ensure it takes full width of the viewport
+  width: 100%;
   padding: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  overflow: hidden;
 
-  // Media queries for responsiveness
   @media (max-width: 700px) {
     width: 91%;
   }
@@ -29,14 +28,12 @@ const Container = styled.div`
   }
 `;
 
-// Card component for the main content
 const Card = styled.div`
   background-color: #fff;
   color: #000;
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  max-width: 100%; // Ensure card fits within the container
   width: 100%;
   box-sizing: border-box;
   position: relative;
@@ -48,7 +45,6 @@ const Card = styled.div`
     100% { opacity: 1; transform: translateY(0); }
   }
 
-  // Media queries for responsiveness
   @media (max-width: 480px) {
     padding: 1rem;
   }
@@ -58,7 +54,6 @@ const Card = styled.div`
   }
 `;
 
-// Inner container for the content
 const InnerContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -67,28 +62,24 @@ const InnerContainer = styled.div`
   z-index: 1;
 `;
 
-// Image component for the product image
 const Image = styled.img`
-  max-width: 180px;  // Adjusted for smaller screens
-  max-height: 180px; // Adjusted for smaller screens
+  max-width: 110px;
+  max-height: 110px;
   border-radius: 8px;
   border: 1px solid #ddd;
   transition: transform 0.3s ease;
-  margin-bottom: 1rem;
+  margin-bottom: .3rem;
 
-  // Hover effect for the image
   &:hover {
     transform: scale(1.1);
   }
 
-  // Media queries for responsiveness
   @media (max-width: 400px) {
     max-width: 150px;
     max-height: 150px;
   }
 `;
 
-// Details container for the input fields
 const DetailsContainer = styled.div`
   width: 100%;
   padding: 1rem;
@@ -97,44 +88,37 @@ const DetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+  }
 `;
 
-// Detail row for each input field
 const DetailRow = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
+  flex-direction: column;
+  margin-bottom: .5rem;
 `;
 
-// Label component for the input fields
 const Label = styled.span`
   font-weight: bold;
+  margin-bottom: 0.3rem;
 `;
 
-// Input component for the input fields
 const Input = styled.input`
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
-  text-align: right;
-  width: 70%;
-  border-width: 1px;
-  border-color: blue;
+  width: 100%;
+  box-sizing: border-box;
 
-  // Media queries for responsiveness
   @media (max-width: 480px) {
-    width: 60%;
-  }
-
-  @media (max-width: 400px) {
-    width: 55%;
+    padding: 0.4rem;
   }
 `;
 
-// Button component for the "Add to Cart" button
 const Button = styled.button`
   background-color: #7f2800;
   color: #fff;
@@ -145,7 +129,6 @@ const Button = styled.button`
   cursor: pointer;
   font-size: 18px;
 
-  // Media queries for responsiveness
   @media (max-width: 480px) {
     padding: 0.5rem 2rem;
     font-size: 1rem;
@@ -157,7 +140,12 @@ const Button = styled.button`
   }
 `;
 
-// Background circle component
+const ProductNamePlaceholder = styled.span`
+  color: red;
+  font-weight: normal;
+  font-size: 0.8rem;
+`;
+
 const BackgroundCircle = styled.div`
   position: absolute;
   bottom: 200px;
@@ -168,7 +156,6 @@ const BackgroundCircle = styled.div`
   border-radius: 50%;
   z-index: 0;
 
-  // Media queries for responsiveness
   @media (max-width: 480px) {
     bottom: 150px;
     left: -120px;
@@ -184,14 +171,12 @@ const BackgroundCircle = styled.div`
   }
 `;
 
-// NewProduct component
 const NewProduct = ({ productTitle, productImage }) => {
-  // State variables for the input fields
   const [spValue, setSPValue] = useState('');
   const [mrpValue, setMRPValue] = useState('');
   const [weightValue, setWeightValue] = useState('');
+  const [title, setTitle] = useState(productTitle);
 
-  // Event handlers for the input fields
   const handleSPChange = (event) => {
     setSPValue(event.target.value);
   };
@@ -204,17 +189,31 @@ const NewProduct = ({ productTitle, productImage }) => {
     setWeightValue(event.target.value);
   };
 
-  // Render the NewProduct component
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+  };
+
+  useEffect(() => {
+    setTitle(productTitle);
+  }, [productTitle]);
+
   return (
     <Container>
       <Card>
         <InnerContainer>
-          <Image
-            src={productImage}  // Use the productImage prop
-            alt={productTitle}  // Use the productTitle prop
-          />
-          <h3 style={{ marginBottom: '1rem', marginLeft: '1rem', marginRight: '1rem' }}>{productTitle}</h3>
+          <Image src={productImage} alt={title} />
           <DetailsContainer>
+            <DetailRow>
+              <Label>Name of Product:</Label>
+              <Input
+                type="text"
+                value={title}
+                onChange={handleTitleChange}
+                placeholder={`${title} (Enter your product name)`}
+                
+              />
+              <ProductNamePlaceholder>( *Enter your own title )</ProductNamePlaceholder>
+            </DetailRow>
             <DetailRow>
               <Label>SP:</Label>
               <Input
@@ -241,6 +240,7 @@ const NewProduct = ({ productTitle, productImage }) => {
                 onChange={handleWeightChange}
                 placeholder='Enter Weight'
               />
+              <ProductNamePlaceholder>( *Enter in CAPS in format e.g., 10KG, 2ML )</ProductNamePlaceholder>
             </DetailRow>
           </DetailsContainer>
           <Button>Add to Cart</Button>

@@ -18,7 +18,7 @@ const Container = styled.div`
   }
 
   @media (max-width: 400px) {
-    padding: .3rem;
+    padding: 0.3rem;
   }
 `;
 
@@ -64,7 +64,7 @@ const Image = styled.img`
   border-radius: 8px;
   border: 1px solid #ddd;
   transition: transform 0.3s ease;
-  margin-bottom: 0.5rem;  /* Reduced margin for better alignment */
+  margin-bottom: 0.5rem;
 
   &:hover {
     transform: scale(1.1);
@@ -87,10 +87,20 @@ const DetailRow = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
+
+  @media (max-width: 400px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const Label = styled.span`
   font-weight: bold;
+  margin-bottom: 0.3rem;
+
+  @media (max-width: 400px) {
+    margin-bottom: 0.2rem;
+  }
 `;
 
 const Input = styled.input`
@@ -100,20 +110,21 @@ const Input = styled.input`
   font-size: 1rem;
   text-align: right;
   width: 70%;
-  border-width: 1px;
+  box-sizing: border-box;
   border-color: blue;
 
   @media (max-width: 480px) {
     width: 60%;
   }
 
-  @media (max-width: 490px) {
-    width: 60%;
+  @media (max-width: 400px) {
+    width: 100%;
+    margin-top: 0.3rem;
   }
 `;
 
 const Button = styled.button`
-  background-color: #7f2800;
+  background-color: #2A518B;
   color: #fff;
   border: none;
   padding: 0.7rem 4rem;
@@ -122,14 +133,18 @@ const Button = styled.button`
   cursor: pointer;
   font-size: 18px;
 
+   &:hover {
+    background-color: #1E3E6B;
+  }
+
   @media (max-width: 480px) {
     padding: 0.5rem 2rem;
     font-size: 1rem;
   }
 
-  @media (max-width: 490px) {
-    padding: 0.5rem 2rem;
-    font-size: 1rem;
+  @media (max-width: 400px) {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
   }
 `;
 
@@ -142,11 +157,38 @@ const BackgroundCircle = styled.div`
   background-color: #fe7a00;
   border-radius: 50%;
   z-index: 0;
+
+  @media (max-width: 480px) {
+    bottom: 150px;
+    left: -120px;
+    width: 250px;
+    height: 250px;
+  }
+
+  @media (max-width: 400px) {
+    bottom: 120px;
+    left: -150px;
+    width: 200px;
+    height: 200px;
+  }
 `;
 
-const CurrencySymbol = styled.div`
-  font-weight: bold;
-  margin-right: 0.5rem;
+const PopupContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #F3ECDE;
+  color: black;
+  padding: 2rem;
+  border-radius: 8px;
+  z-index: 999;
+  opacity:.9
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
 `;
 
 const NoInfoText = styled.p`
@@ -159,13 +201,34 @@ const VariantName = styled.p`
   font-weight: bold;
   color: #333;
   margin-top: 0.5rem;
-  margin-bottom: 1rem;  /* Added margin for better spacing */
+  margin-bottom: 1rem;
 `;
 
-const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantName }) => {
+const ChangeButton = styled.button`
+  background-color: #2A518B;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+
+  &:hover {
+    background-color: #1E3E6B;
+  }
+
+  @media (max-width: 400px) {
+    margin-left: 0;
+    margin-top: 0.3rem;
+  }
+`;
+
+const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantName, variantWeights }) => {
   const [spValue, setSPValue] = useState('');
   const [mrpValue, setMRPValue] = useState('');
   const [weightValue, setWeightValue] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     if (variantInfo) {
@@ -187,6 +250,31 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
     setWeightValue(event.target.value);
   };
 
+  const handleWeightUpdate = () => {
+    console.log(selectedVariant);
+    console.log(variantWeights);
+
+    const uniqueIditis = parseInt(selectedVariant);
+    console.log(uniqueIditis);
+
+    const weightAlreadyPresent = Object.entries(variantWeights)
+      .filter(([key]) => key.startsWith(`${uniqueIditis}.`))
+      .some(([_, value]) => value === weightValue);
+
+    if (weightAlreadyPresent) {
+      setShowPopup(true);
+      console.log(`Weight ${weightValue} is already present in variant list.`);
+    } else {
+      setWeightValue(weightValue);
+      alert(`Updated weight to ${weightValue}`); // Alert message when weight is updated
+      console.log(`Updated weight to ${weightValue}`);
+    }
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+
   return (
     <Container>
       <Card>
@@ -197,7 +285,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                 src={variantImages[selectedVariant]}
                 alt={`Variant ${selectedVariant}`}
               />
-              <VariantName>{variantName}</VariantName>  {/* Display the variant name below the image */}
+              <VariantName>{variantName}</VariantName>
               <DetailsContainer>
                 <DetailRow>
                   <Label>SP:</Label>
@@ -205,7 +293,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                     type="text"
                     value={spValue}
                     onChange={handleSPChange}
-                    style={{fontSize:"1.2rem",color:"green"}}
+                    style={{ fontSize: "1.2rem", color: "green" }}
                   />
                 </DetailRow>
                 <DetailRow>
@@ -214,7 +302,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                     type="text"
                     value={mrpValue}
                     onChange={handleMRPChange}
-                    style={{fontSize:"1.2rem",color:"green"}}
+                    style={{ fontSize: "1.2rem", color: "green" }}
                   />
                 </DetailRow>
                 <DetailRow>
@@ -223,13 +311,20 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                     type="text"
                     value={weightValue}
                     onChange={handleWeightChange}
-                    style={{fontSize:"1.2rem",color:"red"}}
+                    style={{ fontSize: "1.2rem", color: "red" }}
                   />
+                  <ChangeButton onClick={handleWeightUpdate}>Change</ChangeButton>
                 </DetailRow>
               </DetailsContainer>
-              <Button>Add to Cart</Button>
+              <Button>Add to Store</Button>
             </InnerContainer>
             <BackgroundCircle />
+            {showPopup && (
+              <PopupContainer>
+                <p>Weight is already present. Go to desired variant to edit SP and MRP.</p>
+                <Button onClick={closePopup} style={{alignSelf:"centre"}}>Close</Button>
+              </PopupContainer>
+            )}
           </>
         ) : (
           <NoInfoText>No information available for this variant.</NoInfoText>

@@ -109,12 +109,14 @@ const AddIcon = styled(IoIosAddCircle)`
 
 const VariantList = ({ variantImages, variantNames, variantWeights, handleVariantClick, handleButtonClick }) => {
     return (
+      
         <ListContainer>
             {Object.keys(variantImages).map((variant) => (
                 <VariantButton key={variant} onClick={() => handleVariantClick(variant)}>
                     <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
                     <VariantInfoContainer>
                         <VariantTitle>{variantNames[variant]}</VariantTitle>
+                        {/* {console.log(variantWeights)} */}
                         <VariantWeight>Variant Weight: {variantWeights[variant]}</VariantWeight>
                     </VariantInfoContainer>
                 </VariantButton>
