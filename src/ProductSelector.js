@@ -92,6 +92,33 @@ const ProductImage = styled.img`
   }
 `;
 
+const ProductName = styled.p`
+  font-size: 0.9rem;
+  color: #333;
+  text-align: center;
+  margin-top: 0.5rem;
+
+  @media (max-width: 1200px) {
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 900px) {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 700px) {
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 490px) {
+    font-size: 0.7rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.65rem;
+  }
+`;
+
 const AddIcon = styled(IoIosAddCircle)`
   color: #4caf50;
   font-size: 4rem;
@@ -121,7 +148,7 @@ const AddIcon = styled(IoIosAddCircle)`
   }
 `;
 
-const ProductSelector = ({ productImages, setSelectedProductID, setSelectedVariant, handleButtonClick }) => {
+const ProductSelector = ({ productImages, productNames, setSelectedProductID, setSelectedVariant, handleButtonClick }) => {
   return (
     <Container>
       <ProductList>
@@ -134,9 +161,10 @@ const ProductSelector = ({ productImages, setSelectedProductID, setSelectedVaria
             }}
           >
             <ProductImage
-              src={productImages[id]}
+              src={productImages[id].image}
               alt={`Product ${id}`}
             />
+            <ProductName>{productNames[id]}</ProductName> {/* Display product name below image */}
           </ProductContainer>
         ))}
       </ProductList>

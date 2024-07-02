@@ -63,6 +63,12 @@ const VariantImage = styled.img`
   }
 `;
 
+const VariantName = styled.p`
+  font-size: 0.8rem;
+  color: #333;
+  margin: 0.5rem 0;
+`;
+
 const AddIcon = styled(IoIosAddCircle)`
   color: #4caf50;
   font-size: 4rem;
@@ -83,12 +89,13 @@ const AddIcon = styled(IoIosAddCircle)`
   }
 `;
 
-const VariantList = ({ variantImages, handleVariantClick, handleButtonClick }) => {
+const VariantList = ({ variantImages, variantNames, handleVariantClick, handleButtonClick }) => {
   return (
     <Container>
       {Object.keys(variantImages).map((id) => (
         <VariantItem key={id} onClick={() => handleVariantClick(id)}>
           <VariantImage src={variantImages[id]} alt={`Variant ${id}`} />
+          <VariantName>{variantNames[id]}</VariantName>  {/* Display the product name */}
         </VariantItem>
       ))}
       <AddIcon onClick={handleButtonClick} />

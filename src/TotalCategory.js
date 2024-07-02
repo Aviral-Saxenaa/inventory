@@ -12,6 +12,7 @@ const TotalCategory = () => {
 
     const [productImages, setProductImages] = useState({});
     const [variantImages, setVariantImages] = useState({});
+    const [variantNames, setVariantNames] = useState({});  // Added state for variant names
     const [selectedProductID, setSelectedProductID] = useState(null);
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [variantInfo, setVariantInfo] = useState({});
@@ -37,21 +38,23 @@ const TotalCategory = () => {
                     const response = await databases.listDocuments(databaseId, collectionId, [
                         Query.equal('ProductID', `${id}.1`),
                     ]);
-                    if (response.documents.length > 0 && response.documents[0].Product_Image) {
-                        return { [id]: response.documents[0].Product_Image };
+                    if (response.documents.length > 0) {
+                        const { Product_Image, Product_Name } = response.documents[0];
+                        return { [id]: { image: Product_Image, name: Product_Name } };
                     }
                 } catch (error) {
                     console.error(`Error fetching product image from collection ${collectionId}:`, error);
                 }
-                return { [id]: null };
+                return { [id]: { image: null, name: null } };
             });
-
+        
             const results = await Promise.all(promises);
-            const images = results.reduce((acc, curr) => ({ ...acc, ...curr }), {});
-            setProductImages(images);
+            const productData = results.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+            setProductImages(productData);
             setSelectedProductID(uniqueProductIDs[0]);
             setSelectedVariant(`${uniqueProductIDs[0]}.1`);
         };
+        
 
         if (productIDs) {
             fetchProductImages();
@@ -78,7 +81,14 @@ const TotalCategory = () => {
                         }
                         return acc;
                     }, {});
+                    const names = response.documents.reduce((acc, doc) => {
+                        if (doc.Product_Name) {
+                            acc[doc.ProductID] = doc.Product_Name;
+                        }
+                        return acc;
+                    }, {});
                     setVariantImages(images);
+                    setVariantNames(names);  // Update state with variant names
                 } catch (error) {
                     console.error(`Error fetching variant images from collection ${collectionId}:`, error);
                 }
@@ -157,6 +167,7 @@ const TotalCategory = () => {
         <div style={styles.container}>
             <ProductSelector
                 productImages={productImages}
+                productNames={Object.fromEntries(Object.entries(productImages).map(([id, data]) => [id, data.name]))}  // Pass product names
                 setSelectedProductID={setSelectedProductID}
                 setSelectedVariant={setSelectedVariant}
                 handleButtonClick={handleShowAddScreen}
@@ -164,7 +175,9 @@ const TotalCategory = () => {
             <div style={styles.mainContent}>
                 <VariantList
                     variantImages={variantImages}
+                    variantNames={variantNames}  // Pass the variant names
                     handleVariantClick={handleVariantClick}
+                    handleButtonClick={handleShowAddScreen}
                 />
                 {showAddScreen ? (
                     <NewProduct
