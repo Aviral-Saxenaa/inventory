@@ -12,7 +12,8 @@ const TotalCategory = () => {
 
     const [productImages, setProductImages] = useState({});
     const [variantImages, setVariantImages] = useState({});
-    const [variantNames, setVariantNames] = useState({});  // Added state for variant names
+    const [variantNames, setVariantNames] = useState({});
+    const [variantWeights, setVariantWeights] = useState({}); // Added state for variant weights
     const [selectedProductID, setSelectedProductID] = useState(null);
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [variantInfo, setVariantInfo] = useState({});
@@ -47,14 +48,13 @@ const TotalCategory = () => {
                 }
                 return { [id]: { image: null, name: null } };
             });
-        
+
             const results = await Promise.all(promises);
             const productData = results.reduce((acc, curr) => ({ ...acc, ...curr }), {});
             setProductImages(productData);
             setSelectedProductID(uniqueProductIDs[0]);
             setSelectedVariant(`${uniqueProductIDs[0]}.1`);
         };
-        
 
         if (productIDs) {
             fetchProductImages();
@@ -112,6 +112,15 @@ const TotalCategory = () => {
                     Query.contains('ProductIDs', productIDs),
                 ]);
                 setDocuments(response.documents);
+                
+                const weights = response.documents.reduce((acc, doc) => {
+                    doc['Shop_Items-Weight'].forEach(item => {
+                        const [variant, weight] = item.split(':');
+                        acc[variant] = weight;
+                    });
+                    return acc;
+                }, {});
+                setVariantWeights(weights);
             } catch (error) {
                 console.error('Error fetching documents:', error);
             }
@@ -125,14 +134,25 @@ const TotalCategory = () => {
     const handleVariantClick = (variant) => {
         setSelectedVariant(variant);
         setShowAddScreen(false);
+    
+        // Determine a priority order for documents
+        const prioritizeDocuments = (documents) => {
+            return documents.sort((a, b) => {
+                // Example: prioritize by SHOP_ID (assuming higher SHOP_ID has higher priority)
+                return b.SHOP_ID - a.SHOP_ID;
+            });
+        };
+    
+        const prioritizedDocuments = prioritizeDocuments(documents);
+    
         let foundItemInfo = null;
-
-        for (const shopItem of documents) {
+    
+        for (const shopItem of prioritizedDocuments) {
             const extractDetail = (field, variant) => {
                 const item = shopItem[field].find(item => item.startsWith(variant + ':'));
                 return item ? item.split(':')[1] : null;
             };
-
+    
             const itemInfo = {
                 Variant: variant,
                 SP: extractDetail('Shop_Items-SP', variant),
@@ -140,19 +160,20 @@ const TotalCategory = () => {
                 MRP: extractDetail('Shop_Items-MRP', variant),
                 Weight: extractDetail('Shop_Items-Weight', variant),
             };
-
-            if (itemInfo.SP && itemInfo.Stocks && itemInfo.MRP && itemInfo.Weight) {
+    
+            if (itemInfo.SP || itemInfo.Stocks || itemInfo.MRP || itemInfo.Weight) {
                 foundItemInfo = itemInfo;
                 break;
             }
         }
-
+    
         if (foundItemInfo) {
             setVariantInfo(foundItemInfo);
         } else {
             setVariantInfo({ SP: null, Stocks: null, MRP: null, Weight: null });
         }
     };
+    
 
     if (!productIDs) {
         return (
@@ -176,6 +197,7 @@ const TotalCategory = () => {
                 <VariantList
                     variantImages={variantImages}
                     variantNames={variantNames}  // Pass the variant names
+                    variantWeights={variantWeights}  // Pass the variant weights
                     handleVariantClick={handleVariantClick}
                     handleButtonClick={handleShowAddScreen}
                 />

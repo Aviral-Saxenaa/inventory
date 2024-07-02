@@ -45,12 +45,27 @@ const VariantImage = styled.img`
   border-radius: 8px;
   border: 1px solid #ddd;
   margin-right: 1rem;
+  flex-shrink: 0;
 `;
 
+const VariantInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+// 
 const VariantTitle = styled.span`
   font-size: 1rem;
   color: #333;
-  flex: 1;
+  margin-bottom: 0.5rem;
+`;
+
+const VariantWeight = styled.span`
+  font-size: 0.9rem;
+  color: red;
+  font-weight: bold;
+  background-color: #f0f0f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
 `;
 
 const AddButtonContainer = styled.div`
@@ -86,19 +101,22 @@ const AddIcon = styled(IoIosAddCircle)`
   @media (max-width: 400px) {
     font-size: 2.2rem;
   }
-    &:hover {
+
+  &:hover {
     color: darkgreen;
-    
   }
 `;
 
-const VariantList = ({ variantImages, variantNames, handleVariantClick, handleButtonClick }) => {
+const VariantList = ({ variantImages, variantNames, variantWeights, handleVariantClick, handleButtonClick }) => {
     return (
         <ListContainer>
             {Object.keys(variantImages).map((variant) => (
                 <VariantButton key={variant} onClick={() => handleVariantClick(variant)}>
                     <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
-                    <VariantTitle>{variantNames[variant]}</VariantTitle>
+                    <VariantInfoContainer>
+                        <VariantTitle>{variantNames[variant]}</VariantTitle>
+                        <VariantWeight>Variant Weight: {variantWeights[variant]}</VariantWeight>
+                    </VariantInfoContainer>
                 </VariantButton>
             ))}
             <AddButtonContainer>
