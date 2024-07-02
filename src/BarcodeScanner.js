@@ -9,26 +9,33 @@ const BarcodeScanner = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const scanner = new Html5QrcodeScanner('reader', {
-      qrbox: {
-        width: 250,
-        height: 250
-      },
-      fps: 5,
-    });
-
-    scanner.render(success, error);
-
-    function success(result) {
-      setScanResult(result);
-      setIsModalOpen(true);
-    }
-
-    function error(err) {
-      console.warn(err);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const scanner = new Html5QrcodeScanner('reader', {
+  //     qrbox: { width: 250, height: 250 },
+  //     fps: 5,
+  //   });
+  
+  //   scanner.render(success, error);
+  
+  //   function success(result) {
+  //     setScanResult(result);
+  //     setIsModalOpen(true);
+  //   }
+  
+  //   function error(error) {
+  //     console.error('QR Code Scanner Error:', error);
+  //     // Add more detailed error handling and logging here
+  //   }
+  
+  //   return () => {
+  //     scanner.stop().then(() => {
+  //       console.log('QR Code scanner stopped');
+  //     }).catch((error) => {
+  //       console.error('Failed to stop scanner:', error);
+  //     });
+  //   };
+  // }, []);
+  
 
   const handleInputChange = (event) => {
     setBarcodeInput(event.target.value);

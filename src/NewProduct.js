@@ -171,7 +171,7 @@ const BackgroundCircle = styled.div`
   }
 `;
 
-const NewProduct = ({ productTitle, productImage }) => {
+const NewProduct = ({ productTitle, productImage ,variantWeights}) => {
   const [spValue, setSPValue] = useState('');
   const [mrpValue, setMRPValue] = useState('');
   const [weightValue, setWeightValue] = useState('');
@@ -192,6 +192,10 @@ const NewProduct = ({ productTitle, productImage }) => {
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
   };
+
+  const handleAddToCart=()=>{
+    console.log(variantWeights);
+  }
 
   useEffect(() => {
     setTitle(productTitle);
@@ -243,7 +247,7 @@ const NewProduct = ({ productTitle, productImage }) => {
               <ProductNamePlaceholder>( *Enter in CAPS in format e.g., 10KG, 2ML )</ProductNamePlaceholder>
             </DetailRow>
           </DetailsContainer>
-          <Button>Add to Cart</Button>
+          <Button onClick={handleAddToCart}>Add to Cart</Button>
         </InnerContainer>
         <BackgroundCircle />
       </Card>

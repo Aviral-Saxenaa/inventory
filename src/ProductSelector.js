@@ -158,6 +158,7 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
           <ProductContainer
             key={id}
             onClick={() => {
+              console.log(setSelectedProductID);
               setSelectedProductID(id);
               setSelectedVariant(`${id}.1`);
             }}

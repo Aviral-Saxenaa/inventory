@@ -205,6 +205,7 @@ const TotalCategory = () => {
                     <NewProduct
                         productTitle={productTitle} // Pass the productTitle prop
                         productImage={productImage} // Pass the productImage prop
+                        variantWeights={variantWeights}
                     />
                 ) : (
                     <VariantDetails

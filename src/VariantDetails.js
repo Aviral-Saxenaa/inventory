@@ -111,7 +111,6 @@ const Input = styled.input`
   text-align: right;
   width: 70%;
   box-sizing: border-box;
-  border-color: blue;
 
   @media (max-width: 480px) {
     width: 60%;
@@ -133,7 +132,7 @@ const Button = styled.button`
   cursor: pointer;
   font-size: 18px;
 
-   &:hover {
+  &:hover {
     background-color: #1E3E6B;
   }
 
@@ -183,12 +182,11 @@ const PopupContainer = styled.div`
   padding: 2rem;
   border-radius: 8px;
   z-index: 999;
-  opacity:.9
+  opacity: 0.9;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-
 `;
 
 const NoInfoText = styled.p`
@@ -251,11 +249,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
   };
 
   const handleWeightUpdate = () => {
-    console.log(selectedVariant);
-    console.log(variantWeights);
-
     const uniqueIditis = parseInt(selectedVariant);
-    console.log(uniqueIditis);
 
     const weightAlreadyPresent = Object.entries(variantWeights)
       .filter(([key]) => key.startsWith(`${uniqueIditis}.`))
@@ -265,10 +259,33 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
       setShowPopup(true);
       console.log(`Weight ${weightValue} is already present in variant list.`);
     } else {
+      const existingSuffixes = Object.keys(variantWeights)
+        .filter(key => key.startsWith(`${uniqueIditis}.`))
+        .map(key => parseInt(key.split('.')[1]));
+
+      const maxSuffix = existingSuffixes.length > 0 ? Math.max(...existingSuffixes) : 0;
+      const newProductId = `${uniqueIditis}.${maxSuffix + 1}`;
+      
+      console.log(`New Product ID: ${newProductId}`);
+
       setWeightValue(weightValue);
-      alert(`Updated weight to ${weightValue}`); // Alert message when weight is updated
+      setShowPopup(false);
       console.log(`Updated weight to ${weightValue}`);
     }
+  };
+
+  const handleAddToStore = () => {
+    const uniqueIditis = parseInt(selectedVariant);
+
+    const existingSuffixes = Object.keys(variantWeights)
+      .filter(key => key.startsWith(`${uniqueIditis}.`))
+      .map(key => parseInt(key.split('.')[1]));
+
+    const maxSuffix = existingSuffixes.length > 0 ? Math.max(...existingSuffixes) : 0;
+    const newProductId = `${uniqueIditis}.${maxSuffix + 1}`;
+    
+    console.log(`New Product ID on Add to Store: ${newProductId}`);
+    // Implement your logic to add the product to the store
   };
 
   const closePopup = () => {
@@ -316,13 +333,13 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                   <ChangeButton onClick={handleWeightUpdate}>Change</ChangeButton>
                 </DetailRow>
               </DetailsContainer>
-              <Button>Add to Store</Button>
+              <Button onClick={handleAddToStore}>Add to Store</Button>
             </InnerContainer>
             <BackgroundCircle />
             {showPopup && (
               <PopupContainer>
                 <p>Weight is already present. Go to desired variant to edit SP and MRP.</p>
-                <Button onClick={closePopup} style={{alignSelf:"centre"}}>Close</Button>
+                <Button onClick={closePopup} style={{ alignSelf: "center" }}>Close</Button>
               </PopupContainer>
             )}
           </>
