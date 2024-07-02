@@ -1,21 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, TextField, Button, Grid, Card, CardMedia, CardContent, Typography, CardActions } from '@mui/material';
 import { Client, Databases, Query } from 'appwrite';
-import { useNavigate,useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { GrLinkNext } from "react-icons/gr";
 import { useMediaQuery, useTheme } from '@mui/material';
 
 const ProductListing = () => {
   const [products, setProducts] = useState([]);
-  const [selectedProductTitle, setSelectedProductTitle] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [appwriteProductIDs, setAppwriteProductIDs] = useState([]);
   const navigate = useNavigate();
   const nextButtonRef = useRef(null);
 
-  // const barcodeName = 8901058005608;
   const { state } = useLocation();
   const { barcodeName } = state;
-
 
   const client = new Client();
   client
@@ -23,8 +21,6 @@ const ProductListing = () => {
     .setProject('65773c8581b895f83d40'); // Your project ID
 
   const databases = new Databases(client);
-
-  
 
   const handleSearch = async () => {
     try {
@@ -44,8 +40,11 @@ const ProductListing = () => {
   };
 
   const handleAddToCart = (product) => {
-    setSelectedProductTitle(product.product_title);
-    console.log('Selected Product Title:', product.product_title); // Log the selected product title
+    setSelectedProduct({
+      title: product.product_title,
+      image: product.product_photos[0],
+    });
+    console.log('Selected Product:', product); // Log the selected product
     queryAppwriteProducts(product.product_title);
     console.log('Added to cart:', product.product_title);
     showNextButton();
@@ -72,7 +71,13 @@ const ProductListing = () => {
   };
 
   const handleTotalCategory = () => {
-    navigate('/total-category', { state: { productIDs: appwriteProductIDs } });
+    navigate('/total-category', {
+      state: {
+        productIDs: appwriteProductIDs,
+        productTitle: selectedProduct.title,
+        productImage: selectedProduct.image
+      }
+    });
   };
 
   const showNextButton = () => {
@@ -86,10 +91,10 @@ const ProductListing = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedProductTitle) {
-      queryAppwriteProducts(selectedProductTitle);
+    if (selectedProduct) {
+      queryAppwriteProducts(selectedProduct.title);
     }
-  }, [selectedProductTitle]);
+  }, [selectedProduct]);
 
   useEffect(() => {
     console.log('appwriteProductIDs:', appwriteProductIDs);

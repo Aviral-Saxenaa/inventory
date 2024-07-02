@@ -6,16 +6,10 @@ import VariantList from './VariantList';
 import VariantDetails from './VariantDetails';
 import NewProduct from './NewProduct';
 
-const TotalCategory = ({ newModal }) => {
+const TotalCategory = () => {
     const location = useLocation();
+    const { productIDs, productTitle, productImage } = location.state || {};  // Extract the new props from location.state
 
-    useEffect(() => {
-        if (newModal) {
-            alert('Hello');
-        }
-    }, [newModal]);
-
-    const { productIDs } = location.state || {};
     const [productImages, setProductImages] = useState({});
     const [variantImages, setVariantImages] = useState({});
     const [selectedProductID, setSelectedProductID] = useState(null);
@@ -46,7 +40,6 @@ const TotalCategory = ({ newModal }) => {
                     if (response.documents.length > 0 && response.documents[0].Product_Image) {
                         return { [id]: response.documents[0].Product_Image };
                     }
-                    
                 } catch (error) {
                     console.error(`Error fetching product image from collection ${collectionId}:`, error);
                 }
@@ -173,11 +166,18 @@ const TotalCategory = ({ newModal }) => {
                     variantImages={variantImages}
                     handleVariantClick={handleVariantClick}
                 />
-                {showAddScreen ? <NewProduct /> : <VariantDetails
-                    selectedVariant={selectedVariant}
-                    variantImages={variantImages}
-                    variantInfo={variantInfo}
-                />}
+                {showAddScreen ? (
+                    <NewProduct
+                        productTitle={productTitle} // Pass the productTitle prop
+                        productImage={productImage} // Pass the productImage prop
+                    />
+                ) : (
+                    <VariantDetails
+                        selectedVariant={selectedVariant}
+                        variantImages={variantImages}
+                        variantInfo={variantInfo}
+                    />
+                )}
             </div>
         </div>
     );

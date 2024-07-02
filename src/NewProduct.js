@@ -185,7 +185,7 @@ const BackgroundCircle = styled.div`
 `;
 
 // NewProduct component
-const NewProduct = () => {
+const NewProduct = ({ productTitle, productImage }) => {
   // State variables for the input fields
   const [spValue, setSPValue] = useState('');
   const [mrpValue, setMRPValue] = useState('');
@@ -210,10 +210,10 @@ const NewProduct = () => {
       <Card>
         <InnerContainer>
           <Image
-            src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/5307ef37224391.57397a56d79da.jpg"
-            alt="New Product"
+            src={productImage}  // Use the productImage prop
+            alt={productTitle}  // Use the productTitle prop
           />
-          <h3 style={{ marginBottom: '1rem', marginLeft: '1rem', marginRight: '1rem' }}>COCACOLA PEPSI</h3>
+          <h3 style={{ marginBottom: '1rem', marginLeft: '1rem', marginRight: '1rem' }}>{productTitle}</h3>
           <DetailsContainer>
             <DetailRow>
               <Label>SP:</Label>

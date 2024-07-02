@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const BarcodeScanner = () => {
   const [barcodeInput, setBarcodeInput] = useState('');
   const [scanResult, setScanResult] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,9 +21,8 @@ const BarcodeScanner = () => {
     scanner.render(success, error);
 
     function success(result) {
-      scanner.clear();
       setScanResult(result);
-      navigateToProductListing(result);
+      setIsModalOpen(true);
     }
 
     function error(err) {
@@ -32,7 +32,6 @@ const BarcodeScanner = () => {
 
   const handleInputChange = (event) => {
     setBarcodeInput(event.target.value);
-    navigateToProductListing(event.target.value);
   };
 
   const navigateToProductListing = (value) => {
@@ -41,6 +40,15 @@ const BarcodeScanner = () => {
 
   const handleSearch = () => {
     navigateToProductListing(barcodeInput);
+  };
+
+  const handleContinue = () => {
+    setIsModalOpen(false);
+    navigateToProductListing(scanResult);
+  };
+
+  const handleBack = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -59,6 +67,17 @@ const BarcodeScanner = () => {
         />
         <Button onClick={handleSearch}>Search</Button>
       </InputContainer>
+      {isModalOpen && (
+        <Modal>
+          <ModalContent>
+            <p>Barcode: {scanResult}</p>
+            <ButtonContainer>
+              <ModalButton onClick={handleBack}>Back</ModalButton>
+              <ModalButton onClick={handleContinue}>Continue</ModalButton>
+            </ButtonContainer>
+          </ModalContent>
+        </Modal>
+      )}
     </Container>
   );
 };
@@ -119,7 +138,7 @@ const InputContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 12px; /* Space between input and button */
+  gap: 12px;
 
   @media (max-width: 768px) {
     width: 90%;
@@ -131,7 +150,7 @@ const InputContainer = styled.div`
   }
 
   @media (max-width: 400px) {
-    width: 80%; /* Full width of 80% for very small screens */
+    width: 80%;
   }
 `;
 
@@ -177,6 +196,58 @@ const Button = styled.button`
 
   @media (max-width: 480px) {
     padding: 8px 16px;
+    font-size: 12px;
+  }
+`;
+
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+`;
+
+const ModalButton = styled.button`
+  background-color: #058689;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #04656d;
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 12px;
     font-size: 12px;
   }
 `;
