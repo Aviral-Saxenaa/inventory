@@ -8,7 +8,6 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-//   height:"81%"
 
   @media (max-width: 700px) {
     width: 91%;
@@ -17,8 +16,8 @@ const Container = styled.div`
   @media (max-width: 490px) {
     width: 90%;
   }
-      @media (max-width: 400px) {
-//     height: 40%;
+
+  @media (max-width: 400px) {
     padding: .3rem;
   }
 `;
@@ -65,7 +64,7 @@ const Image = styled.img`
   border-radius: 8px;
   border: 1px solid #ddd;
   transition: transform 0.3s ease;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;  /* Reduced margin for better alignment */
 
   &:hover {
     transform: scale(1.1);
@@ -150,27 +149,28 @@ const CurrencySymbol = styled.div`
   margin-right: 0.5rem;
 `;
 
-
 const NoInfoText = styled.p`
   text-align: center;
   margin: 1rem 0;
 `;
 
-const VariantDetails = ({ selectedVariant, variantImages, variantInfo }) => {
-  const [spValue, setSPValue] = useState('');
-  // const [variantIDValue, setVariantIDValue] = useState('');
-  const [mrpValue, setMRPValue] = useState('');
-  // const [stocksValue, setStocksValue] = useState('');
-  const [weightValue, setWeightValue] = useState('');
+const VariantName = styled.p`
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;  /* Added margin for better spacing */
+`;
 
-  console.log(selectedVariant);
+const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantName }) => {
+  const [spValue, setSPValue] = useState('');
+  const [mrpValue, setMRPValue] = useState('');
+  const [weightValue, setWeightValue] = useState('');
 
   useEffect(() => {
     if (variantInfo) {
       setSPValue(`₹ ${variantInfo.SP}` || '');
-      // setVariantIDValue(variantInfo.Variant || '');
       setMRPValue(`₹ ${variantInfo.MRP}` || '');
-      // setStocksValue(variantInfo.Stocks || '');
       setWeightValue(variantInfo.Weight || '');
     }
   }, [variantInfo]);
@@ -179,17 +179,9 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo }) => {
     setSPValue(event.target.value);
   };
 
-  // const handleVariantIDChange = (event) => {
-  //   setVariantIDValue(event.target.value);
-  // };
-
   const handleMRPChange = (event) => {
     setMRPValue(event.target.value);
   };
-
-  // const handleStocksChange = (event) => {
-  //   setStocksValue(event.target.value);
-  // };
 
   const handleWeightChange = (event) => {
     setWeightValue(event.target.value);
@@ -205,10 +197,10 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo }) => {
                 src={variantImages[selectedVariant]}
                 alt={`Variant ${selectedVariant}`}
               />
+              <VariantName>{variantName}</VariantName>  {/* Display the variant name below the image */}
               <DetailsContainer>
                 <DetailRow>
                   <Label>SP:</Label>
-                  {/* <CurrencySymbol>₹</CurrencySymbol> */}
                   <Input
                     type="text"
                     value={spValue}
@@ -216,14 +208,6 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo }) => {
                     style={{fontSize:"1.2rem",color:"green"}}
                   />
                 </DetailRow>
-                {/* <DetailRow>
-                  <Label>Variant ID:</Label>
-                  <Input
-                    type="text"
-                    value={variantIDValue}
-                    onChange={handleVariantIDChange}
-                  />
-                </DetailRow> */}
                 <DetailRow>
                   <Label>MRP:</Label>
                   <Input
@@ -233,14 +217,6 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo }) => {
                     style={{fontSize:"1.2rem",color:"green"}}
                   />
                 </DetailRow>
-                {/* <DetailRow>
-                  <Label>Stocks:</Label>
-                  <Input
-                    type="text"
-                    value={stocksValue}
-                    onChange={handleStocksChange}
-                  />
-                </DetailRow> */}
                 <DetailRow>
                   <Label>Weight:</Label>
                   <Input

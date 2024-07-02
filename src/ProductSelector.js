@@ -146,6 +146,8 @@ const AddIcon = styled(IoIosAddCircle)`
   @media (max-width: 400px) {
     font-size: 2.2rem;
   }
+    &:hover {
+    color: darkgreen;
 `;
 
 const ProductSelector = ({ productImages, productNames, setSelectedProductID, setSelectedVariant, handleButtonClick }) => {

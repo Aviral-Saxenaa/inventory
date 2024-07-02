@@ -189,6 +189,7 @@ const TotalCategory = () => {
                         selectedVariant={selectedVariant}
                         variantImages={variantImages}
                         variantInfo={variantInfo}
+                        variantName={variantNames[selectedVariant]}  // Pass the variant name
                     />
                 )}
             </div>
