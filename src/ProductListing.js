@@ -9,8 +9,8 @@ const ProductListing = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [exist, setExist] = useState(false);
-  const [appwriteProductIDs, setAppwriteProductIDs] = useState([]);
   const [appwriteProductDetails, setAppwriteProductDetails] = useState(null);
+  const [appwriteProductIDs, setAppwriteProductIDs] = useState([]);
   const navigate = useNavigate();
   const nextButtonRef = useRef(null);
 
@@ -26,7 +26,7 @@ const ProductListing = () => {
 
   const handleCheck = async () => {
     console.log('Checking for barcode:', barcodeName);
-
+  
     try {
       const response = await databases.listDocuments(
         'data-level-1', // Replace with your actual database ID
@@ -36,16 +36,20 @@ const ProductListing = () => {
         ]
       );
       console.log('Appwrite check response:', response);
-
+  
       if (response.documents.length > 0) {
         setExist(true);
         const productData = response.documents[0];
+        const productId = productData.ProductID;
+        console.log('Product ID:', productId);
+  
         setSelectedProduct({
-          ProductID: productData.ProductID,
+          ProductID: productId,
           Product_Name: productData.Product_Name,
           Product_Image: productData.Product_Image
         });
-        fetchProductAttributes(productData.ProductID);
+  
+        fetchProductAttributes(productId);
       } else {
         handleSearch();
       }
@@ -54,6 +58,7 @@ const ProductListing = () => {
       handleSearch();
     }
   };
+  
 
   const fetchProductAttributes = async (productID) => {
     try {
@@ -64,20 +69,29 @@ const ProductListing = () => {
           Query.equal('ProductIDs', productID) // Ensure 'ProductIDs' is the correct field name in your collection
         ]
       );
-
+  
       if (response.documents.length > 0) {
         console.log('Appwrite Product Details Response:', response.documents); // Log the response from Appwrite
         const productDetails = response.documents[0];
+  
+        const extractValueByProductID = (array) => {
+          const item = array.find(entry => entry.startsWith(`${productID}:`));
+          return item ? item.split(':')[1] : null;
+        };
+  
         setAppwriteProductDetails({
-          Shop_Items_SP: productDetails['Shop_Items-SP'],
-          Shop_Items_MRP: productDetails['Shop_Items-MRP'],
-          Shop_Items_Weight: productDetails['Shop_Items-Weight'],
+          Shop_Items_SP: extractValueByProductID(productDetails['Shop_Items-SP']),
+          Shop_Items_MRP: extractValueByProductID(productDetails['Shop_Items-MRP']),
+          Shop_Items_Weight: extractValueByProductID(productDetails['Shop_Items-Weight']),
         });
       }
     } catch (error) {
       console.error('Error querying Appwrite for product attributes:', error);
     }
   };
+  
+  
+  
 
   const handleSearch = async () => {
     try {
@@ -211,27 +225,29 @@ const ProductListing = () => {
                 alt={selectedProduct.Product_Name}
                 sx={{ objectFit: 'contain' }}
               />
-              <CardContent>
-                <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
-                  {selectedProduct.Product_Name}
-                </Typography>
-                {appwriteProductDetails && (
-                  <>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                      <span style={{ fontWeight: 'bold', color: '#000' }}>SP: </span>
-                      <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_SP}</span>
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                      <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
-                      <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_MRP}</span>
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                      <span style={{ fontWeight: 'bold', color: '#000' }}>Weight: </span>
-                      <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_Weight}</span>
-                    </Typography>
-                  </>
-                )}
-              </CardContent>
+             <CardContent>
+                  <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
+                    {selectedProduct.Product_Name}
+                  </Typography>
+                  {appwriteProductDetails && (
+                    <>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                        <span style={{ fontWeight: 'bold', color: '#000' }}>SP: </span>
+                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_SP}</span>
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                        <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
+                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_MRP}</span>
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                        <span style={{ fontWeight: 'bold', color: '#000' }}>Weight: </span>
+                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_Weight}</span>
+                      </Typography>
+                    </>
+                  )}
+                </CardContent>
+
+
               <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
                 <Button
                   variant="contained"
@@ -244,7 +260,7 @@ const ProductListing = () => {
             </Card>
           </Grid>
         </Grid>
-      ) :  (
+      ) : (
         <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
           {products.map((product) => (
             <Grid
