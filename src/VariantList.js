@@ -52,7 +52,7 @@ const VariantInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
-// 
+
 const VariantTitle = styled.span`
   font-size: 1rem;
   color: #333;
@@ -108,15 +108,18 @@ const AddIcon = styled(IoIosAddCircle)`
 `;
 
 const VariantList = ({ variantImages, variantNames, variantWeights, handleVariantClick, handleButtonClick }) => {
+    const handleClickVariant = (variant) => {
+        console.log(`Variant clicked: ${variant}`);
+        handleVariantClick(variant);
+    };
+
     return (
-      
         <ListContainer>
             {Object.keys(variantImages).map((variant) => (
-                <VariantButton key={variant} onClick={() => handleVariantClick(variant)}>
+                <VariantButton key={variant} onClick={() => handleClickVariant(variant)}>
                     <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
                     <VariantInfoContainer>
                         <VariantTitle>{variantNames[variant]}</VariantTitle>
-                        {/* {console.log(variantWeights)} */}
                         <VariantWeight>Variant Weight: {variantWeights[variant]}</VariantWeight>
                     </VariantInfoContainer>
                 </VariantButton>

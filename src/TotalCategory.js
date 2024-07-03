@@ -5,23 +5,25 @@ import ProductSelector from './ProductSelector';
 import VariantList from './VariantList';
 import VariantDetails from './VariantDetails';
 import NewProduct from './NewProduct';
+import NewProductType from './NewProductType'; // Import NewProductType component
 
 const TotalCategory = () => {
     const location = useLocation();
-    const { productIDs, productTitle, productImage } = location.state || {};  // Extract the new props from location.state
+    const { productIDs, productTitle, productImage } = location.state || {};
 
     const [productImages, setProductImages] = useState({});
     const [variantImages, setVariantImages] = useState({});
     const [variantNames, setVariantNames] = useState({});
-    const [variantWeights, setVariantWeights] = useState({}); // Added state for variant weights
+    const [variantWeights, setVariantWeights] = useState({});
     const [selectedProductID, setSelectedProductID] = useState(null);
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [variantInfo, setVariantInfo] = useState({});
     const [documents, setDocuments] = useState([]);
-    const [showAddScreen, setShowAddScreen] = useState(false);
+    const [showAddScreenType, setShowAddScreenType] = useState(null); // State to track which add screen to show
+    const [uniqueProductIDs, setUniqueProductIDs] = useState([]); // State to store uniqueProductIDs
 
-    const handleShowAddScreen = () => {
-        setShowAddScreen(true);
+    const handleShowAddScreen = (type) => {
+        setShowAddScreenType(type); // Set the type of add screen to show
     };
 
     useEffect(() => {
@@ -34,6 +36,9 @@ const TotalCategory = () => {
 
         const fetchProductImages = async () => {
             const uniqueProductIDs = Array.from(new Set(productIDs.map((id) => parseInt(id.split('.')[0]))));
+            console.log('Unique Product IDs:', uniqueProductIDs); // Log uniqueProductIDs
+            setUniqueProductIDs(uniqueProductIDs); // Store uniqueProductIDs in state
+
             const promises = uniqueProductIDs.map(async (id) => {
                 try {
                     const response = await databases.listDocuments(databaseId, collectionId, [
@@ -88,7 +93,7 @@ const TotalCategory = () => {
                         return acc;
                     }, {});
                     setVariantImages(images);
-                    setVariantNames(names);  // Update state with variant names
+                    setVariantNames(names);
                 } catch (error) {
                     console.error(`Error fetching variant images from collection ${collectionId}:`, error);
                 }
@@ -133,12 +138,10 @@ const TotalCategory = () => {
 
     const handleVariantClick = (variant) => {
         setSelectedVariant(variant);
-        setShowAddScreen(false);
+        setShowAddScreenType(null); // Reset add screen type when variant is clicked
     
-        // Determine a priority order for documents
         const prioritizeDocuments = (documents) => {
             return documents.sort((a, b) => {
-                // Example: prioritize by SHOP_ID (assuming higher SHOP_ID has higher priority)
                 return b.SHOP_ID - a.SHOP_ID;
             });
         };
@@ -173,7 +176,6 @@ const TotalCategory = () => {
             setVariantInfo({ SP: null, Stocks: null, MRP: null, Weight: null });
         }
     };
-    
 
     if (!productIDs) {
         return (
@@ -188,31 +190,43 @@ const TotalCategory = () => {
         <div style={styles.container}>
             <ProductSelector
                 productImages={productImages}
-                productNames={Object.fromEntries(Object.entries(productImages).map(([id, data]) => [id, data.name]))}  // Pass product names
+                productNames={Object.fromEntries(Object.entries(productImages).map(([id, data]) => [id, data.name]))}
                 setSelectedProductID={setSelectedProductID}
                 setSelectedVariant={setSelectedVariant}
-                handleButtonClick={handleShowAddScreen}
+                handleButtonClick={() => handleShowAddScreen('type')}
             />
             <div style={styles.mainContent}>
                 <VariantList
                     variantImages={variantImages}
-                    variantNames={variantNames}  // Pass the variant names
-                    variantWeights={variantWeights}  // Pass the variant weights
+                    variantNames={variantNames}
+                    variantWeights={variantWeights}
                     handleVariantClick={handleVariantClick}
-                    handleButtonClick={handleShowAddScreen}
+                    handleButtonClick={() => handleShowAddScreen('variant')}
                 />
-                {showAddScreen ? (
-                    <NewProduct
-                        productTitle={productTitle} // Pass the productTitle prop
-                        productImage={productImage} // Pass the productImage prop
+                {showAddScreenType === 'type' ? (
+                    <NewProductType
+                        productTitle={productTitle}
+                        productImage={productImage}
                         variantWeights={variantWeights}
+                        uniqueProductIDs={uniqueProductIDs} 
+                        // productImages={productImages}
+                    />
+                ) : showAddScreenType === 'variant' ? (
+                    <NewProduct
+                        productTitle={productTitle}
+                        productImage={productImage}
+                        variantWeights={variantWeights}
+                        selectedProductID={selectedProductID} 
+                        // variantImages={variantImages}
+                        // uniqueProductIDs={uniqueProductIDs} // Pass uniqueProductIDs to NewProduct
+                        // productImages={productImages}
                     />
                 ) : (
                     <VariantDetails
                         selectedVariant={selectedVariant}
                         variantImages={variantImages}
                         variantInfo={variantInfo}
-                        variantName={variantNames[selectedVariant]}  // Pass the variant name
+                        variantName={variantNames[selectedVariant]}
                         variantWeights={variantWeights}
                     />
                 )}

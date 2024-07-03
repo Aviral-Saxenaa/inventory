@@ -171,7 +171,7 @@ const BackgroundCircle = styled.div`
   }
 `;
 
-const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProductID}) => {
+const NewProductType = ({ productTitle, productImage, variantWeights, uniqueProductIDs }) => {
   const [spValue, setSPValue] = useState('');
   const [mrpValue, setMRPValue] = useState('');
   const [weightValue, setWeightValue] = useState('');
@@ -195,38 +195,24 @@ const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProduc
 
   const handleAddToCart = () => {
 
-    console.log(selectedProductID);
-    console.log(variantWeights);
-    // Check if SP is greater than MRP
-  if (parseFloat(spValue) > parseFloat(mrpValue)) {
-    alert('SP cannot be greater than MRP. Please correct your entries.');
-    return; // Exit function if SP is greater than MRP
-  }
-
-  // Find all keys in variantWeights that start with selectedProductID
-  const keysStartingWithSelectedID = Object.keys(variantWeights).filter(key =>
-    key.startsWith(`${selectedProductID}.`)
-  );
-
-  // Count the total number of keys starting with selectedProductID
-  const totalNos = keysStartingWithSelectedID.length;
-
-  // Construct the unique product ID by appending totalNos to selectedProductID
-  const uniqueProductID = `${selectedProductID}.${totalNos + 1}`;
-
-  console.log('Unique Product ID for NewProduct:', uniqueProductID);
+        if (parseFloat(spValue) > parseFloat(mrpValue)) {
+                alert('SP should not be greater than MRP');
+                return;
+        }
+    const smallestProductID = Math.min(...uniqueProductIDs);
+    const newProductID = smallestProductID + uniqueProductIDs.length;
+    console.log(`New Product ID for newproductType: ${newProductID}`);
   };
-  
-  
 
   useEffect(() => {
-    // console.log(selectedProductID);
+    console.log(`Newproduct type : ${uniqueProductIDs}`);
     setTitle(productTitle);
   }, [productTitle]);
 
   return (
     <Container>
       <Card>
+        {/* <p>Type</p> */}
         <InnerContainer>
           <Image src={productImage} alt={title} />
           <DetailsContainer>
@@ -237,7 +223,6 @@ const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProduc
                 value={title}
                 onChange={handleTitleChange}
                 placeholder={`${title} (Enter your product name)`}
-                
               />
               <ProductNamePlaceholder>( *Enter your own title )</ProductNamePlaceholder>
             </DetailRow>
@@ -278,4 +263,4 @@ const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProduc
   );
 };
 
-export default NewProduct;
+export default NewProductType;
