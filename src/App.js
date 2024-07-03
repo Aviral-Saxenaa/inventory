@@ -3,9 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 // Pages
 import ProductListing from './ProductListing';
-import NewInventory from './NewInventory';
 import BarcodeScanner from './BarcodeScanner';
-import ProductCard from './PresentDB';
 import TotalCategory from './TotalCategory';
 import Test from './Test';
 
@@ -13,9 +11,6 @@ import Test from './Test';
 const routes = [
   { path: '/barcode-scanner', element: <BarcodeScanner />, label: 'Barcode Scanner' },
   { path: '/product-listing', element: <ProductListing />, label: 'Product Listing' },
-  { path: '/new-inventory', element: <NewInventory />, label: 'New Inventory' },
-  { path: '/presentdb', element: <ProductCard />, label: 'Present DB' },
-  // { path: '/estimatedpr', element: <EstimatedProduct />, label: 'Estimated Product' },
   { path: '/total-category', element: <TotalCategory />, label: 'Total Category' },
   { path: '/test', element: <Test />, label: 'Test' },
 ];

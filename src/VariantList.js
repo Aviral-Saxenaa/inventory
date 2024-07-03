@@ -11,12 +11,20 @@ const ListContainer = styled.div`
   overflow-y: auto;
   height: 100%;
 
-  @media (max-width: 700px) {
+  @media (max-width: 1200px) {
     width: 50%;
   }
 
-  @media (max-width: 490px) {
+  @media (max-width: 900px) {
     width: 60%;
+  }
+
+  @media (max-width: 721px) {
+    width: 80%;
+  }
+
+  @media (max-width: 600px) {
+    width: 90%;
   }
 `;
 
@@ -90,11 +98,11 @@ const AddIcon = styled(IoIosAddCircle)`
     font-size: 3rem;
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 721px) {
     font-size: 2.5rem;
   }
 
-  @media (max-width: 490px) {
+  @media (max-width: 600px) {
     font-size: 2.5rem;
   }
 
@@ -104,6 +112,37 @@ const AddIcon = styled(IoIosAddCircle)`
 
   &:hover {
     color: darkgreen;
+  }
+`;
+
+const ChangeButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+
+  @media (max-width: 721px) {
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+const ChangeButton = styled.button`
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #0056b3;
+  }
+
+  @media (max-width: 721px) {
+    width: 100%;
   }
 `;
 
@@ -120,13 +159,14 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
                     <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
                     <VariantInfoContainer>
                         <VariantTitle>{variantNames[variant]}</VariantTitle>
-                        <VariantWeight>Variant Weight: {variantWeights[variant]}</VariantWeight>
+                        <VariantWeight>Weight: {variantWeights[variant]}</VariantWeight>
                     </VariantInfoContainer>
                 </VariantButton>
             ))}
             <AddButtonContainer>
                 <AddIcon onClick={handleButtonClick} />
             </AddButtonContainer>
+           
         </ListContainer>
     );
 };
