@@ -8,7 +8,9 @@ import { useMediaQuery, useTheme } from '@mui/material';
 const ProductListing = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [exist, setExist] = useState(false);
   const [appwriteProductIDs, setAppwriteProductIDs] = useState([]);
+  const [appwriteProductDetails, setAppwriteProductDetails] = useState(null);
   const navigate = useNavigate();
   const nextButtonRef = useRef(null);
 
@@ -22,6 +24,61 @@ const ProductListing = () => {
 
   const databases = new Databases(client);
 
+  const handleCheck = async () => {
+    console.log('Checking for barcode:', barcodeName);
+
+    try {
+      const response = await databases.listDocuments(
+        'data-level-1', // Replace with your actual database ID
+        '664f1ca60037dad0be9c', // Replace with your actual collection ID
+        [
+          Query.contains('Product_Barcode', [barcodeName]) // Ensure 'Product_Barcode' is the correct field name in your collection
+        ]
+      );
+      console.log('Appwrite check response:', response);
+
+      if (response.documents.length > 0) {
+        setExist(true);
+        const productData = response.documents[0];
+        setSelectedProduct({
+          ProductID: productData.ProductID,
+          Product_Name: productData.Product_Name,
+          Product_Image: productData.Product_Image
+        });
+        fetchProductAttributes(productData.ProductID);
+      } else {
+        handleSearch();
+      }
+    } catch (error) {
+      console.error('Error querying Appwrite:', error);
+      handleSearch();
+    }
+  };
+
+  const fetchProductAttributes = async (productID) => {
+    try {
+      const response = await databases.listDocuments(
+        'data-level-1', // Replace with your actual database ID
+        'Shop_ItemsDB_testing', // Replace with your actual collection ID
+        [
+          Query.equal('ProductIDs', productID) // Ensure 'ProductIDs' is the correct field name in your collection
+        ]
+      );
+
+      if (response.documents.length > 0) {
+        console.log('Appwrite Product Details Response:', response.documents); // Log the response from Appwrite
+        const productDetails = response.documents[0];
+        setAppwriteProductDetails({
+          Shop_Items_SP: productDetails['Shop_Items-SP'],
+          Shop_Items_MRP: productDetails['Shop_Items-MRP'],
+          Shop_Items_Weight: productDetails['Shop_Items-Weight'],
+        });
+      }
+    } catch (error) {
+      console.error('Error querying Appwrite for product attributes:', error);
+    }
+  };
+
   const handleSearch = async () => {
     try {
       const response = await fetch(`https://realtime-product-search.p.sulu.sh/v1/search?q=${barcodeName}&country=in&min_price=1`, {
@@ -32,7 +89,7 @@ const ProductListing = () => {
         }
       });
       const data = await response.json();
-      console.log('Search Response Data:', data); // Log the response data
+      console.log('Search API response:', data); // Log the response data
       setProducts(data.data.slice(0, 6)); // Display only the top 6 results
     } catch (error) {
       console.error('Error fetching data', error);
@@ -41,8 +98,9 @@ const ProductListing = () => {
 
   const handleAddToCart = (product) => {
     setSelectedProduct({
-      title: product.product_title,
-      image: product.product_photos[0],
+      ProductID: product.product_id,
+      Product_Name: product.product_title,
+      Product_Image: product.product_photos[0]
     });
     console.log('Selected Product:', product); // Log the selected product
     queryAppwriteProducts(product.product_title);
@@ -74,8 +132,8 @@ const ProductListing = () => {
     navigate('/total-category', {
       state: {
         productIDs: appwriteProductIDs,
-        productTitle: selectedProduct.title,
-        productImage: selectedProduct.image
+        productTitle: selectedProduct.Product_Name,
+        productImage: selectedProduct.Product_Image
       }
     });
   };
@@ -87,18 +145,8 @@ const ProductListing = () => {
   };
 
   useEffect(() => {
-    handleSearch();
+    handleCheck();
   }, []);
-
-  useEffect(() => {
-    if (selectedProduct) {
-      queryAppwriteProducts(selectedProduct.title);
-    }
-  }, [selectedProduct]);
-
-  useEffect(() => {
-    console.log('appwriteProductIDs:', appwriteProductIDs);
-  }, [appwriteProductIDs]);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down(409));
@@ -122,8 +170,6 @@ const ProductListing = () => {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'center',
-          mb: 4,
           width: '100%',
           maxWidth: 600
         }}
@@ -144,14 +190,15 @@ const ProductListing = () => {
           Search
         </Button>
       </Box>
-      <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
-        {products.map((product) => (
-          <Grid 
-            item 
-            xs={12} 
-            sm={6} 
-            md={4} 
-            key={product.product_id}
+
+      {exist ? (
+        <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            key={selectedProduct.ProductID}
             sx={{
               maxWidth: isSmallScreen ? '100%' : isMediumScreen ? '50%' : 'auto'
             }}
@@ -160,23 +207,35 @@ const ProductListing = () => {
               <CardMedia
                 component="img"
                 height="140"
-                image={product.product_photos[0]}
-                alt={product.product_title}
+                image={selectedProduct.Product_Image}
+                alt={selectedProduct.Product_Name}
                 sx={{ objectFit: 'contain' }}
               />
               <CardContent>
                 <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
-                  {product.product_title}
+                  {selectedProduct.Product_Name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                  <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
-                  <span style={{ color: '#ff0000', fontSize: "1.4rem", color: "green" }}>{product.offer.price}</span>
-                </Typography>
+                {appwriteProductDetails && (
+                  <>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                      <span style={{ fontWeight: 'bold', color: '#000' }}>SP: </span>
+                      <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_SP}</span>
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                      <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
+                      <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_MRP}</span>
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                      <span style={{ fontWeight: 'bold', color: '#000' }}>Weight: </span>
+                      <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_Weight}</span>
+                    </Typography>
+                  </>
+                )}
               </CardContent>
               <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
                 <Button
                   variant="contained"
-                  onClick={() => handleAddToCart(product)}
+                  onClick={() => handleAddToCart(selectedProduct)}
                   sx={{ backgroundColor: '#28a745', '&:hover': { backgroundColor: '#218838' } }}
                 >
                   Confirm
@@ -184,8 +243,51 @@ const ProductListing = () => {
               </CardActions>
             </Card>
           </Grid>
-        ))}
-      </Grid>
+        </Grid>
+      ) :  (
+        <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
+          {products.map((product) => (
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              key={product.product_id}
+              sx={{
+                maxWidth: isSmallScreen ? '100%' : isMediumScreen ? '50%' : 'auto'
+              }}
+            >
+              <Card sx={{ maxWidth: 345, backgroundColor: '#fff', borderRadius: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={product.product_photos[0]}
+                  alt={product.product_title}
+                  sx={{ objectFit: 'contain' }}
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
+                    {product.product_title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                    <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
+                    <span style={{ color: '#ff0000', fontSize: "1.4rem", color: "green" }}>{product.offer.price}</span>
+                  </Typography>
+                </CardContent>
+                <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleAddToCart(product)}
+                    sx={{ backgroundColor: '#28a745', '&:hover': { backgroundColor: '#218838' } }}
+                  >
+                    Confirm
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
 
       {appwriteProductIDs.length > 0 && (
         <Box
