@@ -1,6 +1,8 @@
+// App.js
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
+import GlobalStyles from './GlobalStyles';
 // Pages
 import ProductListing from './ProductListing';
 import BarcodeScanner from './BarcodeScanner';
@@ -17,13 +19,16 @@ const routes = [
 
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        {routes.map(({ path, element }, index) => (
-          <Route key={index} path={path} element={element} />
-        ))}
-      </Routes>
-    </Router>
+    <>
+      <GlobalStyles />
+      <Router>
+        <Routes>
+          {routes.map(({ path, element }, index) => (
+            <Route key={index} path={path} element={element} />
+          ))}
+        </Routes>
+      </Router>
+    </>
   );
 };
 

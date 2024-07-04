@@ -248,19 +248,19 @@ const ProductListing = () => {
                     <>
                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
                         <span style={{ fontWeight: 'bold', color: '#000' }}>SP: </span>
-                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold' }}>
-                          {appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_SP}
+                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold',fontSize:"1.2rem" }}>
+                          ₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_SP}
                         </span>
                       </Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
                         <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
-                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold' }}>
-                          {appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_MRP}
+                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold',fontSize:"1.2rem" }}>
+                          ₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_MRP}
                         </span>
                       </Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
                         <span style={{ fontWeight: 'bold', color: '#000' }}>Weight: </span>
-                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold' }}>
+                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold',fontSize:"1.2rem" }}>
                           {appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_Weight}
                         </span>
                       </Typography>
