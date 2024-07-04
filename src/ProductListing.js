@@ -13,6 +13,7 @@ const ProductListing = () => {
   const [appwriteProductIDs, setAppwriteProductIDs] = useState([]);
   const navigate = useNavigate();
   const nextButtonRef = useRef(null);
+  const [isnext,setIsNext]=useState(false)
 
   const { state } = useLocation();
   const { barcodeName } = state;
@@ -99,6 +100,7 @@ const ProductListing = () => {
   };
 
   const handleSearch = async () => {
+    setExist(false);
     try {
       const response = await fetch(`https://realtime-product-search.p.sulu.sh/v1/search?q=${barcodeName}&country=in&min_price=1`, {
         method: 'GET',
@@ -115,12 +117,24 @@ const ProductListing = () => {
     }
   };
 
-  const handleAddToCart = (product) => {
-    setSelectedProduct(product);
-    console.log('Selected Product:', product); // Log the selected product
-    queryAppwriteProducts(product.Product_Name);
-    console.log('Added to cart:', product.Product_Name);
-    showNextButton();
+  const handleAddToCart = (product, id) => {
+    setSelectedProduct(product); // Set the selected product
+    setIsNext(true); // Show the next button
+    if (Array.isArray(selectedProduct)) {
+      setSelectedProduct([...selectedProduct]);
+    } else { 
+     
+      setSelectedProduct([product]);
+    }
+    if (id === 'API-ID') {
+      console.log('API ID BUTTON');
+      queryAppwriteProducts(product.product_title);
+      console.log('Added to cart:', product.product_title);
+    } else {
+      console.log('APPWRITE ID BUTTON');
+      queryAppwriteProducts(product.Product_Name);
+      console.log('Added to cart:', product.Product_Name);
+    }
   };
 
   const queryAppwriteProducts = async (productTitle) => {
@@ -144,20 +158,34 @@ const ProductListing = () => {
   };
 
   const handleTotalCategory = () => {
+    let productTitle = '';
+    let productImage = '';
+  
+    // Check if selectedProduct is an array and pick the first item
+    if (Array.isArray(selectedProduct) && selectedProduct.length > 0) {
+      productTitle = selectedProduct[0].product_title || selectedProduct[0].Product_Name;
+      productImage = selectedProduct[0].product_photos ? selectedProduct[0].product_photos[0] : selectedProduct[0].Product_Image;
+    } else if (selectedProduct) {
+      productTitle = selectedProduct.product_title || selectedProduct.Product_Name;
+      productImage = selectedProduct.product_photos ? selectedProduct.product_photos[0] : selectedProduct.Product_Image;
+    }
+  
+    // Navigate to the next route
     navigate('/total-category', {
       state: {
         productIDs: appwriteProductIDs,
-        productTitle: selectedProduct.Product_Name,
-        productImage: selectedProduct.Product_Image
-      }
+        productTitle: productTitle,
+        productImage: productImage,
+      },
     });
   };
+  
 
-  const showNextButton = () => {
-    if (nextButtonRef.current) {
-      nextButtonRef.current.style.display = 'flex';
-    }
-  };
+  // const showNextButton = () => {
+  //   if (nextButtonRef.current) {
+  //     nextButtonRef.current.style.display = 'flex';
+  //   }
+  // };
 
   useEffect(() => {
     handleCheck();
@@ -179,32 +207,10 @@ const ProductListing = () => {
         minHeight: '100vh'
       }}
     >
-      <Typography variant="h4" gutterBottom sx={{ color: '#333', fontWeight: 'bold', mt: 4, fontWeight: "600" }}>
+      <Typography variant="h4" gutterBottom sx={{ color: '#333', fontWeight: 'bold', mt: 4,}}>
         Add Similar Product
       </Typography>
-      <Box
-        sx={{
-          display: 'flex',
-          width: '100%',
-          maxWidth: 600
-        }}
-      >
-        <TextField
-          type="text"
-          value={barcodeName}
-          readOnly
-          placeholder="Enter query"
-          variant="outlined"
-          sx={{ mr: 1, minWidth: 300, backgroundColor: '#fff', borderRadius: 2 }}
-        />
-        <Button
-          onClick={handleSearch}
-          variant="contained"
-          sx={{ padding: '10px', fontSize: '16px', cursor: 'pointer', backgroundColor: '#007bff', '&:hover': { backgroundColor: '#0056b3' } }}
-        >
-          Search
-        </Button>
-      </Box>
+      
 
       {exist ? (
         <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
@@ -251,15 +257,24 @@ const ProductListing = () => {
                 <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
                   <Button
                     variant="contained"
-                    onClick={() => handleAddToCart(product)}
+                    onClick={() => handleAddToCart(product,'Appwrite-ID')}
                     sx={{ backgroundColor: '#28a745', '&:hover': { backgroundColor: '#218838' } }}
                   >
                     Confirm
                   </Button>
                 </CardActions>
               </Card>
+              
             </Grid>
+            
           ))}
+          <Button
+          onClick={handleSearch}
+          variant="contained"
+          sx={{ padding: '10px', fontSize: '16px', cursor: 'pointer', backgroundColor: '#007bff', '&:hover': { backgroundColor: '#0056b3' } }}
+        >
+          nahi milrha toh api krle na
+        </Button>
         </Grid>
       ) : (
         <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
@@ -294,10 +309,10 @@ const ProductListing = () => {
                 <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
                   <Button
                     variant="contained"
-                    onClick={() => handleAddToCart(product)}
+                    onClick={() => handleAddToCart(product,'API-ID')}
                     sx={{ backgroundColor: '#28a745', '&:hover': { backgroundColor: '#218838' } }}
                   >
-                    Confirm
+                    Confirm1
                   </Button>
                 </CardActions>
               </Card>
@@ -306,7 +321,7 @@ const ProductListing = () => {
         </Grid>
       )}
 
-      {appwriteProductIDs.length > 0 && (
+      { isnext===true && (
         <Box
           sx={{
             mt: 2,
