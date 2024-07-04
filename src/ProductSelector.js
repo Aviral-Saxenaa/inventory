@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IoIosAddCircle } from 'react-icons/io';
 import { FaArrowCircleRight } from "react-icons/fa";
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const Container = styled.div`
   background-color: #c3edd5;
   display: flex;
   align-items: center;
-  padding: 1rem 1rem;
-  overflow-x: auto; // Enable horizontal scrolling
-  overflow-y: hidden; // Prevent vertical scrollbar
-  white-space: nowrap; // Prevent wrapping of children
+  padding: .1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
   position: relative;
 
   @media (max-width: 1200px) {
@@ -33,17 +33,13 @@ const Container = styled.div`
     padding: 1.7rem 0.5rem;
   }
 
-  // Hide scrollbar but keep functionality
   &::-webkit-scrollbar {
-    height: 0;
+    display: none; /* Hide scrollbar */
   }
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
 `;
 
 const ProductList = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
   margin-left: 1rem;
 `;
@@ -54,7 +50,18 @@ const ProductContainer = styled.div`
   align-items: center;
   margin-right: 1rem;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
+  padding: 0.2rem;
+
+  ${(props) =>
+    props.isSelected &&
+    css`
+      // border: 2px solid grey;
+      background-color: #F5F5F5;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 0.2rem;
+    `}
 
   &:hover {
     transform: scale(1.05);
@@ -63,7 +70,7 @@ const ProductContainer = styled.div`
 
 const ProductImage = styled.img`
   max-width: 200px;
-  max-height: 100px;
+  max-height: 80px;
   margin-bottom: 0.5rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -127,7 +134,6 @@ const AddIcon = styled(IoIosAddCircle)`
   cursor: pointer;
   margin-left: 1rem;
   transition: color 0.2s;
-  flex-shrink: 0; // Prevent the icon from shrinking
 
   @media (max-width: 1200px) {
     font-size: 3.5rem;
@@ -156,7 +162,7 @@ const AddIcon = styled(IoIosAddCircle)`
 
 const EnterNewProductWrapper = styled.div`
   display: flex;
-  flex-direction: column; /* Change this line */
+  flex-direction: column;
   align-items: center;
   font-size: 1rem;
   font-weight: bold;
@@ -176,28 +182,33 @@ const EnterNewProductWrapper = styled.div`
   }
 `;
 
-
 const ProductSelector = ({ productImages, productNames, setSelectedProductID, setSelectedVariant, handleButtonClick }) => {
+  const [selectedProductId, setSelectedProductId] = useState(null);
+
+  const handleProductClick = (id) => {
+    setSelectedProductId(id);
+    setSelectedProductID(id);
+    setSelectedVariant(`${id}.1`);
+  };
+
   return (
     <Container>
       <EnterNewProductWrapper>
-        <FaArrowCircleRight style={{fontSize:"32px",color:"#FE7A00"}} />
-        <p style={{ marginLeft: '0.5rem',color:"black" }}>New Product</p>
+        <FaArrowCircleRight style={{ fontSize: "32px", color: "#FE7A00" }} />
+        <p style={{ marginLeft: '0.5rem', color: "black" }}>New Product</p>
       </EnterNewProductWrapper>
       <ProductList>
         {Object.keys(productImages).map((id) => (
           <ProductContainer
             key={id}
-            onClick={() => {
-              setSelectedProductID(id);
-              setSelectedVariant(`${id}.1`);
-            }}
+            onClick={() => handleProductClick(id)}
+            isSelected={selectedProductId === id}
           >
             <ProductImage
               src={productImages[id].image}
               alt={`Product ${id}`}
             />
-            <ProductName>{productNames[id]}</ProductName> {/* Display product name below image */}
+            <ProductName>{productNames[id]}</ProductName>
           </ProductContainer>
         ))}
       </ProductList>

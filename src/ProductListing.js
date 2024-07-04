@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Button, Grid, Card, CardMedia, CardContent, Typography, CardActions } from '@mui/material';
+import { Box, Button, Grid, Card, CardMedia, CardContent, Typography, CardActions, CircularProgress } from '@mui/material';
 import { Client, Databases, Query } from 'appwrite';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { GrLinkNext } from "react-icons/gr";
 import { useMediaQuery, useTheme } from '@mui/material';
+import { FaArrowCircleRight } from "react-icons/fa";
 
 const ProductListing = () => {
   const [products, setProducts] = useState([]);
@@ -11,6 +12,8 @@ const ProductListing = () => {
   const [exist, setExist] = useState(false);
   const [appwriteProductDetails, setAppwriteProductDetails] = useState([]);
   const [appwriteProductIDs, setAppwriteProductIDs] = useState([]);
+  const [isProductsFetchedFromAppwrite, setIsProductsFetchedFromAppwrite] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // New loading state
   const navigate = useNavigate();
   const nextButtonRef = useRef(null);
   const [isNext, setIsNext] = useState(false);
@@ -26,7 +29,7 @@ const ProductListing = () => {
   const databases = new Databases(client);
 
   const handleCheck = async () => {
-    console.log('Checking for barcode:', barcodeName);
+    setIsLoading(true); // Start loading
 
     try {
       const response = await databases.listDocuments(
@@ -43,6 +46,7 @@ const ProductListing = () => {
 
       if (response.documents.length > 0) {
         setExist(true);
+        setIsProductsFetchedFromAppwrite(true);
 
         // Process all matching documents
         const selectedProducts = response.documents.map((productData) => ({
@@ -62,6 +66,8 @@ const ProductListing = () => {
     } catch (error) {
       console.error('Error querying Appwrite:', error);
       handleSearch();
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -100,7 +106,9 @@ const ProductListing = () => {
   };
 
   const handleSearch = async () => {
+    setIsLoading(true); // Start loading
     setExist(false);
+    setIsProductsFetchedFromAppwrite(false);
     try {
       const response = await fetch(`https://realtime-product-search.p.sulu.sh/v1/search?q=${barcodeName}&country=in&min_price=1`, {
         method: 'GET',
@@ -114,6 +122,8 @@ const ProductListing = () => {
       setProducts(data.data.slice(0, 6)); // Display only the top 6 results
     } catch (error) {
       console.error('Error fetching data', error);
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -130,7 +140,9 @@ const ProductListing = () => {
       console.log('APPWRITE ID BUTTON');
       queryAppwriteProducts(product.Product_Name);
       console.log('Added to cart:', product.Product_Name);
+      
     }
+    setIsProductsFetchedFromAppwrite(false);
   };
 
   const queryAppwriteProducts = async (productTitle) => {
@@ -164,7 +176,7 @@ const ProductListing = () => {
       productImage = selectedProduct.product_photos ? selectedProduct.product_photos[0] : selectedProduct.Product_Image;
     }
 
-    alert(productTitle);
+    // alert(productTitle);
     console.log('PRODUCT TITLE:', productTitle);
     console.log('PRODUCT IMAGE:', productImage);
 
@@ -201,7 +213,12 @@ const ProductListing = () => {
         Add Similar Product
       </Typography>
 
-      {exist ? (
+      {isLoading ? ( // Render loading spinner while loading
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <CircularProgress color="error" size={90} thickness={4} /> {/* Update CircularProgress styling */}
+      </Box>
+      
+      ) : exist ? (
         <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
           {selectedProduct.map((product) => (
             <Grid
@@ -226,7 +243,8 @@ const ProductListing = () => {
                   <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
                     {product.Product_Name}
                   </Typography>
-                  {appwriteProductDetails.find(details => details.ProductID === product.ProductID) && (
+                  {/* Conditionally render details only if fetched from Appwrite */}
+                  {isProductsFetchedFromAppwrite && (
                     <>
                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
                         <span style={{ fontWeight: 'bold', color: '#000' }}>SP: </span>
@@ -260,19 +278,14 @@ const ProductListing = () => {
                         backgroundColor: '#388e3c',
                       },
                     }}
-                    onClick={() => handleAddToCart(product, 'APPWRITE-ID')}
+                    onClick={() => handleAddToCart(product, product.ProductID)}
                   >
                     Confirm
                   </Button>
                 </CardActions>
               </Card>
-           
             </Grid>
-          
           ))}
-        
-        
-        <button onClick={handleSearch}>hello</button>
         </Grid>
       ) : (
         <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
@@ -299,7 +312,6 @@ const ProductListing = () => {
                   <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
                     {product.product_title}
                   </Typography>
-                  
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'center' }}>
                   <Button
@@ -322,15 +334,29 @@ const ProductListing = () => {
           ))}
         </Grid>
       )}
+
       {isNext && (
         <Button
           ref={nextButtonRef}
           variant="contained"
-          color="primary"
+          size="large"
+          sx={{ mt: 4, backgroundColor: '#C62828', color: '#fff', borderRadius: 20, px: 4, '&:hover': { backgroundColor: '#e64a19' } }}
           onClick={handleTotalCategory}
-          sx={{ mt: 2 }}
         >
-          Next <GrLinkNext style={{ marginLeft: '8px' }} />
+          Next
+          <GrLinkNext style={{ marginRight: '10px',marginLeft:"1rem" }} />
+        </Button>
+      )}
+
+      {isProductsFetchedFromAppwrite && (
+        <Button
+          variant="contained"
+          size="large"
+          sx={{ mt: 4, backgroundColor: '#C62828', color: '#fff', borderRadius: 20, px: 4, '&:hover': { backgroundColor: '#ff5722' } }}
+          onClick={handleSearch}
+        >
+          Didn't Find the Product ?
+          <FaArrowCircleRight style={{fontSize:"28px",marginLeft:"1rem"}} />
         </Button>
       )}
     </Box>

@@ -6,11 +6,13 @@ import VariantList from './VariantList';
 import VariantDetails from './VariantDetails';
 import NewProduct from './NewProduct';
 import NewProductType from './NewProductType'; // Import NewProductType component
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress from Material-UI
 
 const TotalCategory = () => {
     const location = useLocation();
     const { productIDs, productTitle, productImage } = location.state || {};
 
+    const [loading, setLoading] = useState(true); // State to track loading state
     const [productImages, setProductImages] = useState({});
     const [variantImages, setVariantImages] = useState({});
     const [variantNames, setVariantNames] = useState({});
@@ -59,6 +61,7 @@ const TotalCategory = () => {
             setProductImages(productData);
             setSelectedProductID(uniqueProductIDs[0]);
             setSelectedVariant(`${uniqueProductIDs[0]}.1`);
+            setLoading(false); // Set loading state to false once data is fetched
         };
 
         if (productIDs) {
@@ -177,11 +180,11 @@ const TotalCategory = () => {
         }
     };
 
-    if (!productIDs) {
+    if (!productIDs || loading) {
         return (
             <div style={styles.loadingContainer}>
                 <h2 style={styles.heading}>Total Category</h2>
-                <p style={styles.loadingText}>Loading...</p>
+                <CircularProgress style={{ color: '#2196f3' }} /> {/* Display a CircularProgress */}
             </div>
         );
     }

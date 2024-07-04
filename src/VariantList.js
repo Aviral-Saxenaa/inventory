@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IoIosAddCircle } from 'react-icons/io';  // Import the plus icon from react-icons
+import { IoIosAddCircle } from 'react-icons/io';
 import { FaArrowCircleDown } from "react-icons/fa";
-
 
 const ListContainer = styled.div`
   width: 40%;
@@ -12,7 +11,7 @@ const ListContainer = styled.div`
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
   height: 100%;
-  max-height: 80vh; // Set max height for better responsiveness
+  max-height: 80vh;
 
   @media (max-width: 1200px) {
     width: 50%;
@@ -32,8 +31,8 @@ const ListContainer = styled.div`
 `;
 
 const VariantButton = styled.button`
-  background: #fff;
-  color: #000;
+  background: ${props => (props.isSelected ? '#f0f0f0' : '#fff')};
+  color: ${props => (props.isSelected ? '#333' : '#000')};
   border: none;
   padding: .5rem;
   border-radius: 8px;
@@ -81,7 +80,7 @@ const VariantWeight = styled.span`
 
 const AddButtonContainer = styled.div`
   display: flex;
-  justify-content: center;  /* Center the button horizontally */
+  justify-content: center;
   margin-top: 1rem;
 `;
 
@@ -91,7 +90,7 @@ const AddIcon = styled(IoIosAddCircle)`
   cursor: pointer;
   margin-left: 1rem;
   transition: color 0.2s;
-  flex-shrink: 0; // Prevent the icon from shrinking
+  flex-shrink: 0;
 
   @media (max-width: 1200px) {
     font-size: 3.5rem;
@@ -118,71 +117,48 @@ const AddIcon = styled(IoIosAddCircle)`
   }
 `;
 
-const ChangeButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 0.5rem;
-
-  @media (max-width: 721px) {
-    flex-direction: column;
-    align-items: center;
-  }
-`;
-
-const ChangeButton = styled.button`
-  background: #007bff;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  margin-top: 0.5rem;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: #0056b3;
-  }
-
-  @media (max-width: 721px) {
-    width: 100%;
-  }
-`;
-
-const EnterNewProductWrapper = styled.div`
+const EnterNewVariantWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
   cursor: pointer;
+  background-color: #405D72;
 `;
 
 const VariantList = ({ variantImages, variantNames, variantWeights, handleVariantClick, handleButtonClick }) => {
-    const handleClickVariant = (variant) => {
-        console.log(`Variant clicked: ${variant}`);
-        handleVariantClick(variant);
-    };
+  const [selectedVariant, setSelectedVariant] = useState(null);
 
-    return (
-        <ListContainer>
-          <EnterNewProductWrapper>
-            <FaArrowCircleDown style={{fontSize:"32px",color:"#FE7A00"}} />
-            <p style={{ marginLeft: '0.5rem',color:"black",fontWeight:"bold" }}>New Variant</p>
-          </EnterNewProductWrapper>
-            {Object.keys(variantImages).map((variant) => (
-                <VariantButton key={variant} onClick={() => handleClickVariant(variant)}>
-                    <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
-                    <VariantInfoContainer>
-                        <VariantTitle>{variantNames[variant]}</VariantTitle>
-                        <VariantWeight>Weight: {variantWeights[variant]}</VariantWeight>
-                    </VariantInfoContainer>
-                </VariantButton>
-            ))}
-            <AddButtonContainer>
-                <AddIcon onClick={handleButtonClick} />
-            </AddButtonContainer>
-        </ListContainer>
-    );
+  const handleClickVariant = (variant) => {
+    console.log(`Variant clicked: ${variant}`);
+    setSelectedVariant(variant);
+    handleVariantClick(variant);
+  };
+
+  return (
+    <ListContainer>
+      <EnterNewVariantWrapper>
+        <FaArrowCircleDown style={{ fontSize: "32px", color: "#FE7A00" }} />
+        <p style={{ marginLeft: '0.5rem', color: "white", fontWeight: "bold" }}>New Variant</p>
+      </EnterNewVariantWrapper>
+      {Object.keys(variantImages).map((variant) => (
+        <VariantButton
+          key={variant}
+          isSelected={selectedVariant === variant}
+          onClick={() => handleClickVariant(variant)}
+        >
+          <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
+          <VariantInfoContainer>
+            <VariantTitle>{variantNames[variant]}</VariantTitle>
+            <VariantWeight>Weight: {variantWeights[variant]}</VariantWeight>
+          </VariantInfoContainer>
+        </VariantButton>
+      ))}
+      <AddButtonContainer>
+        <AddIcon onClick={handleButtonClick} />
+      </AddButtonContainer>
+    </ListContainer>
+  );
 };
 
 export default VariantList;
