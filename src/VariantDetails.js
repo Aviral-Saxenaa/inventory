@@ -8,6 +8,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  // height:auto;
 
   @media (max-width: 700px) {
     width: 91%;
@@ -59,8 +60,8 @@ const InnerContainer = styled.div`
 `;
 
 const Image = styled.img`
-  max-width: 200px;
-  max-height: 200px;
+  max-width: 100px;
+  max-height: 100px;
   border-radius: 8px;
   border: 1px solid #ddd;
   transition: transform 0.3s ease;
@@ -120,6 +121,37 @@ const Input = styled.input`
   @media (max-width: 400px) {
     width: 100%;
     margin-top: 0.3rem;
+  }
+`;
+
+const UnitButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  width: 100%;
+`;
+
+const UnitButton = styled.button`
+  background-color: #2A518B;
+  color: #fff;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  flex: 1;
+  margin: 0 0.2rem;
+
+  &:hover {
+    background-color: #1E3E6B;
+  }
+
+  &.active {
+    background-color: #1E3E6B;
+  }
+
+  @media (max-width: 400px) {
+    margin: 0.1rem 0.1rem;
   }
 `;
 
@@ -183,12 +215,11 @@ const PopupContainer = styled.div`
   padding: 2rem;
   border-radius: 8px;
   z-index: 999;
-  opacity:.9
+  opacity:.9;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-
 `;
 
 const NoInfoText = styled.p`
@@ -204,35 +235,15 @@ const VariantName = styled.p`
   margin-bottom: 1rem;
 `;
 
-const ChangeButton = styled.button`
-  background-color: #2A518B;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  margin-left: 0.5rem;
-
-  &:hover {
-    background-color: #1E3E6B;
-  }
-
-  @media (max-width: 400px) {
-    margin-left: 0;
-    margin-top: 0.3rem;
-  }
-`;
-
-const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantName, variantWeights ,}) => {
+const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantName, variantWeights }) => {
   const [spValue, setSPValue] = useState('');
   const [mrpValue, setMRPValue] = useState('');
   const [weightValue, setWeightValue] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isEditable, setIsEditable] = useState(true);
-  const [showVariantDetails, setShowVariantDetails] = useState(false); // Add this state
+  const [showVariantDetails, setShowVariantDetails] = useState(false);
+  const [selectedUnit, setSelectedUnit] = useState('GM');
 
- 
   useEffect(() => {
     if (variantInfo) {
       console.log(' length badi hai');
@@ -245,69 +256,83 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
       setMRPValue(`₹ ${variantInfo.MRP}` || '');
       setWeightValue(variantInfo.Weight || '');
       setShowVariantDetails(true); 
-    }else{
+    } else {
       console.log(' length choti hai');
-      setShowVariantDetails(false); // Hi
+      setShowVariantDetails(false);
     }
   }, [variantInfo]);
 
   const handleSPChange = (event) => {
-    setSPValue(event.target.value);
+    const value = event.target.value;
+    if (parseInt(value) <= parseInt(mrpValue.replace('₹ ', ''))) {
+      setSPValue(value);
+    } else {
+      // Display alert when SP exceeds MRP
+      alert('SP should not be greater than MRP');
+      // Optionally, you can keep the current value of SP or reset it to MRP:
+      // setSPValue(mrpValue);
+    }
   };
+  
 
   const handleMRPChange = (event) => {
     setMRPValue(event.target.value);
   };
 
   const handleWeightChange = (event) => {
-    setWeightValue(event.target.value);
+    const value = event.target.value.replace(/[^0-9]/g, ''); // Only allow numbers
+    setWeightValue(value);
+  
+    // Check if the backspace key is pressed
+    if (event.nativeEvent.inputType === 'deleteContentBackward') {
+      setWeightValue(''); // Clear the weight value
+    }
+  };
+  
+
+  const handleUnitSelect = (unit) => {
+    setSelectedUnit(unit);
   };
 
   const handleWeightUpdate = () => {
     const uniqueId = parseInt(selectedVariant);
     
-    // Check if weight is already present in variantWeights
     const weightAlreadyPresent = Object.entries(variantWeights)
       .filter(([key]) => key.startsWith(`${uniqueId}.`))
-      .some(([_, value]) => value === weightValue);
+      .some(([_, value]) => value === `${weightValue}${selectedUnit}`);
     
       console.log(weightAlreadyPresent);
   
     if (!weightAlreadyPresent) {
-      // Weight is not present, allow editing
       setShowPopup(false);
       setIsEditable(true);
       console.log(`You can edit weight bcoz weight is not present to ${weightValue}`);
     } else {
 
-      // Check if the selected variant matches the variantInfo.Weight
       const canEditMRPSP = variantWeights[selectedVariant] === variantInfo.Weight;
       console.log(`1 :${variantInfo.Weight}`);
       console.log(`2 : ${variantWeights[selectedVariant]}`);
-      // Weight is already present
       console.log('ye kya hai'+canEditMRPSP);
       if (canEditMRPSP) {
-        // Can edit MRP and SP
         setShowPopup(true);
-        setWeightValue(variantWeights[selectedVariant])
+        setWeightValue(variantWeights[selectedVariant]);
         setIsEditable(true);
-  
         console.log(`You can edit weight to ${weightValue}`);
-        
-       
       } 
-    
     }
   };
   
-  
-
   const closePopup = () => {
     setShowPopup(false);
     console.log(variantInfo.SP);
-    setShowVariantDetails(false); 
-
+    setShowVariantDetails(false);
   };
+
+  const handleAddToStore = () => {
+    console.log(`Weight: ${weightValue}${selectedUnit}`);
+    // Add any additional logic for adding to the store here
+  };
+
 
   return (
     <Container>
@@ -347,13 +372,23 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                     type="text"
                     value={weightValue}
                     onChange={handleWeightChange}
-                    onBlur={handleWeightUpdate} // Call handleWeightBlur on blur
+                    onBlur={handleWeightUpdate}
                     style={{ fontSize: "1.2rem", color: "red" }}
                   />
-                  {/* <ChangeButton onClick={handleWeightUpdate}>Change</ChangeButton> */}
                 </DetailRow>
+                <UnitButtonContainer>
+                  {['GM', 'KG', 'L', 'ML', 'PCS'].map(unit => (
+                    <UnitButton
+                      key={unit}
+                      className={selectedUnit === unit ? 'active' : ''}
+                      onClick={() => handleUnitSelect(unit)}
+                    >
+                      {unit}
+                    </UnitButton>
+                  ))}
+                </UnitButtonContainer>
               </DetailsContainer>
-              <Button>Add to Store</Button>
+              <Button onClick={handleAddToStore}>Add to Store</Button>
             </InnerContainer>
             <BackgroundCircle />
             {showPopup && (

@@ -59,12 +59,18 @@ const BarcodeScanner = () => {
       <div id="reader"></div>
       <OrText>OR</OrText>
       <InputContainer>
-        <Input
-          type="text"
-          placeholder="Enter barcode or name ..."
-          value={barcodeInput}
-          onChange={handleInputChange}
-        />
+      <Input
+  type="text"
+  placeholder="Enter barcode or name ..."
+  value={barcodeInput}
+  onChange={handleInputChange}
+  onKeyDown={(event) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  }}
+/>
+
         <Button onClick={handleSearch}>Search</Button>
       </InputContainer>
       {isModalOpen && (

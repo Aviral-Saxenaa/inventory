@@ -4,14 +4,15 @@ import { FaArrowCircleRight } from "react-icons/fa";
 import styled, { css } from 'styled-components';
 
 const Container = styled.div`
-  background-color: #c3edd5;
+  background-color: whitesmoke;
   display: flex;
   align-items: center;
-  padding: .1rem;
+  padding: 1rem;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
   position: relative;
+  height: 100px; /* Ensure it takes the full height of the parent */
 
   @media (max-width: 1200px) {
     padding: 1.6rem 0.5rem;
@@ -53,14 +54,15 @@ const ProductContainer = styled.div`
   transition: transform 0.2s, box-shadow 0.2s;
   border-radius: 8px;
   padding: 0.2rem;
+  width:10rem;
 
   ${(props) =>
     props.isSelected &&
     css`
-      // border: 2px solid grey;
-      background-color: #F5F5F5;
+      background-color: #f5f5f5;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       padding: 0.2rem;
+      border: .5px solid grey;
     `}
 
   &:hover {
@@ -106,6 +108,10 @@ const ProductName = styled.p`
   color: #333;
   text-align: center;
   margin-top: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%; /* Ensure the text doesn't overflow out of the container */
 
   @media (max-width: 1200px) {
     font-size: 0.85rem;
@@ -127,6 +133,7 @@ const ProductName = styled.p`
     font-size: 0.65rem;
   }
 `;
+
 
 const AddIcon = styled(IoIosAddCircle)`
   color: #4caf50;
@@ -164,21 +171,50 @@ const EnterNewProductWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   font-size: 1rem;
   font-weight: bold;
-  margin-left: 1rem;
-  margin-right: 2rem;
+  width: 130px;
+  height: 100%;
+  background-color: #405D72; /* New background color */
+  margin-right: 1rem;
+  
+  padding: 1rem;
+  // color:#fff
+
+  @media (max-width: 1200px) {
+    font-size: 0.85rem;
+    padding: 1rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-right:1.2rem;
+    margin-left:0rem;
+  }
 
   @media (max-width: 900px) {
     font-size: 0.85rem;
+    padding: 1rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-right:1.2rem;
+    margin-left:0rem;
   }
 
   @media (max-width: 700px) {
     font-size: 0.75rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-right:1.2rem;
+    margin-left:0rem;
   }
 
   @media (max-width: 490px) {
     font-size: 0.7rem;
+    padding-top: 1.7rem;
+    padding-bottom: 1.6rem;
+    padding-right:1.2rem;
+    margin-left:0rem;
+    
   }
 `;
 
@@ -194,8 +230,8 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
   return (
     <Container>
       <EnterNewProductWrapper>
-        <FaArrowCircleRight style={{ fontSize: "32px", color: "#FE7A00" }} />
-        <p style={{ marginLeft: '0.5rem', color: "black" }}>New Product</p>
+        <FaArrowCircleRight style={{ fontSize: "32px", color: "#F5F5F5" }} />
+        <p style={{ marginLeft: '0.5rem', color: "white" }}>New Product</p>
       </EnterNewProductWrapper>
       <ProductList>
         {Object.keys(productImages).map((id) => (

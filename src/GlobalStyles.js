@@ -11,9 +11,6 @@ const GlobalStyles = createGlobalStyle`
     font-family: 'DM Sans', sans-serif;
     /* Other global styles */
   }
-    h1{
-    font-family: 'DM Sans', sans-serif;
-    }
 `;
 
 export default GlobalStyles;

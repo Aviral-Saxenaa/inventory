@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Button, Grid, Card, CardMedia, CardContent, Typography, CardActions, CircularProgress } from '@mui/material';
+import { Box, Button, Grid, Card, CardMedia, CardContent, Typography, CardActions, CircularProgress ,TextField, InputAdornment} from '@mui/material';
 import { Client, Databases, Query } from 'appwrite';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { GrLinkNext } from "react-icons/gr";
@@ -143,6 +143,9 @@ const ProductListing = () => {
       
     }
     setIsProductsFetchedFromAppwrite(false);
+    if (nextButtonRef.current) {
+      nextButtonRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const queryAppwriteProducts = async (productTitle) => {
@@ -231,59 +234,65 @@ const ProductListing = () => {
                 maxWidth: isSmallScreen ? '100%' : isMediumScreen ? '50%' : 'auto'
               }}
             >
-              <Card sx={{ maxWidth: 345, backgroundColor: '#fff', borderRadius: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={product.Product_Image}
-                  alt={product.Product_Name}
-                  sx={{ objectFit: 'contain' }}
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
-                    {product.Product_Name}
-                  </Typography>
-                  {/* Conditionally render details only if fetched from Appwrite */}
-                  {isProductsFetchedFromAppwrite && (
-                    <>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                        <span style={{ fontWeight: 'bold', color: '#000' }}>SP: </span>
-                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold',fontSize:"1.2rem" }}>
-                          ₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_SP}
-                        </span>
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                        <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
-                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold',fontSize:"1.2rem" }}>
-                          ₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_MRP}
-                        </span>
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                        <span style={{ fontWeight: 'bold', color: '#000' }}>Weight: </span>
-                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold',fontSize:"1.2rem" }}>
-                          {appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_Weight}
-                        </span>
-                      </Typography>
-                    </>
-                  )}
-                </CardContent>
-                <CardActions sx={{ justifyContent: 'center' }}>
-                  <Button
-                    size="medium"
-                    variant="contained"
-                    sx={{
-                      backgroundColor: '#4caf50',
-                      color: '#fff',
-                      '&:hover': {
-                        backgroundColor: '#388e3c',
-                      },
-                    }}
-                    onClick={() => handleAddToCart(product, product.ProductID)}
-                  >
-                    Confirm
-                  </Button>
-                </CardActions>
-              </Card>
+              <Card sx={{ display: 'flex', maxWidth: 345, backgroundColor: '#fff', borderRadius: 2.4, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', flexDirection: 'row' }}>
+  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: 100 }}>
+    <CardMedia
+      component="img"
+      height="100"
+      image={product.Product_Image}
+      alt={product.Product_Name}
+      sx={{ objectFit: 'contain' }}
+    />
+  </Box>
+  <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+    <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold', textAlign: 'left' }}>
+      {product.Product_Name}
+    </Typography>
+    {/* Conditionally render details only if fetched from Appwrite */}
+    {isProductsFetchedFromAppwrite && (
+      <>
+        <Box sx={{ textAlign: 'left', marginBottom: 'auto' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <TextField
+              value={appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_Weight}
+              variant="outlined"
+              size="small"
+              sx={{ width: 80 }}
+              
+            />
+          </Box>
+          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem',marginTop:'1rem' }}>
+          <span style={{ color: 'black', fontSize: '1rem', fontSize: "1.2rem",marginRight:'.2rem' }}>
+              ₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_SP}
+            </span>
+            <span style={{  color: 'grey',textDecoration: 'line-through' }}>₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_MRP} </span>
+            
+          </Typography>
+          
+          
+        </Box>
+        <Box sx={{ textAlign: 'center',marginTop:'2rem' }}>
+          <Button
+            size="medium"
+            variant="contained"
+            sx={{
+              backgroundColor: '#4caf50',
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: '#388e3c',
+              },
+            }}
+            onClick={() => handleAddToCart(product, product.ProductID)}
+          >
+            Confirm
+          </Button>
+        </Box>
+      </>
+    )}
+  </CardContent>
+</Card>
+
+
             </Grid>
           ))}
         </Grid>
