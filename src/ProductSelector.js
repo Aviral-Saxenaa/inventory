@@ -1,5 +1,6 @@
 import React from 'react';
 import { IoIosAddCircle } from 'react-icons/io';
+import { FaArrowCircleRight } from "react-icons/fa";
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -10,6 +11,7 @@ const Container = styled.div`
   overflow-x: auto; // Enable horizontal scrolling
   overflow-y: hidden; // Prevent vertical scrollbar
   white-space: nowrap; // Prevent wrapping of children
+  position: relative;
 
   @media (max-width: 1200px) {
     padding: 1.6rem 0.5rem;
@@ -43,6 +45,7 @@ const ProductList = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-left: 1rem;
 `;
 
 const ProductContainer = styled.div`
@@ -52,7 +55,6 @@ const ProductContainer = styled.div`
   margin-right: 1rem;
   cursor: pointer;
   transition: transform 0.2s;
-  margin-left: 1rem;
 
   &:hover {
     transform: scale(1.05);
@@ -146,19 +148,47 @@ const AddIcon = styled(IoIosAddCircle)`
   @media (max-width: 400px) {
     font-size: 2.2rem;
   }
-    &:hover {
+
+  &:hover {
     color: darkgreen;
+  }
 `;
+
+const EnterNewProductWrapper = styled.div`
+  display: flex;
+  flex-direction: column; /* Change this line */
+  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: 1rem;
+  margin-right: 2rem;
+
+  @media (max-width: 900px) {
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 700px) {
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 490px) {
+    font-size: 0.7rem;
+  }
+`;
+
 
 const ProductSelector = ({ productImages, productNames, setSelectedProductID, setSelectedVariant, handleButtonClick }) => {
   return (
     <Container>
+      <EnterNewProductWrapper>
+        <FaArrowCircleRight style={{fontSize:"32px",color:"#FE7A00"}} />
+        <p style={{ marginLeft: '0.5rem',color:"black" }}>New Product</p>
+      </EnterNewProductWrapper>
       <ProductList>
         {Object.keys(productImages).map((id) => (
           <ProductContainer
             key={id}
             onClick={() => {
-              // console.log(sele);
               setSelectedProductID(id);
               setSelectedVariant(`${id}.1`);
             }}

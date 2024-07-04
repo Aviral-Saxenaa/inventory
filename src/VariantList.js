@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { IoIosAddCircle } from 'react-icons/io';  // Import the plus icon from react-icons
+import { FaArrowCircleDown } from "react-icons/fa";
+
 
 const ListContainer = styled.div`
   width: 40%;
@@ -10,6 +12,7 @@ const ListContainer = styled.div`
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
   height: 100%;
+  max-height: 80vh; // Set max height for better responsiveness
 
   @media (max-width: 1200px) {
     width: 50%;
@@ -146,6 +149,14 @@ const ChangeButton = styled.button`
   }
 `;
 
+const EnterNewProductWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  cursor: pointer;
+`;
+
 const VariantList = ({ variantImages, variantNames, variantWeights, handleVariantClick, handleButtonClick }) => {
     const handleClickVariant = (variant) => {
         console.log(`Variant clicked: ${variant}`);
@@ -154,6 +165,10 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
 
     return (
         <ListContainer>
+          <EnterNewProductWrapper>
+            <FaArrowCircleDown style={{fontSize:"32px",color:"#FE7A00"}} />
+            <p style={{ marginLeft: '0.5rem',color:"black",fontWeight:"bold" }}>New Variant</p>
+          </EnterNewProductWrapper>
             {Object.keys(variantImages).map((variant) => (
                 <VariantButton key={variant} onClick={() => handleClickVariant(variant)}>
                     <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
@@ -166,7 +181,6 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
             <AddButtonContainer>
                 <AddIcon onClick={handleButtonClick} />
             </AddButtonContainer>
-           
         </ListContainer>
     );
 };

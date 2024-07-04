@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, TextField, Button, Grid, Card, CardMedia, CardContent, Typography, CardActions } from '@mui/material';
+import { Box, Button, Grid, Card, CardMedia, CardContent, Typography, CardActions } from '@mui/material';
 import { Client, Databases, Query } from 'appwrite';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { GrLinkNext } from "react-icons/gr";
@@ -7,13 +7,13 @@ import { useMediaQuery, useTheme } from '@mui/material';
 
 const ProductListing = () => {
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState([]);
   const [exist, setExist] = useState(false);
   const [appwriteProductDetails, setAppwriteProductDetails] = useState([]);
   const [appwriteProductIDs, setAppwriteProductIDs] = useState([]);
   const navigate = useNavigate();
   const nextButtonRef = useRef(null);
-  const [isnext,setIsNext]=useState(false)
+  const [isNext, setIsNext] = useState(false);
 
   const { state } = useLocation();
   const { barcodeName } = state;
@@ -118,14 +118,10 @@ const ProductListing = () => {
   };
 
   const handleAddToCart = (product, id) => {
-    setSelectedProduct(product); // Set the selected product
+    setSelectedProduct([product]); // Set the selected product as an array
+
     setIsNext(true); // Show the next button
-    if (Array.isArray(selectedProduct)) {
-      setSelectedProduct([...selectedProduct]);
-    } else { 
-     
-      setSelectedProduct([product]);
-    }
+
     if (id === 'API-ID') {
       console.log('API ID BUTTON');
       queryAppwriteProducts(product.product_title);
@@ -158,19 +154,20 @@ const ProductListing = () => {
   };
 
   const handleTotalCategory = () => {
-    let productTitle = '';
-    let productImage = '';
-  
-    // Check if selectedProduct is an array and pick the first item
+    let productTitle, productImage;
+
     if (Array.isArray(selectedProduct) && selectedProduct.length > 0) {
       productTitle = selectedProduct[0].product_title || selectedProduct[0].Product_Name;
       productImage = selectedProduct[0].product_photos ? selectedProduct[0].product_photos[0] : selectedProduct[0].Product_Image;
-    } else if (selectedProduct) {
+    } else {
       productTitle = selectedProduct.product_title || selectedProduct.Product_Name;
       productImage = selectedProduct.product_photos ? selectedProduct.product_photos[0] : selectedProduct.Product_Image;
     }
-  
-    // Navigate to the next route
+
+    alert(productTitle);
+    console.log('PRODUCT TITLE:', productTitle);
+    console.log('PRODUCT IMAGE:', productImage);
+
     navigate('/total-category', {
       state: {
         productIDs: appwriteProductIDs,
@@ -179,13 +176,6 @@ const ProductListing = () => {
       },
     });
   };
-  
-
-  // const showNextButton = () => {
-  //   if (nextButtonRef.current) {
-  //     nextButtonRef.current.style.display = 'flex';
-  //   }
-  // };
 
   useEffect(() => {
     handleCheck();
@@ -207,14 +197,13 @@ const ProductListing = () => {
         minHeight: '100vh'
       }}
     >
-      <Typography variant="h4" gutterBottom sx={{ color: '#333', fontWeight: 'bold', mt: 4,}}>
+      <Typography variant="h4" gutterBottom sx={{ color: '#333', fontWeight: 'bold', mt: 4 }}>
         Add Similar Product
       </Typography>
-      
 
       {exist ? (
         <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
-          {selectedProduct.map((product, index) => (
+          {selectedProduct.map((product) => (
             <Grid
               item
               xs={12}
@@ -241,40 +230,49 @@ const ProductListing = () => {
                     <>
                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
                         <span style={{ fontWeight: 'bold', color: '#000' }}>SP: </span>
-                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.find(details => details.ProductID === product.ProductID).Shop_Items_SP}</span>
+                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold' }}>
+                          {appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_SP}
+                        </span>
                       </Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
                         <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
-                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.find(details => details.ProductID === product.ProductID).Shop_Items_MRP}</span>
+                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold' }}>
+                          {appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_MRP}
+                        </span>
                       </Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
                         <span style={{ fontWeight: 'bold', color: '#000' }}>Weight: </span>
-                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.find(details => details.ProductID === product.ProductID).Shop_Items_Weight}</span>
+                        <span style={{ color: 'green', fontSize: '1rem', fontWeight: 'bold' }}>
+                          {appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_Weight}
+                        </span>
                       </Typography>
                     </>
                   )}
                 </CardContent>
-                <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
+                <CardActions sx={{ justifyContent: 'center' }}>
                   <Button
+                    size="medium"
                     variant="contained"
-                    onClick={() => handleAddToCart(product,'Appwrite-ID')}
-                    sx={{ backgroundColor: '#28a745', '&:hover': { backgroundColor: '#218838' } }}
+                    sx={{
+                      backgroundColor: '#4caf50',
+                      color: '#fff',
+                      '&:hover': {
+                        backgroundColor: '#388e3c',
+                      },
+                    }}
+                    onClick={() => handleAddToCart(product, 'APPWRITE-ID')}
                   >
                     Confirm
                   </Button>
                 </CardActions>
               </Card>
-              
+           
             </Grid>
-            
+          
           ))}
-          <Button
-          onClick={handleSearch}
-          variant="contained"
-          sx={{ padding: '10px', fontSize: '16px', cursor: 'pointer', backgroundColor: '#007bff', '&:hover': { backgroundColor: '#0056b3' } }}
-        >
-          nahi milrha toh api krle na
-        </Button>
+        
+        
+        <button onClick={handleSearch}>hello</button>
         </Grid>
       ) : (
         <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
@@ -284,7 +282,7 @@ const ProductListing = () => {
               xs={12}
               sm={6}
               md={4}
-              key={product.product_id}
+              key={product.id}
               sx={{
                 maxWidth: isSmallScreen ? '100%' : isMediumScreen ? '50%' : 'auto'
               }}
@@ -301,18 +299,22 @@ const ProductListing = () => {
                   <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
                     {product.product_title}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                    <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
-                    <span style={{ color: 'green', fontSize: '1.4rem' }}>{product.offer.price}</span>
-                  </Typography>
+                  
                 </CardContent>
-                <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
+                <CardActions sx={{ justifyContent: 'center' }}>
                   <Button
+                    size="medium"
                     variant="contained"
-                    onClick={() => handleAddToCart(product,'API-ID')}
-                    sx={{ backgroundColor: '#28a745', '&:hover': { backgroundColor: '#218838' } }}
+                    sx={{
+                      backgroundColor: '#4caf50',
+                      color: '#fff',
+                      '&:hover': {
+                        backgroundColor: '#388e3c',
+                      },
+                    }}
+                    onClick={() => handleAddToCart(product, 'API-ID')}
                   >
-                    Confirm1
+                    Confirm
                   </Button>
                 </CardActions>
               </Card>
@@ -320,33 +322,16 @@ const ProductListing = () => {
           ))}
         </Grid>
       )}
-
-      { isnext===true && (
-        <Box
-          sx={{
-            mt: 2,
-            display: 'flex',
-            justifyContent: 'center',
-            width: '100%',
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: '#fff',
-            boxShadow: '0 -2px 4px rgba(0, 0, 0, 0.1)',
-            p: 2
-          }}
+      {isNext && (
+        <Button
           ref={nextButtonRef}
+          variant="contained"
+          color="primary"
+          onClick={handleTotalCategory}
+          sx={{ mt: 2 }}
         >
-          <Button
-            variant="contained"
-            onClick={handleTotalCategory}
-            sx={{ backgroundColor: '#007bff', '&:hover': { backgroundColor: '#0056b3' }, padding: "10px 80px" }}
-          >
-            <Typography style={{ fontSize: "18px", marginRight: 20 }}>Next</Typography>
-            <GrLinkNext style={{ fontSize: '23px', color: "#00356A" }} />
-          </Button>
-        </Box>
+          Next <GrLinkNext style={{ marginLeft: '8px' }} />
+        </Button>
       )}
     </Box>
   );
