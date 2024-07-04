@@ -226,26 +226,26 @@ const ProductListing = () => {
                 sx={{ objectFit: 'contain' }}
               />
              <CardContent>
-                  <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
-                    {selectedProduct.Product_Name}
+              <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
+                {selectedProduct.Product_Name}
+              </Typography>
+              {appwriteProductDetails && (
+                <>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                    <span style={{ fontWeight: 'bold', color: '#000' }}>SP: </span>
+                    <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_SP}</span>
                   </Typography>
-                  {appwriteProductDetails && (
-                    <>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                        <span style={{ fontWeight: 'bold', color: '#000' }}>SP: </span>
-                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_SP}</span>
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                        <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
-                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_MRP}</span>
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                        <span style={{ fontWeight: 'bold', color: '#000' }}>Weight: </span>
-                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_Weight}</span>
-                      </Typography>
-                    </>
-                  )}
-                </CardContent>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                    <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
+                    <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_MRP}</span>
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                    <span style={{ fontWeight: 'bold', color: '#000' }}>Weight: </span>
+                    <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_Weight}</span>
+                  </Typography>
+                </>
+              )}
+            </CardContent>
 
 
               <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
@@ -260,7 +260,7 @@ const ProductListing = () => {
             </Card>
           </Grid>
         </Grid>
-      ) : (
+      ) :  (
         <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
           {products.map((product) => (
             <Grid

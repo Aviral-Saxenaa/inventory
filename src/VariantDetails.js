@@ -111,6 +111,7 @@ const Input = styled.input`
   text-align: right;
   width: 70%;
   box-sizing: border-box;
+  border-color: blue;
 
   @media (max-width: 480px) {
     width: 60%;
@@ -132,7 +133,7 @@ const Button = styled.button`
   cursor: pointer;
   font-size: 18px;
 
-  &:hover {
+   &:hover {
     background-color: #1E3E6B;
   }
 
@@ -182,11 +183,12 @@ const PopupContainer = styled.div`
   padding: 2rem;
   border-radius: 8px;
   z-index: 999;
-  opacity: 0.9;
+  opacity:.9
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+
 `;
 
 const NoInfoText = styled.p`
@@ -222,17 +224,30 @@ const ChangeButton = styled.button`
   }
 `;
 
-const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantName, variantWeights }) => {
+const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantName, variantWeights ,}) => {
   const [spValue, setSPValue] = useState('');
   const [mrpValue, setMRPValue] = useState('');
   const [weightValue, setWeightValue] = useState('');
   const [showPopup, setShowPopup] = useState(false);
+  const [isEditable, setIsEditable] = useState(true);
+  const [showVariantDetails, setShowVariantDetails] = useState(false); // Add this state
 
+ 
   useEffect(() => {
     if (variantInfo) {
+      console.log(' length badi hai');
+      console.log('VARIANT INFO:::: '+ {variantInfo});
+      // console.log(`det: ${variantInfo}`);
+      console.log(`selectedVariant: ${selectedVariant}`);
+      console.log(variantWeights);
+      console.log(`variantInfo.Weight: ${variantInfo.Weight}`);
       setSPValue(`₹ ${variantInfo.SP}` || '');
       setMRPValue(`₹ ${variantInfo.MRP}` || '');
       setWeightValue(variantInfo.Weight || '');
+      setShowVariantDetails(true); 
+    }else{
+      console.log(' length choti hai');
+      setShowVariantDetails(false); // Hi
     }
   }, [variantInfo]);
 
@@ -249,53 +264,55 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
   };
 
   const handleWeightUpdate = () => {
-    const uniqueIditis = parseInt(selectedVariant);
-
+    const uniqueId = parseInt(selectedVariant);
+    
+    // Check if weight is already present in variantWeights
     const weightAlreadyPresent = Object.entries(variantWeights)
-      .filter(([key]) => key.startsWith(`${uniqueIditis}.`))
+      .filter(([key]) => key.startsWith(`${uniqueId}.`))
       .some(([_, value]) => value === weightValue);
-
-    if (weightAlreadyPresent) {
-      setShowPopup(true);
-      console.log(`Weight ${weightValue} is already present in variant list.`);
-    } else {
-      const existingSuffixes = Object.keys(variantWeights)
-        .filter(key => key.startsWith(`${uniqueIditis}.`))
-        .map(key => parseInt(key.split('.')[1]));
-
-      const maxSuffix = existingSuffixes.length > 0 ? Math.max(...existingSuffixes) : 0;
-      const newProductId = `${uniqueIditis}.${maxSuffix + 1}`;
-      
-      console.log(`New Product ID: ${newProductId}`);
-
-      setWeightValue(weightValue);
+    
+      console.log(weightAlreadyPresent);
+  
+    if (!weightAlreadyPresent) {
+      // Weight is not present, allow editing
       setShowPopup(false);
-      console.log(`Updated weight to ${weightValue}`);
+      setIsEditable(true);
+      console.log(`You can edit weight bcoz weight is not present to ${weightValue}`);
+    } else {
+
+      // Check if the selected variant matches the variantInfo.Weight
+      const canEditMRPSP = variantWeights[selectedVariant] === variantInfo.Weight;
+      console.log(`1 :${variantInfo.Weight}`);
+      console.log(`2 : ${variantWeights[selectedVariant]}`);
+      // Weight is already present
+      console.log('ye kya hai'+canEditMRPSP);
+      if (canEditMRPSP) {
+        // Can edit MRP and SP
+        setShowPopup(true);
+        setWeightValue(variantWeights[selectedVariant])
+        setIsEditable(true);
+  
+        console.log(`You can edit weight to ${weightValue}`);
+        
+       
+      } 
+    
     }
   };
-
-  const handleAddToStore = () => {
-    const uniqueIditis = parseInt(selectedVariant);
-
-    const existingSuffixes = Object.keys(variantWeights)
-      .filter(key => key.startsWith(`${uniqueIditis}.`))
-      .map(key => parseInt(key.split('.')[1]));
-
-    const maxSuffix = existingSuffixes.length > 0 ? Math.max(...existingSuffixes) : 0;
-    const newProductId = `${uniqueIditis}.${maxSuffix + 1}`;
-    
-    console.log(`New Product ID on Add to Store: ${newProductId}`);
-    // Implement your logic to add the product to the store
-  };
+  
+  
 
   const closePopup = () => {
     setShowPopup(false);
+    console.log(variantInfo.SP);
+    setShowVariantDetails(false); 
+
   };
 
   return (
     <Container>
       <Card>
-        {variantInfo && variantInfo.SP ? (
+      {showVariantDetails && variantInfo && variantInfo.SP ? ( 
           <>
             <InnerContainer>
               <Image
@@ -311,6 +328,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                     value={spValue}
                     onChange={handleSPChange}
                     style={{ fontSize: "1.2rem", color: "green" }}
+                    disabled={!isEditable}
                   />
                 </DetailRow>
                 <DetailRow>
@@ -320,6 +338,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                     value={mrpValue}
                     onChange={handleMRPChange}
                     style={{ fontSize: "1.2rem", color: "green" }}
+                    disabled={!isEditable}
                   />
                 </DetailRow>
                 <DetailRow>
@@ -328,23 +347,24 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                     type="text"
                     value={weightValue}
                     onChange={handleWeightChange}
+                    onBlur={handleWeightUpdate} // Call handleWeightBlur on blur
                     style={{ fontSize: "1.2rem", color: "red" }}
                   />
-                  <ChangeButton onClick={handleWeightUpdate}>Change</ChangeButton>
+                  {/* <ChangeButton onClick={handleWeightUpdate}>Change</ChangeButton> */}
                 </DetailRow>
               </DetailsContainer>
-              <Button onClick={handleAddToStore}>Add to Store</Button>
+              <Button>Add to Store</Button>
             </InnerContainer>
             <BackgroundCircle />
             {showPopup && (
               <PopupContainer>
                 <p>Weight is already present. Go to desired variant to edit SP and MRP.</p>
-                <Button onClick={closePopup} style={{ alignSelf: "center" }}>Close</Button>
+                <Button onClick={closePopup} style={{alignSelf:"center"}}>Close</Button>
               </PopupContainer>
             )}
           </>
         ) : (
-          <NoInfoText>No information available for this variant.</NoInfoText>
+          <NoInfoText>Choose Products from dash-catalogue :) </NoInfoText>
         )}
       </Card>
     </Container>

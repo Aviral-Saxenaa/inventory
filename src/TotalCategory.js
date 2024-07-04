@@ -228,6 +228,7 @@ const TotalCategory = () => {
                         variantInfo={variantInfo}
                         variantName={variantNames[selectedVariant]}
                         variantWeights={variantWeights}
+                        
                     />
                 )}
             </div>

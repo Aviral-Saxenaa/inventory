@@ -14,7 +14,7 @@ const ProductListing = () => {
   const nextButtonRef = useRef(null);
 
   const { state } = useLocation();
-  const { barcodeName } = state;
+  const { ProductNameitis } = state;
 
   const client = new Client();
   client
@@ -24,14 +24,14 @@ const ProductListing = () => {
   const databases = new Databases(client);
 
   const handleCheck = async () => {
-    console.log('Checking for barcode:', barcodeName);
+    console.log('Checking for barcode:', ProductNameitis);
 
     try {
       const response = await databases.listDocuments(
         'data-level-1', // Replace with your actual database ID
         '664f1ca60037dad0be9c', // Replace with your actual collection ID
         [
-          Query.contains('Product_Barcode', [barcodeName]) // Ensure 'Product_Name' is the correct field name in your collection
+          Query.contains('Product_Barcode', [ProductNameitis]) // Ensure 'Product_Name' is the correct field name in your collection
         ]
       );
       console.log('Appwrite check response:', response);
@@ -55,7 +55,7 @@ const ProductListing = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await fetch(`https://realtime-product-search.p.sulu.sh/v1/search?q=${barcodeName}&country=in&min_price=1`, {
+      const response = await fetch(`https://realtime-product-search.p.sulu.sh/v1/search?q=${ProductNameitis}&country=in&min_price=1`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -158,7 +158,7 @@ const ProductListing = () => {
       >
         <TextField
           type="text"
-          value={barcodeName}
+          value={ProductNameitis}
           readOnly
           placeholder="Enter query"
           variant="outlined"

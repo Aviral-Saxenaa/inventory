@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Client, Databases, Query } from 'appwrite';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -172,10 +173,36 @@ const BackgroundCircle = styled.div`
 `;
 
 const NewProductType = ({ productTitle, productImage, variantWeights, uniqueProductIDs }) => {
+  const client = new Client();
+  const databases = new Databases(client);
+  const databaseId = 'data-level-1';
+  const collectionId = 'AdminDB';
+
+  client.setEndpoint('https://cloud.appwrite.io/v1').setProject('65773c8581b895f83d40');
+
   const [spValue, setSPValue] = useState('');
   const [mrpValue, setMRPValue] = useState('');
   const [weightValue, setWeightValue] = useState('');
   const [title, setTitle] = useState(productTitle);
+  const [productKey, setProductKey] = useState('');
+
+  useEffect(() => {
+    const fetchProductKey = async () => {
+      try {
+        const response = await databases.listDocuments(databaseId, collectionId);
+        console.log(response);
+        if (response.documents.length > 0) {
+          const productKey = response.documents[0]['Product-Key'];
+          console.log(productKey);
+          setProductKey(productKey);
+        }
+      } catch (error) {
+        console.error('Error fetching Product-Key:', error);
+      }
+    };
+    fetchProductKey();
+    setTitle(productTitle);
+  }, [productTitle]);
 
   const handleSPChange = (event) => {
     setSPValue(event.target.value);
@@ -186,7 +213,7 @@ const NewProductType = ({ productTitle, productImage, variantWeights, uniqueProd
   };
 
   const handleWeightChange = (event) => {
-    setWeightValue(event.target.value);
+    setWeightValue(event.target.value.toUpperCase());
   };
 
   const handleTitleChange = (event) => {
@@ -194,25 +221,21 @@ const NewProductType = ({ productTitle, productImage, variantWeights, uniqueProd
   };
 
   const handleAddToCart = () => {
+    if (parseFloat(spValue) > parseFloat(mrpValue)) {
+      alert('SP should not be greater than MRP');
+      return;
+    }
+    console.log(`${productKey}`);
+    const initialProductID = 10;
+    const newUniqueProductID = `${initialProductID}${productKey}.1`;
 
-        if (parseFloat(spValue) > parseFloat(mrpValue)) {
-                alert('SP should not be greater than MRP');
-                return;
-        }
-    const smallestProductID = Math.min(...uniqueProductIDs);
-    const newProductID = smallestProductID + uniqueProductIDs.length;
-    console.log(`New Product ID for newproductType: ${newProductID}`);
+    // Log the new unique product ID
+    console.log(`Adding to cart: ${newUniqueProductID}`);
   };
-
-  useEffect(() => {
-    console.log(`Newproduct type : ${uniqueProductIDs}`);
-    setTitle(productTitle);
-  }, [productTitle]);
 
   return (
     <Container>
       <Card>
-        {/* <p>Type</p> */}
         <InnerContainer>
           <Image src={productImage} alt={title} />
           <DetailsContainer>

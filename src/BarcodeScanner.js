@@ -4,10 +4,14 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useNavigate } from 'react-router-dom';
 
 const BarcodeScanner = () => {
+  const [searchType, setSearchType] = useState('barcode'); // Default to barcode search
   const [barcodeInput, setBarcodeInput] = useState('');
   const [scanResult, setScanResult] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+
+
+
 
   // useEffect(() => {
   //   const scanner = new Html5QrcodeScanner('reader', {
@@ -34,18 +38,23 @@ const BarcodeScanner = () => {
     setBarcodeInput(event.target.value);
   };
 
-  const navigateToProductListing = (value) => {
-    navigate('/product-listing', { state: { barcodeName: value } });
+  const navigateToProductListing = (value, type) => {
+    if (type === 'barcode') {
+      navigate('/product-listing', { state: { barcodeName: value } });
+    } else if (type === 'name') {
+      navigate('/product-listing', { state: { ProductNameitis: value } });
+    }
   };
 
   const handleSearch = () => {
-    navigateToProductListing(barcodeInput);
+    navigateToProductListing(barcodeInput, searchType);
   };
-  
 
   const handleContinue = () => {
     setIsModalOpen(false);
-    navigateToProductListing(scanResult);
+    if (scanResult) {
+      navigateToProductListing(scanResult, 'barcode');
+    }
   };
 
   const handleBack = () => {
@@ -55,14 +64,16 @@ const BarcodeScanner = () => {
   return (
     <Container>
       <Title>Scan Barcode</Title>
-      {scanResult
-        ? <div>Success : <a href={"http://" + scanResult}>{scanResult}</a></div>
-        : <div id='reader'></div>}
+      <div id="reader"></div>
       <OrText>OR</OrText>
       <InputContainer>
+        <Select onChange={(e) => setSearchType(e.target.value)}>
+          <option value="barcode">Barcode</option>
+          <option value="name">Name</option>
+        </Select>
         <Input
           type="text"
-          placeholder="Enter barcode or name ..."
+          placeholder={`Enter ${searchType === 'barcode' ? 'barcode' : 'name'} ...`}
           value={barcodeInput}
           onChange={handleInputChange}
         />
@@ -79,7 +90,6 @@ const BarcodeScanner = () => {
           </ModalContent>
         </Modal>
       )}
-      
     </Container>
   );
 };
@@ -156,9 +166,9 @@ const InputContainer = styled.div`
   }
 `;
 
-const Input = styled.input`
+const Select = styled.select`
   flex: 1;
-  padding: 1.5rem 2rem;
+  padding: 1rem;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -166,12 +176,30 @@ const Input = styled.input`
   background-color: #f5f5f5;
 
   @media (max-width: 768px) {
-    padding: 1rem 1.5rem;
+    padding: 0.75rem;
     font-size: 14px;
   }
 
   @media (max-width: 480px) {
-    padding: 0.75rem 3rem;
+    font-size: 12px;
+  }
+`;
+
+const Input = styled.input`
+  flex: 2;
+  padding: 1rem;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #f5f5f5;
+
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+    font-size: 14px;
+  }
+
+  @media (max-width: 480px) {
     font-size: 12px;
   }
 `;
@@ -253,5 +281,6 @@ const ModalButton = styled.button`
     font-size: 12px;
   }
 `;
+
 
 export default BarcodeScanner;
