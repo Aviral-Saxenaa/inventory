@@ -9,7 +9,7 @@ const ProductListing = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [exist, setExist] = useState(false);
-  const [appwriteProductDetails, setAppwriteProductDetails] = useState(null);
+  const [appwriteProductDetails, setAppwriteProductDetails] = useState([]);
   const [appwriteProductIDs, setAppwriteProductIDs] = useState([]);
   const navigate = useNavigate();
   const nextButtonRef = useRef(null);
@@ -26,30 +26,35 @@ const ProductListing = () => {
 
   const handleCheck = async () => {
     console.log('Checking for barcode:', barcodeName);
-  
+
     try {
       const response = await databases.listDocuments(
         'data-level-1', // Replace with your actual database ID
         '664f1ca60037dad0be9c', // Replace with your actual collection ID
         [
-          Query.contains('Product_Barcode', [barcodeName]) // Ensure 'Product_Barcode' is the correct field name in your collection
+          Query.or([
+            Query.contains('Product_Barcode', [barcodeName]),
+            Query.search('Product_Name', barcodeName)
+          ])
         ]
       );
       console.log('Appwrite check response:', response);
-  
+
       if (response.documents.length > 0) {
         setExist(true);
-        const productData = response.documents[0];
-        const productId = productData.ProductID;
-        console.log('Product ID:', productId);
-  
-        setSelectedProduct({
-          ProductID: productId,
+
+        // Process all matching documents
+        const selectedProducts = response.documents.map((productData) => ({
+          ProductID: productData.ProductID,
           Product_Name: productData.Product_Name,
-          Product_Image: productData.Product_Image
-        });
-  
-        fetchProductAttributes(productId);
+          Product_Image: productData.Product_Image,
+        }));
+
+        // Set all selected products
+        setSelectedProduct(selectedProducts);
+
+        // Fetch attributes for each product
+        selectedProducts.forEach((product) => fetchProductAttributes(product.ProductID));
       } else {
         handleSearch();
       }
@@ -58,7 +63,6 @@ const ProductListing = () => {
       handleSearch();
     }
   };
-  
 
   const fetchProductAttributes = async (productID) => {
     try {
@@ -69,29 +73,30 @@ const ProductListing = () => {
           Query.equal('ProductIDs', productID) // Ensure 'ProductIDs' is the correct field name in your collection
         ]
       );
-  
+
       if (response.documents.length > 0) {
         console.log('Appwrite Product Details Response:', response.documents); // Log the response from Appwrite
         const productDetails = response.documents[0];
-  
+
         const extractValueByProductID = (array) => {
           const item = array.find(entry => entry.startsWith(`${productID}:`));
           return item ? item.split(':')[1] : null;
         };
-  
-        setAppwriteProductDetails({
-          Shop_Items_SP: extractValueByProductID(productDetails['Shop_Items-SP']),
-          Shop_Items_MRP: extractValueByProductID(productDetails['Shop_Items-MRP']),
-          Shop_Items_Weight: extractValueByProductID(productDetails['Shop_Items-Weight']),
-        });
+
+        setAppwriteProductDetails((prevDetails) => [
+          ...prevDetails,
+          {
+            ProductID: productID,
+            Shop_Items_SP: extractValueByProductID(productDetails['Shop_Items-SP']),
+            Shop_Items_MRP: extractValueByProductID(productDetails['Shop_Items-MRP']),
+            Shop_Items_Weight: extractValueByProductID(productDetails['Shop_Items-Weight']),
+          }
+        ]);
       }
     } catch (error) {
       console.error('Error querying Appwrite for product attributes:', error);
     }
   };
-  
-  
-  
 
   const handleSearch = async () => {
     try {
@@ -111,14 +116,10 @@ const ProductListing = () => {
   };
 
   const handleAddToCart = (product) => {
-    setSelectedProduct({
-      ProductID: product.product_id,
-      Product_Name: product.product_title,
-      Product_Image: product.product_photos[0]
-    });
+    setSelectedProduct(product);
     console.log('Selected Product:', product); // Log the selected product
-    queryAppwriteProducts(product.product_title);
-    console.log('Added to cart:', product.product_title);
+    queryAppwriteProducts(product.Product_Name);
+    console.log('Added to cart:', product.Product_Name);
     showNextButton();
   };
 
@@ -207,60 +208,60 @@ const ProductListing = () => {
 
       {exist ? (
         <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={4}
-            key={selectedProduct.ProductID}
-            sx={{
-              maxWidth: isSmallScreen ? '100%' : isMediumScreen ? '50%' : 'auto'
-            }}
-          >
-            <Card sx={{ maxWidth: 345, backgroundColor: '#fff', borderRadius: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
-              <CardMedia
-                component="img"
-                height="140"
-                image={selectedProduct.Product_Image}
-                alt={selectedProduct.Product_Name}
-                sx={{ objectFit: 'contain' }}
-              />
-             <CardContent>
-              <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
-                {selectedProduct.Product_Name}
-              </Typography>
-              {appwriteProductDetails && (
-                <>
-                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                    <span style={{ fontWeight: 'bold', color: '#000' }}>SP: </span>
-                    <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_SP}</span>
+          {selectedProduct.map((product, index) => (
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              key={product.ProductID}
+              sx={{
+                maxWidth: isSmallScreen ? '100%' : isMediumScreen ? '50%' : 'auto'
+              }}
+            >
+              <Card sx={{ maxWidth: 345, backgroundColor: '#fff', borderRadius: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={product.Product_Image}
+                  alt={product.Product_Name}
+                  sx={{ objectFit: 'contain' }}
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
+                    {product.Product_Name}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                    <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
-                    <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_MRP}</span>
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
-                    <span style={{ fontWeight: 'bold', color: '#000' }}>Weight: </span>
-                    <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.Shop_Items_Weight}</span>
-                  </Typography>
-                </>
-              )}
-            </CardContent>
-
-
-              <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
-                <Button
-                  variant="contained"
-                  onClick={() => handleAddToCart(selectedProduct)}
-                  sx={{ backgroundColor: '#28a745', '&:hover': { backgroundColor: '#218838' } }}
-                >
-                  Confirm
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
+                  {appwriteProductDetails.find(details => details.ProductID === product.ProductID) && (
+                    <>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                        <span style={{ fontWeight: 'bold', color: '#000' }}>SP: </span>
+                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.find(details => details.ProductID === product.ProductID).Shop_Items_SP}</span>
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                        <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
+                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.find(details => details.ProductID === product.ProductID).Shop_Items_MRP}</span>
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
+                        <span style={{ fontWeight: 'bold', color: '#000' }}>Weight: </span>
+                        <span style={{ color: 'green', fontSize: '1.4rem' }}>{appwriteProductDetails.find(details => details.ProductID === product.ProductID).Shop_Items_Weight}</span>
+                      </Typography>
+                    </>
+                  )}
+                </CardContent>
+                <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleAddToCart(product)}
+                    sx={{ backgroundColor: '#28a745', '&:hover': { backgroundColor: '#218838' } }}
+                  >
+                    Confirm
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
         </Grid>
-      ) :  (
+      ) : (
         <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
           {products.map((product) => (
             <Grid
@@ -287,7 +288,7 @@ const ProductListing = () => {
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem' }}>
                     <span style={{ fontWeight: 'bold', color: '#000' }}>MRP: </span>
-                    <span style={{ color: '#ff0000', fontSize: "1.4rem", color: "green" }}>{product.offer.price}</span>
+                    <span style={{ color: 'green', fontSize: '1.4rem' }}>{product.offer.price}</span>
                   </Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
@@ -309,7 +310,7 @@ const ProductListing = () => {
         <Box
           sx={{
             mt: 2,
-            display: 'none',
+            display: 'flex',
             justifyContent: 'center',
             width: '100%',
             position: 'fixed',
@@ -325,8 +326,7 @@ const ProductListing = () => {
           <Button
             variant="contained"
             onClick={handleTotalCategory}
-            sx={{ backgroundColor: '#007bff', '&:hover': { backgroundColor: '#0056b3' } }}
-            style={{ padding: "10px 80px" }}
+            sx={{ backgroundColor: '#007bff', '&:hover': { backgroundColor: '#0056b3' }, padding: "10px 80px" }}
           >
             <Typography style={{ fontSize: "18px", marginRight: 20 }}>Next</Typography>
             <GrLinkNext style={{ fontSize: '23px', color: "#00356A" }} />
