@@ -4,20 +4,16 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useNavigate } from 'react-router-dom';
 
 const BarcodeScanner = () => {
-  const [searchType, setSearchType] = useState('barcode'); // Default to barcode search
   const [barcodeInput, setBarcodeInput] = useState('');
   const [scanResult, setScanResult] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-
-
-
   // useEffect(() => {
   //   const scanner = new Html5QrcodeScanner('reader', {
   //     qrbox: {
   //       width: 250,
-  //       height: 250
+  //       height: 250,
   //     },
   //     fps: 5,
   //   });
@@ -38,22 +34,18 @@ const BarcodeScanner = () => {
     setBarcodeInput(event.target.value);
   };
 
-  const navigateToProductListing = (value, type) => {
-    if (type === 'barcode') {
-      navigate('/product-listing', { state: { barcodeName: value } });
-    } else if (type === 'name') {
-      navigate('/product-listing', { state: { ProductNameitis: value } });
-    }
+  const navigateToProductListing = (value) => {
+    navigate('/product-listing', { state: { barcodeName: value } });
   };
 
   const handleSearch = () => {
-    navigateToProductListing(barcodeInput, searchType);
+    navigateToProductListing(barcodeInput);
   };
 
   const handleContinue = () => {
     setIsModalOpen(false);
     if (scanResult) {
-      navigateToProductListing(scanResult, 'barcode');
+      navigateToProductListing(scanResult);
     }
   };
 
@@ -67,13 +59,9 @@ const BarcodeScanner = () => {
       <div id="reader"></div>
       <OrText>OR</OrText>
       <InputContainer>
-        <Select onChange={(e) => setSearchType(e.target.value)}>
-          <option value="barcode">Barcode</option>
-          <option value="name">Name</option>
-        </Select>
         <Input
           type="text"
-          placeholder={`Enter ${searchType === 'barcode' ? 'barcode' : 'name'} ...`}
+          placeholder="Enter barcode or name ..."
           value={barcodeInput}
           onChange={handleInputChange}
         />
@@ -163,25 +151,6 @@ const InputContainer = styled.div`
 
   @media (max-width: 400px) {
     width: 80%;
-  }
-`;
-
-const Select = styled.select`
-  flex: 1;
-  padding: 1rem;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #f5f5f5;
-
-  @media (max-width: 768px) {
-    padding: 0.75rem;
-    font-size: 14px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 12px;
   }
 `;
 
@@ -281,6 +250,5 @@ const ModalButton = styled.button`
     font-size: 12px;
   }
 `;
-
 
 export default BarcodeScanner;
