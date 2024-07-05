@@ -56,6 +56,21 @@ const VariantImage = styled.img`
   border: 1px solid #ddd;
   margin-right: 1rem;
   flex-shrink: 0;
+
+  @media (max-width: 900px) {
+    width: 50px;
+    height: 70px;
+  }
+
+  @media (max-width: 600px) {
+    width: 40px;
+    height: 60px;
+  }
+
+  @media (max-width: 400px) {
+    width: 35px;
+    height: 50px;
+  }
 `;
 
 const VariantInfoContainer = styled.div`
@@ -67,6 +82,18 @@ const VariantTitle = styled.span`
   font-size: 1rem;
   color: #333;
   margin-bottom: 0.5rem;
+
+  @media (max-width: 900px) {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.7rem;
+  }
 `;
 
 const VariantWeight = styled.span`
@@ -76,6 +103,21 @@ const VariantWeight = styled.span`
   background-color: #f0f0f0;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
+
+  @media (max-width: 900px) {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.3rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.2rem;
+  }
 `;
 
 const AddButtonContainer = styled.div`
@@ -124,6 +166,18 @@ const EnterNewVariantWrapper = styled.div`
   margin-bottom: 1rem;
   cursor: pointer;
   background-color: #405D72;
+
+  @media (max-width: 900px) {
+    padding: 0.5rem;
+  }
+
+  @media (max-width: 600px) {
+    padding: 0.4rem;
+  }
+
+  @media (max-width: 400px) {
+    padding: 0.3rem;
+  }
 `;
 
 const VariantList = ({ variantImages, variantNames, variantWeights, handleVariantClick, handleButtonClick }) => {
@@ -136,7 +190,6 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
   };
 
   const handleAddIconClick = () => {
-    // setSelectedVariant(null);
     handleButtonClick();
   };
 

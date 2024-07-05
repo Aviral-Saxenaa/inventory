@@ -8,17 +8,14 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  // height:auto;
 
   @media (max-width: 700px) {
-    width: 91%;
-  }
-
-  @media (max-width: 490px) {
     width: 90%;
+    padding: 0.5rem;
   }
 
-  @media (max-width: 400px) {
+  @media (max-width: 576px) {
+    width: 95%;
     padding: 0.3rem;
   }
 `;
@@ -40,15 +37,12 @@ const Card = styled.div`
     100% { opacity: 1; transform: translateY(0); }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 1050px) {
     width: 100%;
-    padding: 1rem;
+    padding: .5rem;
   }
 
-  @media (max-width: 490px) {
-    width: 100%;
-    padding: 1rem;
-  }
+  
 `;
 
 const InnerContainer = styled.div`
@@ -80,6 +74,10 @@ const DetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  @media (max-width: 650px) {
+    padding: 0rem;
+  }
 `;
 
 const DetailRow = styled.div`
@@ -89,7 +87,7 @@ const DetailRow = styled.div`
   align-items: center;
   margin-bottom: 0.5rem;
 
-  @media (max-width: 400px) {
+  @media (max-width: 576px) {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -99,7 +97,7 @@ const Label = styled.span`
   font-weight: bold;
   margin-bottom: 0.3rem;
 
-  @media (max-width: 400px) {
+  @media (max-width: 576px) {
     margin-bottom: 0.2rem;
   }
 `;
@@ -112,13 +110,8 @@ const Input = styled.input`
   text-align: right;
   width: 70%;
   box-sizing: border-box;
-  border-color: blue;
 
-  @media (max-width: 480px) {
-    width: 60%;
-  }
-
-  @media (max-width: 400px) {
+  @media (max-width: 576px) {
     width: 100%;
     margin-top: 0.3rem;
   }
@@ -126,9 +119,14 @@ const Input = styled.input`
 
 const UnitButtonContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   margin-top: 0.5rem;
   width: 100%;
+
+  @media (min-width: 576px) and (max-width: 736px) {
+    justify-content: center;
+  }
 `;
 
 const UnitButton = styled.button`
@@ -140,7 +138,7 @@ const UnitButton = styled.button`
   cursor: pointer;
   font-size: 0.9rem;
   flex: 1;
-  margin: 0 0.2rem;
+  margin: 0.2rem;
 
   &:hover {
     background-color: #1E3E6B;
@@ -150,8 +148,13 @@ const UnitButton = styled.button`
     background-color: #1E3E6B;
   }
 
-  @media (max-width: 400px) {
-    margin: 0.1rem 0.1rem;
+  @media (min-width: 576px) and (max-width: 736px) {
+    width: calc(33.33% - 0.4rem);
+  }
+
+  @media (max-width: 575px) {
+    margin: 0.1rem;
+    width: calc(50% - 0.2rem);
   }
 `;
 
@@ -165,20 +168,26 @@ const Button = styled.button`
   cursor: pointer;
   font-size: 18px;
 
-   &:hover {
+  &:hover {
     background-color: #1E3E6B;
   }
 
-  @media (max-width: 480px) {
-    padding: 0.5rem 2rem;
+  @media (max-width: 724px) {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 576px) {
+    padding: .8rem 2rem;
     font-size: 1rem;
   }
 
   @media (max-width: 400px) {
-    padding: 0.5rem 1.5rem;
+    padding: 0.3rem 1.5rem;
     font-size: 0.9rem;
   }
 `;
+
 
 const BackgroundCircle = styled.div`
   position: absolute;
@@ -191,17 +200,10 @@ const BackgroundCircle = styled.div`
   z-index: 0;
 
   @media (max-width: 480px) {
-    bottom: 150px;
+    bottom: 280px;
     left: -120px;
-    width: 250px;
-    height: 250px;
-  }
-
-  @media (max-width: 400px) {
-    bottom: 120px;
-    left: -150px;
-    width: 200px;
-    height: 200px;
+    width: 300px;
+    height: 300px;
   }
 `;
 
@@ -210,16 +212,20 @@ const PopupContainer = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #F3ECDE;
+  background-color: #f3ecde;
   color: black;
   padding: 2rem;
   border-radius: 8px;
   z-index: 999;
-  opacity:.9;
+  opacity: 0.9;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
 `;
 
 const NoInfoText = styled.p`
@@ -246,18 +252,11 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
 
   useEffect(() => {
     if (variantInfo) {
-      console.log(' length badi hai');
-      console.log('VARIANT INFO:::: '+ {variantInfo});
-      // console.log(`det: ${variantInfo}`);
-      console.log(`selectedVariant: ${selectedVariant}`);
-      console.log(variantWeights);
-      console.log(`variantInfo.Weight: ${variantInfo.Weight}`);
       setSPValue(`₹ ${variantInfo.SP}` || '');
       setMRPValue(`₹ ${variantInfo.MRP}` || '');
       setWeightValue(variantInfo.Weight || '');
-      setShowVariantDetails(true); 
+      setShowVariantDetails(true);
     } else {
-      console.log(' length choti hai');
       setShowVariantDetails(false);
     }
   }, [variantInfo]);
@@ -267,13 +266,9 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
     if (parseInt(value) <= parseInt(mrpValue.replace('₹ ', ''))) {
       setSPValue(value);
     } else {
-      // Display alert when SP exceeds MRP
       alert('SP should not be greater than MRP');
-      // Optionally, you can keep the current value of SP or reset it to MRP:
-      // setSPValue(mrpValue);
     }
   };
-  
 
   const handleMRPChange = (event) => {
     setMRPValue(event.target.value);
@@ -282,13 +277,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
   const handleWeightChange = (event) => {
     const value = event.target.value.replace(/[^0-9]/g, ''); // Only allow numbers
     setWeightValue(value);
-  
-    // Check if the backspace key is pressed
-    if (event.nativeEvent.inputType === 'deleteContentBackward') {
-      setWeightValue(''); // Clear the weight value
-    }
   };
-  
 
   const handleUnitSelect = (unit) => {
     setSelectedUnit(unit);
@@ -296,48 +285,39 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
 
   const handleWeightUpdate = () => {
     const uniqueId = parseInt(selectedVariant);
-    
     const weightAlreadyPresent = Object.entries(variantWeights)
       .filter(([key]) => key.startsWith(`${uniqueId}.`))
       .some(([_, value]) => value === `${weightValue}${selectedUnit}`);
-    
-      console.log(weightAlreadyPresent);
   
     if (!weightAlreadyPresent) {
       setShowPopup(false);
       setIsEditable(true);
-      console.log(`You can edit weight bcoz weight is not present to ${weightValue}`);
+      console.log(`You can edit weight because weight is not present: ${weightValue}`);
     } else {
-
       const canEditMRPSP = variantWeights[selectedVariant] === variantInfo.Weight;
-      console.log(`1 :${variantInfo.Weight}`);
-      console.log(`2 : ${variantWeights[selectedVariant]}`);
-      console.log('ye kya hai'+canEditMRPSP);
       if (canEditMRPSP) {
         setShowPopup(true);
         setWeightValue(variantWeights[selectedVariant]);
         setIsEditable(true);
-        console.log(`You can edit weight to ${weightValue}`);
-      } 
+        console.log(`You can edit weight to: ${weightValue}`);
+      }
     }
   };
   
   const closePopup = () => {
     setShowPopup(false);
-    console.log(variantInfo.SP);
-    setShowVariantDetails(false);
+    setShowVariantDetails(false); // Adjusted to ensure the variant details are also hidden when closing popup
   };
-
+  
   const handleAddToStore = () => {
     console.log(`Weight: ${weightValue}${selectedUnit}`);
     // Add any additional logic for adding to the store here
   };
-
-
+  
   return (
     <Container>
       <Card>
-      {showVariantDetails && variantInfo && variantInfo.SP ? ( 
+        {showVariantDetails && variantInfo && variantInfo.SP ? (
           <>
             <InnerContainer>
               <Image
@@ -352,7 +332,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                     type="text"
                     value={spValue}
                     onChange={handleSPChange}
-                    style={{ fontSize: "1.2rem", color: "green" }}
+                    style={{ fontSize: "1rem" }}
                     disabled={!isEditable}
                   />
                 </DetailRow>
@@ -362,7 +342,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                     type="text"
                     value={mrpValue}
                     onChange={handleMRPChange}
-                    style={{ fontSize: "1.2rem", color: "green" }}
+                    style={{ fontSize: "1rem" }}
                     disabled={!isEditable}
                   />
                 </DetailRow>
@@ -373,7 +353,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
                     value={weightValue}
                     onChange={handleWeightChange}
                     onBlur={handleWeightUpdate}
-                    style={{ fontSize: "1.2rem", color: "red" }}
+                    style={{ fontSize: "1rem" }}
                   />
                 </DetailRow>
                 <UnitButtonContainer>
@@ -394,12 +374,12 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
             {showPopup && (
               <PopupContainer>
                 <p>Weight is already present. Go to desired variant to edit SP and MRP.</p>
-                <Button onClick={closePopup} style={{alignSelf:"center"}}>Close</Button>
+                <Button onClick={closePopup}>Close</Button>
               </PopupContainer>
             )}
           </>
         ) : (
-          <NoInfoText>Choose Products from dash-catalogue :) </NoInfoText>
+          <NoInfoText>Choose Products from dash-catalogue :)</NoInfoText>
         )}
       </Card>
     </Container>
@@ -407,3 +387,4 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
 };
 
 export default VariantDetails;
+

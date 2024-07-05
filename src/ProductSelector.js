@@ -22,11 +22,11 @@ const Container = styled.div`
     padding: 2rem 0.2rem;
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 721px) {
     padding: 1.1rem 0.5rem;
   }
 
-  @media (max-width: 490px) {
+  @media (max-width: 600px) {
     padding: 1.7rem 0.5rem;
   }
 
@@ -54,7 +54,7 @@ const ProductContainer = styled.div`
   transition: transform 0.2s, box-shadow 0.2s;
   border-radius: 8px;
   padding: 0.2rem;
-  width:10rem;
+  width: 10rem;
 
   ${(props) =>
     props.isSelected &&
@@ -87,19 +87,19 @@ const ProductImage = styled.img`
     max-height: 80px;
   }
 
-  @media (max-width: 700px) {
-    max-width: 200px;
-    max-height: 100px;
+  @media (max-width: 721px) {
+    max-width: 140px;
+    max-height: 70px;
   }
 
-  @media (max-width: 490px) {
-    max-width: 140px;
-    max-height: 80px;
+  @media (max-width: 600px) {
+    max-width: 120px;
+    max-height: 60px;
   }
 
   @media (max-width: 400px) {
-    max-width: 200px;
-    max-height: 80px;
+    max-width: 150px;
+    max-height: 70px;
   }
 `;
 
@@ -121,11 +121,11 @@ const ProductName = styled.p`
     font-size: 0.8rem;
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 721px) {
     font-size: 0.75rem;
   }
 
-  @media (max-width: 490px) {
+  @media (max-width: 600px) {
     font-size: 0.7rem;
   }
 
@@ -138,7 +138,6 @@ const AddIcon = styled(IoIosAddCircle)`
   color: #4caf50;
   font-size: 4rem;
   cursor: pointer;
-  margin-left: 1rem;
   transition: color 0.2s;
 
   @media (max-width: 1200px) {
@@ -149,16 +148,16 @@ const AddIcon = styled(IoIosAddCircle)`
     font-size: 3rem;
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 721px) {
     font-size: 2.5rem;
   }
 
-  @media (max-width: 490px) {
-    font-size: 2.5rem;
+  @media (max-width: 600px) {
+    font-size: 2.2rem;
   }
 
   @media (max-width: 400px) {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
 
   &:hover {
@@ -177,41 +176,31 @@ const EnterNewProductWrapper = styled.div`
   height: 100%;
   background-color: #405D72;
   margin-right: 1rem;
-  
   padding: 1rem;
 
   @media (max-width: 1200px) {
     font-size: 0.85rem;
     padding: 1rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    padding-right:1.2rem;
-    margin-left:0rem;
   }
 
   @media (max-width: 900px) {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     padding: 1rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    padding-right:1.2rem;
-    margin-left:0rem;
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 721px) {
     font-size: 0.75rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    padding-right:1.2rem;
-    margin-left:0rem;
+    padding: 1rem;
   }
 
-  @media (max-width: 490px) {
+  @media (max-width: 600px) {
     font-size: 0.7rem;
-    padding-top: 1.7rem;
-    padding-bottom: 1.6rem;
-    padding-right:1.2rem;
-    margin-left:0rem;
+    padding: 0.8rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.65rem;
+    padding: 0.5rem;
   }
 `;
 
@@ -251,8 +240,8 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
             <ProductName>{productNames[id]}</ProductName>
           </ProductContainer>
         ))}
+        <AddIcon onClick={handleAddButtonClick} />
       </ProductList>
-      <AddIcon onClick={handleAddButtonClick} />
     </Container>
   );
 };
