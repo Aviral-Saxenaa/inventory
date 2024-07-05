@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useNavigate } from 'react-router-dom';
+import './FontLoader.css'
 
 const BarcodeScanner = () => {
   const [barcodeInput, setBarcodeInput] = useState('');
@@ -55,15 +56,16 @@ const BarcodeScanner = () => {
 
   return (
     <Container>
-      <Title>Scan Barcode</Title>
+      <Title style={{fontFamily:"DMSansB"}}>Scan Barcode</Title>
       <div id="reader"></div>
-      <OrText>OR</OrText>
+      <OrText style={{fontFamily:"DMSansB"}}>OR</OrText>
       <InputContainer>
       <Input
   type="text"
   placeholder="Enter barcode or name ..."
   value={barcodeInput}
   onChange={handleInputChange}
+  style={{fontFamily:"DMSans"}}
   onKeyDown={(event) => {
     if (event.key === 'Enter') {
       handleSearch();
@@ -71,7 +73,7 @@ const BarcodeScanner = () => {
   }}
 />
 
-        <Button onClick={handleSearch}>Search</Button>
+        <Button onClick={handleSearch} style={{fontFamily:"DMSansSB"}}>Search</Button>
       </InputContainer>
       {isModalOpen && (
         <Modal>

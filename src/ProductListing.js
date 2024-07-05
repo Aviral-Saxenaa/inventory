@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { GrLinkNext } from "react-icons/gr";
 import { useMediaQuery, useTheme } from '@mui/material';
 import { FaArrowCircleRight } from "react-icons/fa";
+import './FontLoader.css'
 
 const ProductListing = () => {
   const [products, setProducts] = useState([]);
@@ -212,7 +213,7 @@ const ProductListing = () => {
         minHeight: '100vh'
       }}
     >
-      <Typography variant="h4" gutterBottom sx={{ color: '#333', fontWeight: 'bold', mt: 4 }}>
+      <Typography variant="h4" gutterBottom sx={{ color: '#333', fontWeight: 'bold', mb: 7 ,fontFamily:"DMSansB",}}>
         Add Similar Product
       </Typography>
 
@@ -248,7 +249,7 @@ const ProductListing = () => {
           />
         </Box>
         <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold', textAlign: 'left' }}>
+          <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', textAlign: 'left',fontFamily:"DMSansB" }}>
             {product.Product_Name}
           </Typography>
           {/* Conditionally render details only if fetched from Appwrite */}
@@ -260,14 +261,15 @@ const ProductListing = () => {
                     value={appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_Weight}
                     variant="outlined"
                     size="small"
-                    sx={{ width: 80 }}
+                    sx={{ width: 80 ,fontFamily:"DMSansSB"}}
+                    
                   />
                 </Box>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem', marginTop: '1rem' }}>
-                  <span style={{ color: 'black', fontSize: '1rem', fontSize: "1.2rem", marginRight: '.2rem' }}>
+                  <span style={{ color: 'black', fontSize: "1.2rem", marginRight: '.2rem',fontFamily:"DMSans" }}>
                     ₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_SP}
                   </span>
-                  <span style={{ color: 'grey', textDecoration: 'line-through' }}>₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_MRP} </span>
+                  <span style={{ color: 'grey', textDecoration: 'line-through' ,fontFamily:"DMSans"}}>₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_MRP} </span>
                 </Typography>
               </Box>
               <Box sx={{ textAlign: 'center', marginTop: '2rem' }}>
@@ -277,8 +279,10 @@ const ProductListing = () => {
                   sx={{
                     backgroundColor: '#4caf50',
                     color: '#fff',
+                    fontFamily:"DMSansSB",
                     '&:hover': {
                       backgroundColor: '#388e3c',
+
                     },
                   }}
                   onClick={() => handleAddToCart(product, product.ProductID)}
@@ -315,7 +319,7 @@ const ProductListing = () => {
                   sx={{ objectFit: 'contain' }}
                 />
                 <CardContent>
-                  <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
+                  <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontFamily:"DMSansB" }}>
                     {product.product_title}
                   </Typography>
                 </CardContent>
@@ -326,6 +330,7 @@ const ProductListing = () => {
                     sx={{
                       backgroundColor: '#4caf50',
                       color: '#fff',
+                      fontFamily:"DMSansSB",
                       '&:hover': {
                         backgroundColor: '#388e3c',
                       },
@@ -346,7 +351,7 @@ const ProductListing = () => {
           ref={nextButtonRef}
           variant="contained"
           size="large"
-          sx={{ mt: 4, backgroundColor: '#C62828', color: '#fff', borderRadius: 20, px: 4, '&:hover': { backgroundColor: '#e64a19' } }}
+          sx={{ mt: 4, backgroundColor: '#C62828', color: '#fff',fontFamily:"DMSansB", borderRadius: 20, px: 4, '&:hover': { backgroundColor: '#e64a19' } }}
           onClick={handleTotalCategory}
         >
           Next
@@ -358,7 +363,7 @@ const ProductListing = () => {
         <Button
           variant="contained"
           size="large"
-          sx={{ mt: 4, backgroundColor: '#C62828', color: '#fff', borderRadius: 20, px: 4, '&:hover': { backgroundColor: '#ff5722' } }}
+          sx={{ mt: 4, backgroundColor: '#C62828', color: '#fff', borderRadius: 20, px: 4,fontFamily:"DMSansSB", '&:hover': { backgroundColor: '#ff5722' } }}
           onClick={handleSearch}
         >
           Didn't Find the Product ?

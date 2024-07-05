@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { IoIosAddCircle } from 'react-icons/io';
 import { FaArrowCircleRight } from "react-icons/fa";
 import styled, { css } from 'styled-components';
+import './FontLoader.css'
 
 const Container = styled.div`
   background-color: whitesmoke;
@@ -224,7 +225,7 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
     <Container>
       <EnterNewProductWrapper>
         <FaArrowCircleRight style={{ fontSize: "32px", color: "#F5F5F5" }} />
-        <p style={{ marginLeft: '0.5rem', color: "white" }}>New Product</p>
+        <p style={{ marginLeft: '0.5rem', color: "white" ,fontFamily:"DMSansB"}}>New Product</p>
       </EnterNewProductWrapper>
       <ProductList>
         {Object.keys(productImages).map((id) => (
@@ -237,7 +238,7 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
               src={productImages[id].image}
               alt={`Product ${id}`}
             />
-            <ProductName>{productNames[id]}</ProductName>
+            <ProductName style={{fontFamily:"DMSansSB"}}>{productNames[id]}</ProductName>
           </ProductContainer>
         ))}
         <AddIcon onClick={handleAddButtonClick} />

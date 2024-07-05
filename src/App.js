@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import GlobalStyles from './GlobalStyles';
-// Pages
+
 import ProductListing from './ProductListing';
 import BarcodeScanner from './BarcodeScanner';
 import TotalCategory from './TotalCategory';
@@ -20,7 +19,6 @@ const routes = [
 const App = () => {
   return (
     <>
-      <GlobalStyles />
       <Router>
         <Routes>
           {routes.map(({ path, element }, index) => (

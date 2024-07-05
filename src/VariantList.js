@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { IoIosAddCircle } from 'react-icons/io';
 import { FaArrowCircleDown } from "react-icons/fa";
+import './FontLoader.css'
 
 const ListContainer = styled.div`
   width: 40%;
@@ -197,7 +198,7 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
     <ListContainer>
       <EnterNewVariantWrapper>
         <FaArrowCircleDown style={{ fontSize: "32px", color: "#FE7A00" }} />
-        <p style={{ marginLeft: '0.5rem', color: "white", fontWeight: "bold" }}>New Variant</p>
+        <p style={{ marginLeft: '0.5rem', color: "white", fontFamily:"DMSansB" }}>New Variant</p>
       </EnterNewVariantWrapper>
       {Object.keys(variantImages).map((variant) => (
         <VariantButton
@@ -207,8 +208,8 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
         >
           <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
           <VariantInfoContainer>
-            <VariantTitle>{variantNames[variant]}</VariantTitle>
-            <VariantWeight>Weight: {variantWeights[variant]}</VariantWeight>
+            <VariantTitle style={{fontFamily:"DMSans" }}>{variantNames[variant]}</VariantTitle>
+            <VariantWeight style={{fontFamily:"DMSansB" }}>Weight: {variantWeights[variant]}</VariantWeight>
           </VariantInfoContainer>
         </VariantButton>
       ))}

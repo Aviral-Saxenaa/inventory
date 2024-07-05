@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Client, Databases } from 'appwrite';
 import styled from 'styled-components';
+import './FontLoader.css'
 
 const Container = styled.div`
   background-color: #fbc02d;
@@ -349,13 +350,13 @@ const NewProductType = ({ productTitle, productImage }) => {
 
   return (
     <Container>
-        <h3>ADD NEW PRODUCT</h3>
+        <h3 style={{fontFamily:"DMSansB"}}>ADD NEW PRODUCT</h3>
       <Card>
         <InnerContainer>
           <Image src={productImage} alt="Product" />
           <DetailsContainer>
             <DetailRow>
-              <Label>Title:</Label>
+              <Label style={{fontFamily:"DMSansB"}}>Title:<ProductNamePlaceholder style={{fontFamily:"DMSansB"}}>( *Enter Name of your Product )</ProductNamePlaceholder></Label>
               
               <Input
                 type="text"
@@ -364,7 +365,7 @@ const NewProductType = ({ productTitle, productImage }) => {
               />
             </DetailRow>
             <DetailRow>
-  <Label>SP:</Label>
+  <Label style={{fontFamily:"DMSansB"}}>SP:</Label>
   <InputWrapper small>
     <Prefix>₹</Prefix>
     <Input
@@ -377,7 +378,7 @@ const NewProductType = ({ productTitle, productImage }) => {
   </InputWrapper>
 </DetailRow>
 <DetailRow>
-  <Label>MRP:</Label>
+  <Label style={{fontFamily:"DMSansB"}}>MRP:</Label>
   <InputWrapper small>
     <Prefix>₹</Prefix>
     <Input
@@ -393,7 +394,7 @@ const NewProductType = ({ productTitle, productImage }) => {
 
 
 <DetailRow>
-  <Label>Weight:<ProductNamePlaceholder>( *Enter in CAPS in format e.g., 10KG, 2ML )</ProductNamePlaceholder></Label>
+  <Label style={{fontFamily:"DMSansB"}}>Weight:<ProductNamePlaceholder>( *Enter in CAPS in format e.g., 10KG, 2ML )</ProductNamePlaceholder></Label>
   <div style={{ width: '70%' }}> 
     <Input
       type="text"
@@ -408,16 +409,16 @@ const NewProductType = ({ productTitle, productImage }) => {
             
                 
             <MeasurementButtonContainer>
-            <p style={{marginRight:"1rem"}}>Select Any One :)</p>
-              <MeasurementButton onClick={() => handleMeasurementClick('KG')}>KG</MeasurementButton>
-              <MeasurementButton onClick={() => handleMeasurementClick('GM')}>GM</MeasurementButton>
-              <MeasurementButton onClick={() => handleMeasurementClick('L')}>L</MeasurementButton>
-              <MeasurementButton onClick={() => handleMeasurementClick('ML')}>ML</MeasurementButton>
-              <MeasurementButton onClick={() => handleMeasurementClick('PCS')}>PCS</MeasurementButton>
+            <p style={{marginRight:"1rem",fontFamily:"DMSansSB"}}>Select Any One :)</p>
+              <MeasurementButton onClick={() => handleMeasurementClick('KG')} style={{fontFamily:"DMSans"}}>KG</MeasurementButton>
+              <MeasurementButton onClick={() => handleMeasurementClick('GM')} style={{fontFamily:"DMSans"}}>GM</MeasurementButton>
+              <MeasurementButton onClick={() => handleMeasurementClick('L')} style={{fontFamily:"DMSans"}}>L</MeasurementButton>
+              <MeasurementButton onClick={() => handleMeasurementClick('ML')} style={{fontFamily:"DMSans"}}>ML</MeasurementButton>
+              <MeasurementButton onClick={() => handleMeasurementClick('PCS')} style={{fontFamily:"DMSans"}}>PCS</MeasurementButton>
             </MeasurementButtonContainer>
             
           </DetailsContainer>
-          <Button onClick={handleAddToCart} disabled={!isMeasurementSelected}>Add to Cart</Button>
+          <Button onClick={handleAddToCart} disabled={!isMeasurementSelected} style={{fontFamily:"DMSansB"}}>Add to Cart</Button>
         </InnerContainer>
         <BackgroundCircle />
       </Card>
