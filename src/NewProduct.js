@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Container = styled.div`
   background-color: #fbc02d;
   width: 100%;
-  padding: 1rem;
+  padding: .5rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,7 +31,7 @@ const Container = styled.div`
 const Card = styled.div`
   background-color: #fff;
   color: #000;
-  padding: 1.5rem;
+  padding: .5rem;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   width: 100%;
@@ -97,13 +97,26 @@ const DetailsContainer = styled.div`
 const DetailRow = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: column;
-  margin-bottom: .5rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+
+  @media (max-width: 400px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const Label = styled.span`
   font-weight: bold;
   margin-bottom: 0.3rem;
+  width: 35%; // Adjust width to your liking
+//   background-color:red;
+
+  @media (max-width: 400px) {
+    margin-bottom: 0.2rem;
+    width: 100%;
+  }
 `;
 
 const Input = styled.input`
@@ -111,12 +124,47 @@ const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
-  width: 100%;
+  text-align: right;
+  width: ${(props) => (props.small ? '25%' : '70%')};
   box-sizing: border-box;
+  border-color: blue;
+//   background-color:red;
+  align-self:center;
+  
 
   @media (max-width: 480px) {
-    padding: 0.4rem;
+    width: ${(props) => (props.small ? '5rem' : '60%')};
   }
+
+  @media (max-width: 400px) {
+    width: ${(props) => (props.small ? '5rem' : '100%')};
+    margin-top: 0.3rem;
+  }
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  width: 70%; // Match this width with the div wrapping the weight input
+
+  @media (max-width: 480px) {
+    width: 60%;
+  }
+
+  @media (max-width: 400px) {
+    width: 100%;
+    margin-top: 0.3rem;
+  }
+`;
+
+const Prefix = styled.span`
+  padding: 0.5rem;
+  background-color: #fff;
+  border: 1px solid black;
+  border-radius: 4px 0 0 4px;
+  font-size: 1rem;
+  border-right: none;
+  color: black;
+  background-color: whitesmoke;
 `;
 
 const Button = styled.button`
@@ -129,6 +177,11 @@ const Button = styled.button`
   cursor: pointer;
   font-size: 18px;
 
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
   @media (max-width: 480px) {
     padding: 0.5rem 2rem;
     font-size: 1rem;
@@ -140,6 +193,41 @@ const Button = styled.button`
   }
 `;
 
+const MeasurementButton = styled.button`
+  background-color: #fbc02d;
+  color: #000;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  margin: 0.3rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+
+  &:hover {
+    background-color: #f1a303;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.3rem;
+    margin: 0.2rem;
+  }
+
+  @media (max-width: 400px) {
+    padding: 0.2rem;
+    margin: 0.1rem;
+    font-size: 0.9rem;
+  }
+`;
+
+const MeasurementButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+`;
+
 const ProductNamePlaceholder = styled.span`
   color: red;
   font-weight: normal;
@@ -148,10 +236,10 @@ const ProductNamePlaceholder = styled.span`
 
 const BackgroundCircle = styled.div`
   position: absolute;
-  bottom: 200px;
-  left: -100px;
-  width: 300px;
-  height: 300px;
+  bottom: 300px;
+  left: -20px;
+  width: 400px;
+  height: 400px;
   background-color: #fe7a00;
   border-radius: 50%;
   z-index: 0;
@@ -176,6 +264,7 @@ const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProduc
   const [mrpValue, setMRPValue] = useState('');
   const [weightValue, setWeightValue] = useState('');
   const [title, setTitle] = useState(productTitle);
+  const [isMeasurementSelected, setIsMeasurementSelected] = useState(false);
 
   const handleSPChange = (event) => {
     setSPValue(event.target.value);
@@ -186,7 +275,12 @@ const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProduc
   };
 
   const handleWeightChange = (event) => {
-    setWeightValue(event.target.value);
+    setWeightValue(event.target.value.toUpperCase());
+  };
+
+  const handleMeasurementClick = (unit) => {
+    setWeightValue(`${weightValue.replace(/[a-zA-Z]/g, '')}${unit}`);
+    setIsMeasurementSelected(true);
   };
 
   const handleTitleChange = (event) => {
@@ -194,6 +288,11 @@ const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProduc
   };
 
   const handleAddToCart = () => {
+
+    if (!isMeasurementSelected) {
+      alert('Select any measurement to add to cart');
+      return;
+    }
 
     console.log(selectedProductID);
     console.log(variantWeights);
@@ -211,66 +310,98 @@ const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProduc
   // Count the total number of keys starting with selectedProductID
   const totalNos = keysStartingWithSelectedID.length;
 
-  // Construct the unique product ID by appending totalNos to selectedProductID
-  const uniqueProductID = `${selectedProductID}.${totalNos + 1}`;
+  
 
+  const confirmAdd = window.confirm(`Do you want to add the product: ${title} to the cart?`);
+    if (confirmAdd) {
+      // Construct the unique product ID by appending totalNos to selectedProductID
+  const uniqueProductID = `${selectedProductID}.${totalNos + 1}`;
+// Log the new unique product ID
   console.log('Unique Product ID for NewProduct:', uniqueProductID);
+        
+      alert('Added to cart successfully!');
+      setSPValue('');
+      setMRPValue('');
+      setWeightValue('');
+      setTitle('');
+    }
+  
   };
   
   
 
   useEffect(() => {
-    // console.log(selectedProductID);
+    console.log(`hi ${selectedProductID}`);
     setTitle(productTitle);
   }, [productTitle]);
 
   return (
     <Container>
+      <h3>ENTER NEW VARIANT</h3>
       <Card>
         <InnerContainer>
           <Image src={productImage} alt={title} />
           <DetailsContainer>
             <DetailRow>
-              <Label>Name of Product:</Label>
+              <Label>Title:<ProductNamePlaceholder>( *Enter Name of your Product )</ProductNamePlaceholder></Label>
               <Input
                 type="text"
                 value={title}
                 onChange={handleTitleChange}
-                placeholder={`${title} (Enter your product name)`}
+                
                 
               />
-              <ProductNamePlaceholder>( *Enter your own title )</ProductNamePlaceholder>
+              {/* <ProductNamePlaceholder>( *Enter your own title )</ProductNamePlaceholder> */}
             </DetailRow>
             <DetailRow>
-              <Label>SP:</Label>
-              <Input
-                type="text"
-                value={spValue}
-                onChange={handleSPChange}
-                placeholder='Enter SP'
-              />
-            </DetailRow>
-            <DetailRow>
-              <Label>MRP:</Label>
-              <Input
-                type="text"
-                value={mrpValue}
-                onChange={handleMRPChange}
-                placeholder='Enter MRP'
-              />
-            </DetailRow>
-            <DetailRow>
-              <Label>Weight:</Label>
-              <Input
-                type="text"
-                value={weightValue}
-                onChange={handleWeightChange}
-                placeholder='Enter Weight'
-              />
-              <ProductNamePlaceholder>( *Enter in CAPS in format e.g., 10KG, 2ML )</ProductNamePlaceholder>
-            </DetailRow>
+  <Label>SP:</Label>
+  <InputWrapper small>
+    <Prefix>₹</Prefix>
+    <Input
+      type="text"
+      className="sp-input"
+      value={spValue}
+      onChange={handleSPChange}
+      small
+    />
+  </InputWrapper>
+</DetailRow>
+<DetailRow>
+  <Label>MRP:</Label>
+  <InputWrapper small>
+    <Prefix>₹</Prefix>
+    <Input
+      type="text"
+      className="mrp-input"
+      value={mrpValue}
+      onChange={handleMRPChange}
+      small
+    />
+  </InputWrapper>
+</DetailRow>
+<DetailRow>
+  <Label>Weight:<ProductNamePlaceholder>( *Enter in CAPS in format e.g., 10KG, 2ML )</ProductNamePlaceholder></Label>
+  <div style={{ width: '70%' }}> 
+    <Input
+      type="text"
+      className="weight-input"
+      value={weightValue}
+      onChange={handleWeightChange}
+      small
+    />
+  </div>
+</DetailRow>
+<MeasurementButtonContainer>
+            <p style={{marginRight:"1rem"}}>Select Any One :)</p>
+              <MeasurementButton onClick={() => handleMeasurementClick('KG')}>KG</MeasurementButton>
+              <MeasurementButton onClick={() => handleMeasurementClick('GM')}>GM</MeasurementButton>
+              <MeasurementButton onClick={() => handleMeasurementClick('L')}>L</MeasurementButton>
+              <MeasurementButton onClick={() => handleMeasurementClick('ML')}>ML</MeasurementButton>
+              <MeasurementButton onClick={() => handleMeasurementClick('PCS')}>PCS</MeasurementButton>
+            </MeasurementButtonContainer>
+
           </DetailsContainer>
-          <Button onClick={handleAddToCart}>Add to Cart</Button>
+          <Button onClick={handleAddToCart} disabled={!isMeasurementSelected}>Add to Cart</Button>
         </InnerContainer>
         <BackgroundCircle />
       </Card>

@@ -135,6 +135,11 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
     handleVariantClick(variant);
   };
 
+  const handleAddIconClick = () => {
+    // setSelectedVariant(null);
+    handleButtonClick();
+  };
+
   return (
     <ListContainer>
       <EnterNewVariantWrapper>
@@ -155,7 +160,7 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
         </VariantButton>
       ))}
       <AddButtonContainer>
-        <AddIcon onClick={handleButtonClick} />
+        <AddIcon onClick={handleAddIconClick} />
       </AddButtonContainer>
     </ListContainer>
   );

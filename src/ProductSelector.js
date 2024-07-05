@@ -12,7 +12,7 @@ const Container = styled.div`
   overflow-y: hidden;
   white-space: nowrap;
   position: relative;
-  height: 100px; /* Ensure it takes the full height of the parent */
+  height: 100px;
 
   @media (max-width: 1200px) {
     padding: 1.6rem 0.5rem;
@@ -35,7 +35,7 @@ const Container = styled.div`
   }
 
   &::-webkit-scrollbar {
-    display: none; /* Hide scrollbar */
+    display: none;
   }
 `;
 
@@ -111,7 +111,7 @@ const ProductName = styled.p`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100%; /* Ensure the text doesn't overflow out of the container */
+  max-width: 100%;
 
   @media (max-width: 1200px) {
     font-size: 0.85rem;
@@ -133,7 +133,6 @@ const ProductName = styled.p`
     font-size: 0.65rem;
   }
 `;
-
 
 const AddIcon = styled(IoIosAddCircle)`
   color: #4caf50;
@@ -176,11 +175,10 @@ const EnterNewProductWrapper = styled.div`
   font-weight: bold;
   width: 130px;
   height: 100%;
-  background-color: #405D72; /* New background color */
+  background-color: #405D72;
   margin-right: 1rem;
   
   padding: 1rem;
-  // color:#fff
 
   @media (max-width: 1200px) {
     font-size: 0.85rem;
@@ -214,7 +212,6 @@ const EnterNewProductWrapper = styled.div`
     padding-bottom: 1.6rem;
     padding-right:1.2rem;
     margin-left:0rem;
-    
   }
 `;
 
@@ -225,6 +222,13 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
     setSelectedProductId(id);
     setSelectedProductID(id);
     setSelectedVariant(`${id}.1`);
+  };
+
+  const handleAddButtonClick = () => {
+    setSelectedProductId(null);
+    setSelectedProductID(null);
+    setSelectedVariant(null);
+    handleButtonClick();
   };
 
   return (
@@ -248,7 +252,7 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
           </ProductContainer>
         ))}
       </ProductList>
-      <AddIcon onClick={handleButtonClick} />
+      <AddIcon onClick={handleAddButtonClick} />
     </Container>
   );
 };
