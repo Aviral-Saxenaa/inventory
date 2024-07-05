@@ -189,12 +189,14 @@ const ProductListing = () => {
         productIDs: appwriteProductIDs,
         productTitle: productTitle,
         productImage: productImage,
+        barcodeName:barcodeName,
       },
     });
   };
 
   useEffect(() => {
     handleCheck();
+    console.log(barcodeName);
   }, []);
 
   const theme = useTheme();

@@ -268,7 +268,7 @@ const BackgroundCircle = styled.div`
   }
 `;
 
-const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProductID}) => {
+const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProductID,barcodeName}) => {
   const [spValue, setSPValue] = useState('');
   const [mrpValue, setMRPValue] = useState('');
   const [weightValue, setWeightValue] = useState('');
@@ -336,12 +336,28 @@ const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProduc
     }
   
   };
+
+  const removeWeightFromTitle = (title) => {
+    // Define patterns to match weight formats like "90 g", "90GM", "90 Kg", etc.
+    const patterns = [
+      /\s*\d+\s*(g|gm|kg|ml|l|pcs)\s*/gi,
+      /\s*\d+\s*(g|gm|kg|ml|l|pcs)\.*$/gi,
+    ];
+  
+    // Replace the matched patterns with an empty string
+    patterns.forEach((pattern) => {
+      title = title.replace(pattern, '');
+    });
+  
+    return title.trim(); // Trim any leading or trailing spaces
+  };
   
   
 
   useEffect(() => {
+    console.log(barcodeName);
     console.log(`hi ${selectedProductID}`);
-    setTitle(productTitle);
+    setTitle(removeWeightFromTitle(productTitle));
   }, [productTitle]);
 
   return (

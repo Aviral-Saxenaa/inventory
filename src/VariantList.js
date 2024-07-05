@@ -199,8 +199,13 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
   };
 
   const handleAddIconClick = () => {
+    if (!selectedVariant) {
+      alert('Select a Product to add its variant');
+      return;
+    }
     handleButtonClick();
   };
+
 
   return (
     <ListContainer>

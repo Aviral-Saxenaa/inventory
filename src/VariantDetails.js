@@ -246,7 +246,7 @@ const VariantName = styled.p`
   margin-bottom: 1rem;
 `;
 
-const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantName, variantWeights }) => {
+const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantName, variantWeights,barcodeName }) => {
   const [spValue, setSPValue] = useState('');
   const [mrpValue, setMRPValue] = useState('');
   const [weightValue, setWeightValue] = useState('');
@@ -257,6 +257,7 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
 
   useEffect(() => {
     if (variantInfo) {
+      console.log(barcodeName);
       setSPValue(`₹ ${variantInfo.SP}` || '');
       setMRPValue(`₹ ${variantInfo.MRP}` || '');
       setWeightValue(variantInfo.Weight || '');
@@ -286,7 +287,12 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
 
   const handleUnitSelect = (unit) => {
     setSelectedUnit(unit);
+    setWeightValue((prevValue) => {
+      const numericValue = prevValue.replace(/[^\d]/g, ''); // Remove any non-numeric characters
+      return `${numericValue}${unit}`; // Concatenate the numeric value with the selected unit
+    });
   };
+  
 
   const handleWeightUpdate = () => {
     const uniqueId = parseInt(selectedVariant);
@@ -315,9 +321,14 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
   };
   
   const handleAddToStore = () => {
-    console.log(`Weight: ${weightValue}${selectedUnit}`);
-    // Add any additional logic for adding to the store here
+    console.log(selectedVariant);
+    const isConfirmed = window.confirm('Are you sure you want to add this item to the store?');
+    if (isConfirmed) {
+      console.log(`Weight: ${weightValue}`);
+      // Add any additional logic for adding to the store here
+    }
   };
+  
   
   return (
     <Container>

@@ -10,7 +10,7 @@ import CircularProgress from '@mui/material/CircularProgress'; // Import Circula
 
 const TotalCategory = () => {
     const location = useLocation();
-    const { productIDs, productTitle, productImage } = location.state || {};
+    const { productIDs, productTitle, productImage ,barcodeName} = location.state || {};
 
     const [loading, setLoading] = useState(true); // State to track loading state
     const [productImages, setProductImages] = useState({});
@@ -70,6 +70,7 @@ const TotalCategory = () => {
     }, [productIDs]);
 
     useEffect(() => {
+        console.log(barcodeName);
         if (selectedProductID !== null) {
             const client = new Client();
             const databases = new Databases(client);
@@ -212,6 +213,7 @@ const TotalCategory = () => {
                         productImage={productImage}
                         variantWeights={variantWeights}
                         uniqueProductIDs={uniqueProductIDs} 
+                        barcodeName={barcodeName}
                         // productImages={productImages}
                     />
                 ) : showAddScreenType === 'variant' ? (
@@ -220,6 +222,7 @@ const TotalCategory = () => {
                         productImage={productImage}
                         variantWeights={variantWeights}
                         selectedProductID={selectedProductID} 
+                        barcodeName={barcodeName}
                         // variantImages={variantImages}
                         // uniqueProductIDs={uniqueProductIDs} // Pass uniqueProductIDs to NewProduct
                         // productImages={productImages}
@@ -231,6 +234,7 @@ const TotalCategory = () => {
                         variantInfo={variantInfo}
                         variantName={variantNames[selectedVariant]}
                         variantWeights={variantWeights}
+                        barcodeName={barcodeName}
                         
                     />
                 )}

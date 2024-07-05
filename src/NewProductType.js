@@ -267,7 +267,7 @@ const BackgroundCircle = styled.div`
   }
 `;
 
-const NewProductType = ({ productTitle, productImage }) => {
+const NewProductType = ({ productTitle, productImage,barcodeName}) => {
   const client = new Client();
   const databases = new Databases(client);
   const databaseId = 'data-level-1';
@@ -283,6 +283,7 @@ const NewProductType = ({ productTitle, productImage }) => {
   const [isMeasurementSelected, setIsMeasurementSelected] = useState(false);
 
   useEffect(() => {
+        console.log(barcodeName);
     const fetchProductKey = async () => {
       try {
         const response = await databases.listDocuments(databaseId, collectionId);
