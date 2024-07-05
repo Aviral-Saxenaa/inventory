@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import './FontLoader.css'
 
 const Container = styled.div`
-  background-color: #fbc02d;
+  background-color: #fcfcfb;
   width: 100%;
   padding: .5rem;
   display: flex;
@@ -12,6 +12,13 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   overflow: hidden;
+//   background-color:black;
+
+  @media (max-width: 2000px) {
+    width: 80%;
+    padding: 0.5rem;
+    height:104%;
+  }
 
   @media (max-width: 700px) {
     width: 91%;
@@ -31,9 +38,9 @@ const Container = styled.div`
 `;
 
 const Card = styled.div`
-  background-color: #fff;
+  background-color: #f4f6fb;
   color: #000;
-  padding: .5rem;
+  padding: 0.5rem;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   width: 100%;
@@ -130,22 +137,19 @@ const Input = styled.input`
   border-radius: 4px;
   font-size: 1rem;
   text-align: right;
-  width: ${(props) => (props.small ? '25%' : '70%')};
+  width: ${(props) => (props.small ? '40%' : '70%')};
   box-sizing: border-box;
   border-color: blue;
-//   background-color:red;
-  align-self:center;
-  
+  align-self: center;
+  text-align: left;
 
   @media (max-width: 480px) {
-    width: ${(props) => (props.small ? '5rem' : '60%')};
-  }
-
-  @media (max-width: 400px) {
-    width: ${(props) => (props.small ? '5rem' : '100%')};
+   width: ${(props) => (props.small ? '55%' : '100%')};
     margin-top: 0.3rem;
   }
+
 `;
+
 
 const InputWrapper = styled.div`
   display: flex;
@@ -228,18 +232,15 @@ const MeasurementButton = styled.button`
   }
 `;
 
+
 const MeasurementButtonContainer = styled.div`
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   margin-top: 1rem;
 `;
 
-const ProductNamePlaceholder = styled.span`
-  color: red;
-  font-weight: normal;
-  font-size: 0.8rem;
-`;
 
 const BackgroundCircle = styled.div`
   position: absolute;
@@ -296,7 +297,7 @@ const NewProductType = ({ productTitle, productImage }) => {
       }
     };
     fetchProductKey();
-    setTitle(productTitle);
+    setTitle(removeWeightFromTitle(productTitle));
   }, [productTitle]);
 
   const handleSPChange = (event) => {
@@ -319,6 +320,22 @@ const NewProductType = ({ productTitle, productImage }) => {
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
   };
+
+  const removeWeightFromTitle = (title) => {
+        // Define patterns to match weight formats like "90 g", "90GM", "90 Kg", etc.
+        const patterns = [
+          /\s*\d+\s*(g|gm|kg|ml|l|pcs)\s*/gi,
+          /\s*\d+\s*(g|gm|kg|ml|l|pcs)\.*$/gi,
+        ];
+      
+        // Replace the matched patterns with an empty string
+        patterns.forEach((pattern) => {
+          title = title.replace(pattern, '');
+        });
+      
+        return title.trim(); // Trim any leading or trailing spaces
+      };
+      
 
   const handleAddToCart = () => {
     if (!isMeasurementSelected) {
@@ -356,7 +373,7 @@ const NewProductType = ({ productTitle, productImage }) => {
           <Image src={productImage} alt="Product" />
           <DetailsContainer>
             <DetailRow>
-              <Label style={{fontFamily:"DMSansB"}}>Title:<ProductNamePlaceholder style={{fontFamily:"DMSansB"}}>( *Enter Name of your Product )</ProductNamePlaceholder></Label>
+              <Label style={{fontFamily:"DMSansB"}}>Title:</Label>
               
               <Input
                 type="text"
@@ -394,7 +411,7 @@ const NewProductType = ({ productTitle, productImage }) => {
 
 
 <DetailRow>
-  <Label style={{fontFamily:"DMSansB"}}>Weight:<ProductNamePlaceholder>( *Enter in CAPS in format e.g., 10KG, 2ML )</ProductNamePlaceholder></Label>
+  <Label style={{fontFamily:"DMSansB"}}>Weight:</Label>
   <div style={{ width: '70%' }}> 
     <Input
       type="text"
@@ -407,9 +424,9 @@ const NewProductType = ({ productTitle, productImage }) => {
 </DetailRow>
 
             
-                
+<p style={{marginRight:"1rem",fontFamily:"DMSansSB"}}>Select Any One :)</p>
             <MeasurementButtonContainer>
-            <p style={{marginRight:"1rem",fontFamily:"DMSansSB"}}>Select Any One :)</p>
+            
               <MeasurementButton onClick={() => handleMeasurementClick('KG')} style={{fontFamily:"DMSans"}}>KG</MeasurementButton>
               <MeasurementButton onClick={() => handleMeasurementClick('GM')} style={{fontFamily:"DMSans"}}>GM</MeasurementButton>
               <MeasurementButton onClick={() => handleMeasurementClick('L')} style={{fontFamily:"DMSans"}}>L</MeasurementButton>

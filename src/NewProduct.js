@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import './FontLoader.css'
 
 const Container = styled.div`
-  background-color: #fbc02d;
+  background-color: #fcfcfb;
   width: 100%;
   padding: .5rem;
   display: flex;
@@ -11,6 +11,13 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   overflow: hidden;
+//   background-color:black;
+
+  @media (max-width: 2000px) {
+    width: 80%;
+    padding: 0.5rem;
+    height:104%;
+  }
 
   @media (max-width: 700px) {
     width: 91%;
@@ -30,9 +37,9 @@ const Container = styled.div`
 `;
 
 const Card = styled.div`
-  background-color: #fff;
+  background-color: #f4f6fb;
   color: #000;
-  padding: .5rem;
+  padding: 0.5rem;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   width: 100%;
@@ -61,6 +68,7 @@ const InnerContainer = styled.div`
   align-items: center;
   position: relative;
   z-index: 1;
+//   background-color:red;
 `;
 
 const Image = styled.img`
@@ -89,6 +97,7 @@ const DetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+//   background-color:red;
 
   @media (max-width: 480px) {
     padding: 0.5rem;
@@ -108,6 +117,7 @@ const DetailRow = styled.div`
   }
 `;
 
+
 const Label = styled.span`
   font-weight: bold;
   margin-bottom: 0.3rem;
@@ -126,22 +136,19 @@ const Input = styled.input`
   border-radius: 4px;
   font-size: 1rem;
   text-align: right;
-  width: ${(props) => (props.small ? '25%' : '70%')};
+  width: ${(props) => (props.small ? '40%' : '70%')};
   box-sizing: border-box;
   border-color: blue;
-//   background-color:red;
-  align-self:center;
-  
+  align-self: center;
+  text-align:left;
 
   @media (max-width: 480px) {
-    width: ${(props) => (props.small ? '5rem' : '60%')};
-  }
-
-  @media (max-width: 400px) {
-    width: ${(props) => (props.small ? '5rem' : '100%')};
+   width: ${(props) => (props.small ? '55%' : '100%')};
     margin-top: 0.3rem;
   }
+
 `;
+
 
 const InputWrapper = styled.div`
   display: flex;
@@ -157,6 +164,7 @@ const InputWrapper = styled.div`
   }
 `;
 
+
 const Prefix = styled.span`
   padding: 0.5rem;
   background-color: #fff;
@@ -167,6 +175,7 @@ const Prefix = styled.span`
   color: black;
   background-color: whitesmoke;
 `;
+
 
 const Button = styled.button`
   background-color: #7f2800;
@@ -211,29 +220,28 @@ const MeasurementButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 0.3rem;
+    padding: 0.2rem;
     margin: 0.2rem;
+    
   }
 
   @media (max-width: 400px) {
     padding: 0.2rem;
     margin: 0.1rem;
     font-size: 0.9rem;
+    
   }
 `;
+
 
 const MeasurementButtonContainer = styled.div`
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   margin-top: 1rem;
 `;
 
-const ProductNamePlaceholder = styled.span`
-  color: red;
-  font-weight: normal;
-  font-size: 0.8rem;
-`;
 
 const BackgroundCircle = styled.div`
   position: absolute;
@@ -344,7 +352,7 @@ const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProduc
           <Image src={productImage} alt={title} />
           <DetailsContainer>
             <DetailRow>
-              <Label style={{fontFamily:"DMSansB"}}>Title:<ProductNamePlaceholder style={{fontFamily:"DMSansB"}}>( *Enter Name of your Product )</ProductNamePlaceholder></Label>
+              <Label style={{fontFamily:"DMSansB"}}>Title: <span style={{color:"red"}}>(*edit)</span></Label>
               <Input
                 type="text"
                 value={title}
@@ -381,7 +389,7 @@ const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProduc
   </InputWrapper>
 </DetailRow>
 <DetailRow>
-  <Label style={{fontFamily:"DMSansB"}}>Weight:<ProductNamePlaceholder>( *Enter in CAPS in format e.g., 10KG, 2ML )</ProductNamePlaceholder></Label>
+  <Label style={{fontFamily:"DMSansB"}}>Weight:</Label>
   <div style={{ width: '70%' }}> 
     <Input
       type="text"
@@ -392,8 +400,8 @@ const NewProduct = ({ productTitle, productImage ,variantWeights ,selectedProduc
     />
   </div>
 </DetailRow>
+<p style={{marginRight:"1rem",fontFamily:"DMSansSB"}}>Select Any One :)</p>
 <MeasurementButtonContainer>
-            <p style={{marginRight:"1rem",fontFamily:"DMSansSB"}}>Select Any One :)</p>
               <MeasurementButton onClick={() => handleMeasurementClick('KG')} style={{fontFamily:"DMSans"}}>KG</MeasurementButton>
               <MeasurementButton onClick={() => handleMeasurementClick('GM')} style={{fontFamily:"DMSans"}}>GM</MeasurementButton>
               <MeasurementButton onClick={() => handleMeasurementClick('L')} style={{fontFamily:"DMSans"}}>L</MeasurementButton>

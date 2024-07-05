@@ -7,14 +7,14 @@ import './FontLoader.css'
 const ListContainer = styled.div`
   width: 40%;
   padding: 1rem;
-  background-color: #fff;
+  background-color: #000356a;
   border-radius: 8px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
   height: 100%;
   // max-height: 79vh;
   padding-bottom:0rem;
-  background-color:red;
+  // background-color:red;
 
   @media (max-width: 2000px) {
     width: 50%;

@@ -206,16 +206,30 @@ const ProductListing = () => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        p: 2,
+      
+  
+
         backgroundColor: '#f5f5f5',
         minHeight: '100vh'
       }}
     >
-      <Typography variant="h4" gutterBottom sx={{ color: '#333', fontWeight: 'bold', mb: 7 ,fontFamily:"DMSansB",}}>
-        Add Similar Product
-      </Typography>
+   
+   <div style={{
+  color: '#fff',
+  fontFamily: "DMSansSB",
+  fontSize: 18,
+  width: '100%',
+  backgroundColor: '#000125',
+  paddingTop: 20,
+  paddingBottom: 20,
+  paddingLeft: 10,
+  position: 'fixed',
+  top: 0,
+  zIndex: 1000  // Ensures it's above other content
+}}>
+  SELECT  PRODUCT
+</div>
+
 
       {isLoading ? ( // Render loading spinner while loading
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
@@ -223,7 +237,8 @@ const ProductListing = () => {
       </Box>
       
       ) : exist ? (
-        <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
+        <Grid container spacing={0} sx={{ justifyContent: 'center', width: '100%', marginTop:10,backgroundColor:'transparent'
+         }}>
   {selectedProduct.map((product) => (
     <Grid
       item
@@ -238,58 +253,58 @@ const ProductListing = () => {
         marginBottom: 3, 
       }}
     >
-      <Card sx={{ display: 'flex', maxWidth: 345, backgroundColor: '#fff', borderRadius: 2.4, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', flexDirection: 'row' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: 100 }}>
+      <Card sx={{ display: 'flex', width: '100%', backgroundColor: '#fff', borderRadius: 2.4, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', flexDirection: 'row',justifyContent:'flex-start' }}>
+        <div style={{width:90,height:100}}>
           <CardMedia
             component="img"
             height="100"
             image={product.Product_Image}
             alt={product.Product_Name}
-            sx={{ objectFit: 'contain' }}
+            sx={{ objectFit: 'contain',alignSelf:'flex-start',backgroundColor:'transparent',width:100,height:100,marginTop:2 }}
           />
-        </Box>
-        <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', textAlign: 'left',fontFamily:"DMSansB" }}>
+      </div>
+        <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' ,width:'100%'}}>
+          <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', textAlign: 'left',fontFamily:"DMSansSB",backgroundColor:'transparent',letterSpacing:-0.2 }}>
             {product.Product_Name}
           </Typography>
           {/* Conditionally render details only if fetched from Appwrite */}
           {isProductsFetchedFromAppwrite && (
             <>
-              <Box sx={{ textAlign: 'left', marginBottom: 'auto' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <TextField
-                    value={appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_Weight}
-                    variant="outlined"
-                    size="small"
-                    sx={{ width: 80 ,fontFamily:"DMSansSB"}}
-                    
-                  />
+            <div style={{display:'flex',flexDirection:'row'}}>
+              <Box sx={{ textAlign: 'left', backgroundColor:'transparent',width:'60%' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '0' }}>
+                      <Typography color="text.secondary" sx={{ fontSize: '1rem', marginTop: '0rem',backgroundColor:"#f5f6f8",borderRadius:1,paddingInline:2,color:"#212121" ,borderWidth:1,borderColor:"#ccc",borderStyle:"solid"}}>
+
+                    {appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_Weight}
+                    </Typography>
                 </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem', marginTop: '1rem' }}>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem', marginTop: '0.2rem' }}>
                   <span style={{ color: 'black', fontSize: "1.2rem", marginRight: '.2rem',fontFamily:"DMSans" }}>
                     ₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_SP}
                   </span>
                   <span style={{ color: 'grey', textDecoration: 'line-through' ,fontFamily:"DMSans"}}>₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_MRP} </span>
                 </Typography>
               </Box>
-              <Box sx={{ textAlign: 'center', marginTop: '2rem' }}>
+              <Box sx={{ textAlign: 'center', marginTop: '0.5rem',display:'flex',flexDirection:'column',backgroundColor:"transparent",flex:1 }}>
+                <div style={{flex:1,display:'flex'}}></div>
                 <Button
                   size="medium"
-                  variant="contained"
+                  // variant="contained"
                   sx={{
                     backgroundColor: '#4caf50',
                     color: '#fff',
                     fontFamily:"DMSansSB",
                     '&:hover': {
-                      backgroundColor: '#388e3c',
+                      backgroundColor: '#388e3c',alignSelf:'flex-end',paddingLeft:5,paddingRight:5
 
                     },
                   }}
                   onClick={() => handleAddToCart(product, product.ProductID)}
                 >
-                  Confirm
+                  SELECT
                 </Button>
               </Box>
+              </div>
             </>
           )}
         </CardContent>
@@ -298,7 +313,8 @@ const ProductListing = () => {
   ))}
 </Grid>
       ) : (
-        <Grid container spacing={3} sx={{ justifyContent: 'center', width: '100%', maxWidth: 1200 }}>
+        <Grid container spacing={0} sx={{ justifyContent: 'center', width: '100%', marginTop:10,backgroundColor:'transparent'
+        }}>
           {products.map((product) => (
             <Grid
               item
@@ -307,17 +323,22 @@ const ProductListing = () => {
               md={4}
               key={product.id}
               sx={{
-                maxWidth: isSmallScreen ? '100%' : isMediumScreen ? '50%' : 'auto'
+                display: 'flex',
+                justifyContent: 'center', // Center align the Grid item horizontally
+                maxWidth: isSmallScreen ? '100%' : isMediumScreen ?  '50%' : 'auto',
+                marginBottom: 3, 
               }}
             >
-              <Card sx={{ maxWidth: 345, backgroundColor: '#fff', borderRadius: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+             <Card sx={{ display: 'flex', width: '100%', backgroundColor: '#fff', borderRadius: 2.4, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', flexDirection: 'row',justifyContent:'flex-start' }}>
+             <div style={{width:90,height:100}}>
                 <CardMedia
                   component="img"
-                  height="140"
+                  height="100"
                   image={product.product_photos[0]}
                   alt={product.product_title}
-                  sx={{ objectFit: 'contain' }}
-                />
+                  sx={{ objectFit: 'contain',alignSelf:'flex-start',backgroundColor:'transparent',width:100,height:100,marginTop:0 }}
+          />
+                 </div>
                 <CardContent>
                   <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', fontFamily:"DMSansB" }}>
                     {product.product_title}
@@ -337,7 +358,7 @@ const ProductListing = () => {
                     }}
                     onClick={() => handleAddToCart(product, 'API-ID')}
                   >
-                    Confirm
+                    SELECT
                   </Button>
                 </CardActions>
               </Card>
@@ -360,15 +381,28 @@ const ProductListing = () => {
       )}
 
       {isProductsFetchedFromAppwrite && (
-        <Button
-          variant="contained"
-          size="large"
-          sx={{ mt: 4, backgroundColor: '#C62828', color: '#fff', borderRadius: 20, px: 4,fontFamily:"DMSansSB", '&:hover': { backgroundColor: '#ff5722' } }}
-          onClick={handleSearch}
-        >
-          Didn't Find the Product ?
-          <FaArrowCircleRight style={{fontSize:"28px",marginLeft:"1rem"}} />
-        </Button>
+     <Button
+     variant="contained"
+     size="large"
+     sx={{
+       mt: 4,
+       backgroundColor: '#C62828',
+       color: '#fff',
+       borderRadius: 0,
+      //  px: 4,
+       fontFamily: "DMSansSB",
+       position: 'fixed',
+       bottom: 0,  // You can adjust this value as needed
+       left: '50%',
+       transform: 'translateX(-50%)',
+       '&:hover': { backgroundColor: '#ff5722' },width:'100%',py:2
+     }}
+     onClick={handleSearch}
+   >
+     Didn't Find the Product?
+     <FaArrowCircleRight style={{ fontSize: "28px", marginLeft: "1rem" }} />
+   </Button>
+   
       )}
     </Box>
   );

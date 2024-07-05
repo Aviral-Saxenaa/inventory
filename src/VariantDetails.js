@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  background-color: #fbc02d;
+  background-color: #fcfcfb;
   width: 81%;
   padding: 1rem;
   display: flex;
@@ -25,7 +25,7 @@ const Container = styled.div`
 `;
 
 const Card = styled.div`
-  background-color: #fff;
+  background-color: #f4f6fc;
   color: #000;
   padding: 1.5rem;
   border-radius: 12px;
@@ -114,6 +114,7 @@ const Input = styled.input`
   text-align: right;
   width: 70%;
   box-sizing: border-box;
+  text-align:left;
 
   @media (max-width: 576px) {
     width: 100%;

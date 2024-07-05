@@ -5,10 +5,10 @@ import styled, { css } from 'styled-components';
 import './FontLoader.css'
 
 const Container = styled.div`
-  background-color: whitesmoke;
+  background-color: #000125;
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: .1rem;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
@@ -72,9 +72,10 @@ const ProductContainer = styled.div`
 `;
 
 const ProductImage = styled.img`
-  max-width: 200px;
-  max-height: 80px;
+  max-width: 100px;
+  max-height: 60px;
   margin-bottom: 0.5rem;
+  margin-top: 0.8rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
@@ -106,7 +107,7 @@ const ProductImage = styled.img`
 
 const ProductName = styled.p`
   font-size: 0.9rem;
-  color: #333;
+  color: whitesmoke;
   text-align: center;
   margin-top: 0.5rem;
   white-space: nowrap;
@@ -182,27 +183,29 @@ const EnterNewProductWrapper = styled.div`
 
   @media (max-width: 1200px) {
     font-size: 0.85rem;
-    padding: 1rem;
+    padding-top: 2rem;
   }
 
   @media (max-width: 900px) {
     font-size: 0.8rem;
-    padding: 1rem;
+    padding: 2rem;
   }
 
   @media (max-width: 721px) {
     font-size: 0.75rem;
-    padding: 1rem;
+        padding-bottom: 2rem;
   }
 
   @media (max-width: 600px) {
     font-size: 0.7rem;
-    padding: 0.8rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
   }
 
   @media (max-width: 400px) {
     font-size: 0.65rem;
-    padding: 0.5rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
   }
 `;
 
