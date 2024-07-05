@@ -8,11 +8,15 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  height:100%;
 
-  @media (max-width: 700px) {
-    width: 90%;
+  @media (max-width: 2000px) {
+    width: 80%;
     padding: 0.5rem;
+    height:104%;
   }
+
+
 
   @media (max-width: 576px) {
     width: 95%;

@@ -140,6 +140,7 @@ const AddIcon = styled(IoIosAddCircle)`
   font-size: 4rem;
   cursor: pointer;
   transition: color 0.2s;
+  margin-right:1.5rem;
 
   @media (max-width: 1200px) {
     font-size: 3.5rem;
@@ -228,6 +229,7 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
         <p style={{ marginLeft: '0.5rem', color: "white" ,fontFamily:"DMSansB"}}>New Product</p>
       </EnterNewProductWrapper>
       <ProductList>
+      <AddIcon onClick={handleAddButtonClick} />
         {Object.keys(productImages).map((id) => (
           <ProductContainer
             key={id}
@@ -241,7 +243,7 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
             <ProductName style={{fontFamily:"DMSansSB"}}>{productNames[id]}</ProductName>
           </ProductContainer>
         ))}
-        <AddIcon onClick={handleAddButtonClick} />
+        
       </ProductList>
     </Container>
   );

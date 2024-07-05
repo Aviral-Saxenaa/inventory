@@ -12,22 +12,30 @@ const ListContainer = styled.div`
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
   height: 100%;
-  max-height: 80vh;
+  // max-height: 79vh;
+  padding-bottom:0rem;
+  background-color:red;
 
-  @media (max-width: 1200px) {
+  @media (max-width: 2000px) {
     width: 50%;
+    height:104%;
   }
 
-  @media (max-width: 900px) {
+    @media (max-width: 900px) {
     width: 60%;
+    height:81vh;
   }
 
-  @media (max-width: 721px) {
-    width: 80%;
+@media (max-width: 727px) {
+    width: 60%;
+    height:104% ;
   }
+
+
 
   @media (max-width: 600px) {
-    width: 90%;
+    width: 50%;
+    // padding: .4rem;
   }
 `;
 
@@ -208,7 +216,7 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
         >
           <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
           <VariantInfoContainer>
-            <VariantTitle style={{fontFamily:"DMSans" }}>{variantNames[variant]}</VariantTitle>
+            <VariantTitle style={{fontFamily:"DMSans",textAlign:"left" }}>{variantNames[variant]}</VariantTitle>
             <VariantWeight style={{fontFamily:"DMSansB" }}>Weight: {variantWeights[variant]}</VariantWeight>
           </VariantInfoContainer>
         </VariantButton>

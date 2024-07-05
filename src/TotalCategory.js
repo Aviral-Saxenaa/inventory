@@ -246,7 +246,6 @@ const styles = {
         height: '100vh',
         backgroundColor: '#00356A',
         color: '#fff',
-        fontFamily: 'Arial, sans-serif',
     },
     loadingContainer: {
         display: 'flex',
