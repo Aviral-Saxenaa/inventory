@@ -1,50 +1,81 @@
 import React, { useState, useEffect } from 'react';
-import { Client, Databases } from 'appwrite';
+import { Client, Databases ,Query} from 'appwrite';
 import styled from 'styled-components';
 import './FontLoader.css'
 
 const Container = styled.div`
   background-color: #fcfcfb;
-  width: 100%;
-  padding: .5rem;
-  display: flex;
+  width: 81%;
+  padding: 1rem;
+  display: ${({ open }) => (open ? 'flex' : 'none')};
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  overflow: hidden;
-//   background-color:black;
+  height: 100%;
+
+  @media (min-width: 576px) {
+    display: flex;
+  }
 
   @media (max-width: 2000px) {
     width: 80%;
     padding: 0.5rem;
-    height:104%;
+    height: 104%;
   }
 
-  @media (max-width: 700px) {
-    width: 91%;
-  }
-
-  @media (max-width: 490px) {
-    width: 90%;
-  }
-
-  @media (max-width: 412px) {
-    padding: 0.5rem;
-  }
-
-  @media (max-width: 400px) {
+  @media (max-width: 576px) {
+    width: 95%;
     padding: 0.3rem;
   }
 `;
 
-const Card = styled.div`
-  background-color: #f4f6fb;
-  color: #000;
+const UnitButtonContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  width: 100%;
+
+  @media (min-width: 576px) and (max-width: 736px) {
+    justify-content: center;
+  }
+`;
+
+const UnitButton = styled.button`
+  background-color: #2A518B;
+  color: #fff;
+  border: none;
   padding: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  flex: 1;
+  margin: 0.2rem;
+
+  &:hover {
+    background-color: #1E3E6B;
+  }
+
+  &.active {
+    background-color: #1E3E6B;
+  }
+
+  @media (min-width: 576px) and (max-width: 736px) {
+    width: calc(33.33% - 0.4rem);
+  }
+
+  @media (max-width: 575px) {
+    margin: 0.1rem;
+    width: calc(50% - 0.2rem);
+  }
+`;
+const Card = styled.div`
+  background-color: #f4f6fc;
+  color: #000;
+  padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
   width: 100%;
-  box-sizing: border-box;
   position: relative;
   overflow: hidden;
   animation: fadeIn 0.5s ease-in-out;
@@ -54,39 +85,33 @@ const Card = styled.div`
     100% { opacity: 1; transform: translateY(0); }
   }
 
-  @media (max-width: 480px) {
-    padding: 1rem;
-  }
-
-  @media (max-width: 412px) {
-    padding: 0.7rem;
+  @media (max-width: 1050px) {
+    padding: 0.5rem;
   }
 `;
 
-const InnerContainer = styled.div`
+const ImageTitleContainer = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  position: relative;
-  z-index: 1;
-//   background-color:red;
+  justify-content: space-between;
+  width: 100%;
+
+  @media (max-width: 576px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 `;
 
 const Image = styled.img`
-  max-width: 110px;
-  max-height: 110px;
+  max-width: 100px;
+  max-height: 100px;
   border-radius: 8px;
   border: 1px solid #ddd;
   transition: transform 0.3s ease;
-  margin-bottom: .3rem;
 
   &:hover {
     transform: scale(1.1);
-  }
-
-  @media (max-width: 400px) {
-    max-width: 150px;
-    max-height: 150px;
   }
 `;
 
@@ -98,10 +123,9 @@ const DetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-//   background-color:red;
 
-  @media (max-width: 480px) {
-    padding: 0.5rem;
+  @media (max-width: 650px) {
+    padding: 0rem;
   }
 `;
 
@@ -112,22 +136,20 @@ const DetailRow = styled.div`
   align-items: center;
   margin-bottom: 0.5rem;
 
-  @media (max-width: 400px) {
-    flex-direction: column;
-    align-items: flex-start;
+  @media (max-width: 576px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 `;
 
-
 const Label = styled.span`
-  font-weight: bold;
+  font-family: 'DMSansSB';
   margin-bottom: 0.3rem;
-  width: 35%; // Adjust width to your liking
-//   background-color:red;
 
-  @media (max-width: 400px) {
+  @media (max-width: 576px) {
     margin-bottom: 0.2rem;
-    width: 100%;
+    width: 100px;
   }
 `;
 
@@ -136,27 +158,22 @@ const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
-  text-align: right;
-  width: ${(props) => (props.small ? '40%' : '70%')};
-  box-sizing: border-box;
-  border-color: blue;
-  align-self: center;
   text-align: left;
+  width: 70%;
+  box-sizing: border-box;
 
-  @media (max-width: 480px) {
-   width: ${(props) => (props.small ? '55%' : '100%')};
+  @media (max-width: 576px) {
+    width: 100%;
     margin-top: 0.3rem;
   }
-
 `;
-
 
 const InputWrapper = styled.div`
   display: flex;
-  width: 70%; // Match this width with the div wrapping the weight input
+  width: 80%;
 
   @media (max-width: 480px) {
-    width: 60%;
+    width: 70%;
   }
 
   @media (max-width: 400px) {
@@ -164,7 +181,6 @@ const InputWrapper = styled.div`
     margin-top: 0.3rem;
   }
 `;
-
 
 const Prefix = styled.span`
   padding: 0.5rem;
@@ -177,9 +193,8 @@ const Prefix = styled.span`
   background-color: whitesmoke;
 `;
 
-
 const Button = styled.button`
-  background-color: #7f2800;
+  background-color: #385aeb;
   color: #fff;
   border: none;
   padding: 0.7rem 4rem;
@@ -187,19 +202,24 @@ const Button = styled.button`
   margin-top: 1rem;
   cursor: pointer;
   font-size: 18px;
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+width:100%;
+font-family:'DMSansB'
+  &:hover {
+    background-color: #1E3E6B;
   }
 
-  @media (max-width: 480px) {
-    padding: 0.5rem 2rem;
+  @media (max-width: 724px) {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 576px) {
+    padding: .8rem 2rem;
     font-size: 1rem;
   }
 
   @media (max-width: 400px) {
-    padding: 0.5rem 1.5rem;
+    padding: 0.3rem 1.5rem;
     font-size: 0.9rem;
   }
 `;
@@ -221,7 +241,7 @@ const MeasurementButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 0.3rem;
+    padding: 0.2rem;
     margin: 0.2rem;
   }
 
@@ -232,7 +252,6 @@ const MeasurementButton = styled.button`
   }
 `;
 
-
 const MeasurementButtonContainer = styled.div`
   width: 100%;
   display: flex;
@@ -242,32 +261,8 @@ const MeasurementButtonContainer = styled.div`
 `;
 
 
-const BackgroundCircle = styled.div`
-  position: absolute;
-  bottom: 300px;
-  left: -20px;
-  width: 400px;
-  height: 400px;
-  background-color: #fe7a00;
-  border-radius: 50%;
-  z-index: 0;
 
-  @media (max-width: 480px) {
-    bottom: 150px;
-    left: -120px;
-    width: 250px;
-    height: 250px;
-  }
-
-  @media (max-width: 400px) {
-    bottom: 120px;
-    left: -150px;
-    width: 200px;
-    height: 200px;
-  }
-`;
-
-const NewProductType = ({ productTitle, productImage,barcodeName}) => {
+const NewProductType = ({ productTitle, productImage ,open,barcodeName}) => {
   const client = new Client();
   const databases = new Databases(client);
   const databaseId = 'data-level-1';
@@ -281,36 +276,60 @@ const NewProductType = ({ productTitle, productImage,barcodeName}) => {
   const [title, setTitle] = useState(productTitle);
   const [productKey, setProductKey] = useState('');
   const [isMeasurementSelected, setIsMeasurementSelected] = useState(false);
+  const [uniqueId, setUniqueId] = useState('');
+  const [stocksValue, setStocksValue] = useState('0');
+
 
   useEffect(() => {
-        console.log(barcodeName);
-    const fetchProductKey = async () => {
-      try {
-        const response = await databases.listDocuments(databaseId, collectionId);
-        console.log(response);
-        if (response.documents.length > 0) {
-          const productKey = response.documents[0]['Product-Key'];
-          console.log(productKey);
-          setProductKey(productKey);
-        }
-      } catch (error) {
-        console.error('Error fetching Product-Key:', error);
-      }
-    };
-    fetchProductKey();
-    setTitle(removeWeightFromTitle(productTitle));
-  }, [productTitle]);
+    console.log(barcodeName);
+const fetchProductKey = async () => {
+  try {
+    const response = await databases.listDocuments(databaseId, collectionId);
+    console.log(response);
+    if (response.documents.length > 0) {
+      const productKey = response.documents[0]['Product-Key'];
+      console.log(productKey);
+      setProductKey(productKey);
+    }
+  } catch (error) {
+    console.error('Error fetching Product-Key:', error);
+  }
+};
+fetchProductKey();
+setTitle(removeWeightFromTitle(productTitle));
+}, [productTitle]);
 
-  const handleSPChange = (event) => {
-    setSPValue(event.target.value);
-  };
+const handleSPChange = (event) => {
+  const value = event.target.value;
+  const numericValue = value.replace(/[^\d]/g, ''); // Remove non-numeric characters
 
-  const handleMRPChange = (event) => {
-    setMRPValue(event.target.value);
+  setSPValue(numericValue);
+};
+
+const handleMRPChange = (event) => {
+  const value = event.target.value;
+  const numericValue = value.replace(/[^\d]/g, ''); // Remove non-numeric characters
+
+  setMRPValue(numericValue);
+};
+
+  const checkBarcodeType = (barcodeName) => {
+    const numericBarcode = parseFloat(barcodeName); // Attempt to parse as float
+  
+    if (!isNaN(numericBarcode)) {
+      return 'Number'; // Returns 'Number' if the parsed value is not NaN
+    } else {
+      return 'String'; // Returns 'String' if it couldn't be parsed as a number
+    }
   };
 
   const handleWeightChange = (event) => {
-    setWeightValue(event.target.value.toUpperCase());
+    const value = event.target.value.replace(/[^0-9]/g, ''); // Only allow numbers
+    setWeightValue(value);
+  };
+
+  const handleStocksChange = (event) => {
+    setStocksValue(event.target.value.toUpperCase());
   };
 
   const handleMeasurementClick = (unit) => {
@@ -319,82 +338,257 @@ const NewProductType = ({ productTitle, productImage,barcodeName}) => {
   };
 
   const handleTitleChange = (event) => {
-    setTitle(event.target.value);
+    // Allow only alphabetic input for Title
+    const value = event.target.value.replace(/[^a-zA-Z\s]/g, ''); // Replace non-alphabetic characters
+    setTitle(value);
   };
 
   const removeWeightFromTitle = (title) => {
-        // Define patterns to match weight formats like "90 g", "90GM", "90 Kg", etc.
-        const patterns = [
-          /\s*\d+\s*(g|gm|kg|ml|l|pcs)\s*/gi,
-          /\s*\d+\s*(g|gm|kg|ml|l|pcs)\.*$/gi,
-        ];
-      
-        // Replace the matched patterns with an empty string
-        patterns.forEach((pattern) => {
-          title = title.replace(pattern, '');
-        });
-      
-        return title.trim(); // Trim any leading or trailing spaces
-      };
+    // Define patterns to match weight formats like "90 g", "90GM", "90 Kg", etc.
+    const patterns = [
+      /\s*\d+\s*(g|gm|kg|ml|l|pcs)\s*/gi,
+      /\s*\d+\s*(g|gm|kg|ml|l|pcs)\.*$/gi,
+    ];
+  
+    // Replace the matched patterns with an empty string
+    patterns.forEach((pattern) => {
+      title = title.replace(pattern, '');
+    });
+  
+    return title.trim(); // Trim any leading or trailing spaces
+  };
       
 
   const handleAddToCart = () => {
-    if (!isMeasurementSelected) {
-      alert('Select any measurement to add to cart');
+    if (!spValue || parseFloat(spValue) <= 0) {
+      alert('SP value must be greater than 0.');
       return;
     }
-    if (parseFloat(spValue) > parseFloat(mrpValue)) {
+    
+    if (!mrpValue || parseFloat(mrpValue) <= 0) {
+      alert('MRP value must be greater than 0.');
+      return;
+    }
+
+    // Check if SP is greater than MRP
+    if (parseInt(spValue) > parseInt(mrpValue)) {
       alert('SP should not be greater than MRP');
       return;
     }
+    
+    // Validate Weight has numeric value and measurement is selected
+    const numericWeight = parseFloat(weightValue.replace(/[a-zA-Z]/g, ''));
+    if (!numericWeight || isNaN(numericWeight) || !isMeasurementSelected) {
+      alert('Please enter a numeric value and select a measurement for Weight.');
+      return;
+    }
+  
+    // Validate Title (accepts only alphabets and should have at least 2 alphabets)
+    if (!/^[a-zA-Z].*[a-zA-Z]/.test(title)) {
+      alert('Title should contain at least 2 alphabets and cannot be empty or just spaces.');
+      return;
+    }
+  
+    // Treat Stocks as '0' if null
+    const stocks = stocksValue || '0';
     console.log(`${productKey}`);
     const initialProductID = 10;
     
-
-    
-
     const confirmAdd = window.confirm(`Do you want to add the product: ${title} to the cart?`);
     if (confirmAdd) {
         // Log the new unique product ID
-        const newUniqueProductID = `${initialProductID}${productKey}.1`;
-        console.log(newUniqueProductID);
-      alert('Added to cart successfully!');
-      setSPValue('');
-      setMRPValue('');
-      setWeightValue('');
-      setTitle('');
+        const updatedProductID = `${parseInt(initialProductID) + parseInt(productKey)}.1`;
+        setUniqueId(updatedProductID);
+        console.log(updatedProductID);
+        console.log('Image:',productImage);
+      console.log('Weight:', weightValue);
+      console.log('MRP:', mrpValue);
+      console.log('SP:', spValue);
+      console.log('Stocks:', stocks);
+      console.log('Title:', title);
+        alert('Added to cart successfully!');
+      
     }
   };
 
+
+  useEffect(() => {
+    if (uniqueId) {
+      addToShopItemsDB();
+      addToGlobalDB();
+      updateProductKey();
+    }
+  }, [uniqueId]);
+
+  const addToShopItemsDB = async () => {
+    // if(uniqueId) console.log(uniqueId);
+    // else console.log('hehe');
+
+    const client = new Client();
+    client
+      .setEndpoint('https://cloud.appwrite.io/v1')
+      .setProject('65773c8581b895f83d40'); // Your project ID
+
+    const databaseId = 'data-level-1';
+    const collectionId = 'Shop_ItemsDB_testing';
+
+    const databases = new Databases(client);
+
+    try {
+      const response = await databases.listDocuments(databaseId, collectionId, [
+        Query.equal('SHOP_ID', '301')
+      ]);
+
+      const documents = response.documents;
+
+      if (documents.length > 0) {
+        const existingDocument = documents[0];
+        
+        console.log(`sp : ${uniqueId}:${spValue}`);
+        console.log(`Stocks : ${uniqueId}:${stocksValue}`);
+        console.log(`MRP : ${uniqueId}:${mrpValue}`);
+        console.log(`Weight : ${uniqueId}:${weightValue}`);
+        console.log(`ProductIDs : ${uniqueId}`);
+
+        const updatedDocument = {
+          'Shop_Items-SP': [...existingDocument['Shop_Items-SP'], `${uniqueId}:${spValue}`],
+          'Shop_Items-Stocks': [...existingDocument['Shop_Items-Stocks'], `${uniqueId}:${stocksValue}`],
+          'Shop_Items-MRP': [...existingDocument['Shop_Items-MRP'], `${uniqueId}:${mrpValue}`],
+          'Shop_Items-Weight': [...existingDocument['Shop_Items-Weight'], `${uniqueId}:${weightValue}`],
+          'ProductIDs': [...existingDocument['ProductIDs'], uniqueId]
+        };
+
+        const updateResponse = await databases.updateDocument(
+          databaseId,
+          collectionId,
+          existingDocument.$id,
+          updatedDocument
+        );
+
+        console.log('Document updated successfully:', updateResponse);
+      } else {
+        console.log('Document with SHOP_ID 301 not found.');
+      }
+    } catch (error) {
+      console.error('Error adding/updating document in Appwrite:', error);
+    }
+  };
+
+  const addToGlobalDB = async () => {
+  const client = new Client();
+  client
+    .setEndpoint('https://cloud.appwrite.io/v1')
+    .setProject('65773c8581b895f83d40'); // Your project ID
+
+  const databaseId = 'data-level-1';
+  const collectionId = '664f1ca60037dad0be9c';
+
+  const databases = new Databases(client);
+
+  const barcodeType = checkBarcodeType(barcodeName);
+
+  const newDocument = {
+    ProductID: uniqueId,
+    ProductName: title,
+    Product_Image: productImage,
+    Product_Category: 'Snacks',
+    'Category-Image': productImage,
+    Product_Barcode: barcodeType === 'Number' 
+      ? [barcodeName] 
+      : [uniqueId]
+  };
+
+  try {
+    const createResponse = await databases.createDocument(
+      databaseId,
+      collectionId,
+      uniqueId,
+      newDocument
+    );
+
+    console.log('New document created successfully:', createResponse);
+  } catch (error) {
+    console.error('Error creating document in Appwrite:', error);
+  }
+};
+
+const updateProductKey = async () => {
+  const client = new Client();
+  client
+    .setEndpoint('https://cloud.appwrite.io/v1')
+    .setProject('65773c8581b895f83d40'); // Your project ID
+
+  const databaseId = 'data-level-1';
+  const collectionId = 'AdminDB';
+
+  const databases = new Databases(client);
+  try {
+    // Fetch all documents in the collection
+    const response = await databases.listDocuments(databaseId, collectionId);
+
+    if (response.documents.length > 0) {
+      // Extract the first document
+      const document = response.documents[0];
+      console.log(document);
+      const documentId = document.$id;
+      const currentProductKey = document['Product-Key'];
+
+      // Prepare the updated Product-Key value
+      const updatedProductKey = currentProductKey + 1;
+
+      // Construct the update payload
+      const updatedDocument = {
+        'Product-Key': updatedProductKey,
+      };
+
+      // Update the document with the new Product-Key value
+      const updateResponse = await databases.updateDocument(
+        databaseId,
+        collectionId,
+        documentId,
+        updatedDocument
+      );
+
+      console.log('Product-Key updated successfully:', updateResponse);
+    } else {
+      console.log('No documents found in collection', collectionId);
+    }
+  } catch (error) {
+    console.error('Error updating Product-Key in AdminDB:', error);
+  }
+};
   return (
-    <Container>
-        <h3 style={{fontFamily:"DMSansB"}}>ADD NEW PRODUCT</h3>
+    <Container open={open}>
+      
       <Card>
-        <InnerContainer>
-          <Image src={productImage} alt="Product" />
-          <DetailsContainer>
-            <DetailRow>
-              <Label style={{fontFamily:"DMSansB"}}>Title:</Label>
-              
-              <Input
-                type="text"
-                value={title}
-                onChange={handleTitleChange}
-              />
+  
+      <ImageTitleContainer>
+          <Image src={productImage} alt={title} />
+          <div style={{ width: '70%' }}>
+            <DetailRow style={{display:'flex',flexDirection:'column'}}>
+              {/* <Label style={{ fontFamily: 'DMSansB' }}>
+                Title
+              </Label> */}
+              <Input type="text" value={title} onChange={handleTitleChange} />
             </DetailRow>
-            <DetailRow>
-  <Label style={{fontFamily:"DMSansB"}}>SP:</Label>
-  <InputWrapper small>
-    <Prefix>₹</Prefix>
-    <Input
+          </div>
+        </ImageTitleContainer>
+          <DetailsContainer>
+     
+<DetailRow>
+            <Label style={{ fontFamily: 'DMSansB' }}>SP:</Label>
+            <InputWrapper small>
+            <Prefix>₹</Prefix>
+            <Input
       type="text"
       className="sp-input"
       value={spValue}
       onChange={handleSPChange}
       small
     />
-  </InputWrapper>
-</DetailRow>
+            </InputWrapper>
+          </DetailRow>
+
 <DetailRow>
   <Label style={{fontFamily:"DMSansB"}}>MRP:</Label>
   <InputWrapper small>
@@ -408,7 +602,18 @@ const NewProductType = ({ productTitle, productImage,barcodeName}) => {
     />
   </InputWrapper>
 </DetailRow>
-
+<DetailRow>
+  <Label style={{fontFamily:"DMSansB"}}>Stocks:</Label>
+  <div style={{ width: '70%' }}> 
+    <Input
+      type="text"
+      className="weight-input"
+      value={stocksValue}
+      onChange={handleStocksChange}
+      small
+    />
+  </div>
+</DetailRow>
 
 
 <DetailRow>
@@ -424,21 +629,24 @@ const NewProductType = ({ productTitle, productImage,barcodeName}) => {
   </div>
 </DetailRow>
 
-            
-<p style={{marginRight:"1rem",fontFamily:"DMSansSB"}}>Select Any One :)</p>
-            <MeasurementButtonContainer>
-            
-              <MeasurementButton onClick={() => handleMeasurementClick('KG')} style={{fontFamily:"DMSans"}}>KG</MeasurementButton>
-              <MeasurementButton onClick={() => handleMeasurementClick('GM')} style={{fontFamily:"DMSans"}}>GM</MeasurementButton>
-              <MeasurementButton onClick={() => handleMeasurementClick('L')} style={{fontFamily:"DMSans"}}>L</MeasurementButton>
-              <MeasurementButton onClick={() => handleMeasurementClick('ML')} style={{fontFamily:"DMSans"}}>ML</MeasurementButton>
-              <MeasurementButton onClick={() => handleMeasurementClick('PCS')} style={{fontFamily:"DMSans"}}>PCS</MeasurementButton>
-            </MeasurementButtonContainer>
+<UnitButtonContainer>
+                {['GM', 'KG', 'ML', 'LTR'].map((unit) => (
+                  <UnitButton
+                    key={unit}
+                    // className={selectedUnit === unit ? 'active' : ''}
+                    onClick={() =>  handleMeasurementClick(unit)}
+                  >
+                    {unit}
+                  </UnitButton>
+                ))}
+              </UnitButtonContainer>
+
+
             
           </DetailsContainer>
-          <Button onClick={handleAddToCart} disabled={!isMeasurementSelected} style={{fontFamily:"DMSansB"}}>Add to Cart</Button>
-        </InnerContainer>
-        <BackgroundCircle />
+          <Button onClick={handleAddToCart} disabled={!isMeasurementSelected} style={{fontFamily:"DMSansB"}}>SUBMIT</Button>
+
+       
       </Card>
     </Container>
   );

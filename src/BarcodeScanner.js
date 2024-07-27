@@ -1,262 +1,178 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import React, { useEffect, useRef, useState } from 'react';
+import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 import { useNavigate } from 'react-router-dom';
+import beepSound from './audio/beep-sound-8333.mp3';
 import './FontLoader.css'
 
 const BarcodeScanner = () => {
-  const [barcodeInput, setBarcodeInput] = useState('');
-  const [scanResult, setScanResult] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [scannedCode, setScannedCode] = useState('');
+  const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const scannerRef = useRef(null);
+  const scannerStyle = useRef({
+    border: '5px solid transparent',
+    transition: 'border-color 0.3s'
+  });
+
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const scanner = new Html5QrcodeScanner('reader', {
-  //     qrbox: {
-  //       width: 250,
-  //       height: 250,
-  //     },
-  //     fps: 5,
-  //   });
+  useEffect(() => {
+    const setupScanner = async () => {
+      try {
+        const devices = await Html5Qrcode.getCameras();
+        if (devices && devices.length) {
+          if (!scannerRef.current) {
+            scannerRef.current = new Html5QrcodeScanner(
+              "reader",
+              { fps: 5, qrbox: { width: 250, height: 250 }, flip: false },
+              false
+            );
 
-  //   scanner.render(success, error);
+            const onScanSuccess = (decodedText, decodedResult) => {
+              setScannedCode(decodedText);
+              const audio = new Audio(beepSound);
+              audio.play();
+              setShowModal(true);
+              scannerStyle.current.border = '5px solid green';
+              
+            };
 
-  //   function success(result) {
-  //     setScanResult(result);
-  //     setIsModalOpen(true);
-  //   }
+            scannerRef.current.render(onScanSuccess);
+          }
+        } else {
+          setError('No camera devices found.');
+        }
+      } catch (err) {
+        setError(`Error initializing scanner: ${err.message}`);
+      }
+    };
 
-  //   function error(err) {
-  //     console.warn(err);
-  //   }
-  // }, []);
+    setupScanner();
+  }, []);
 
-  const handleInputChange = (event) => {
-    setBarcodeInput(event.target.value);
+  const isMobile = window.innerWidth <= 768;
+
+  const handleOk = () => {
+    setShowModal(false);
+    scannerRef.current.clear();
+    navigate('/product-listing', { state: { barcodeName: scannedCode } });
   };
 
-  const navigateToProductListing = (value) => {
-    navigate('/product-listing', { state: { barcodeName: value } });
+  const handleCancel = () => {
+    setShowModal(false);
   };
 
   const handleSearch = () => {
-    navigateToProductListing(barcodeInput);
-  };
-
-  const handleContinue = () => {
-    setIsModalOpen(false);
-    if (scanResult) {
-      navigateToProductListing(scanResult);
-    }
-  };
-
-  const handleBack = () => {
-    setIsModalOpen(false);
+    navigate('/product-listing', { state: { barcodeName: inputValue } });
   };
 
   return (
-    <Container>
-      <Title style={{fontFamily:"DMSansB"}}>Scan Barcode</Title>
-      <div id="reader"></div>
-      <OrText style={{fontFamily:"DMSansB"}}>OR</OrText>
-      <InputContainer>
-      <Input
-  type="text"
-  placeholder="Enter barcode or name ..."
-  value={barcodeInput}
-  onChange={handleInputChange}
-  style={{fontFamily:"DMSans"}}
-  onKeyDown={(event) => {
-    if (event.key === 'Enter') {
-      handleSearch();
-    }
-  }}
-/>
-
-        <Button onClick={handleSearch} style={{fontFamily:"DMSansSB"}}>Search</Button>
-      </InputContainer>
-      {isModalOpen && (
-        <Modal>
-          <ModalContent>
-            <p>Barcode: {scanResult}</p>
-            <ButtonContainer>
-              <ModalButton onClick={handleBack}>Back</ModalButton>
-              <ModalButton onClick={handleContinue}>Continue</ModalButton>
-            </ButtonContainer>
-          </ModalContent>
-        </Modal>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', paddingTop: isMobile ? '10%' : '1%' }}>
+      <h1 style={{fontFamily:"DMSansB"}}>SCAN BARCODE</h1>
+      <div
+        id="reader"
+        style={{
+          width: isMobile ? '70%' : '40%',
+          height: isMobile ? '60%' : '20%',
+          boxShadow: '0 0 10px rgba(0,0,0,0.2)',
+          ...scannerStyle.current
+        }}
+      ></div>
+      <p style={orStyle}>OR</p>
+      <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', marginTop: isMobile ? '20px' : '2px' }}>
+        <input
+          type="text"
+          placeholder="Enter Barcode or Name"
+          style={inputStyle}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          
+        />
+        <button style={{ ...buttonStyle, marginTop: isMobile ? '10px' : '0' }} onClick={handleSearch}>Search</button>
+      </div>
+      {error && (
+        <p style={{ fontSize: '18px', color: 'red', textAlign: 'center' }}>{error}</p>
       )}
-    </Container>
+
+      {showModal && (
+        <div style={modalOverlayStyle}>
+          <div style={modalStyle}>
+            <h2>Scanned Result</h2>
+            <p>{scannedCode}</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+              <button onClick={handleOk} style={modalButtonStyle}>OK</button>
+              <button onClick={handleCancel} style={{ ...modalButtonStyle, backgroundColor: '#CE2E27' }}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #f0f0f0;
-  padding: 0 1rem;
+const orStyle = {
+  fontSize: '18px',
+  margin: '20px 0',
+};
 
-  @media (max-width: 768px) {
-    padding: 0 0.5rem;
-  }
+const inputStyle = {
+  fontSize: '18px',
+  padding: '10px',
+  borderRadius: '5px',
+  border: '1px solid #ccc',
+  marginRight: '10px',
+  transition: 'border-color 0.3s',
+  width: '300px', 
+  fontFamily:"DMSans"
+};
 
-  @media (max-width: 480px) {
-    padding: 0 0.25rem;
-  }
-`;
+const buttonStyle = {
+  fontSize: '18px',
+  padding: '10px 20px',
+  cursor: 'pointer',
+  borderRadius: '5px',
+  backgroundColor: '#007BFF',
+  color: '#fff',
+  border: 'none',
+  transition: 'background-color 0.3s',
+  marginLeft: '10px',
+  fontFamily:"DMSansSB"
+};
 
-const Title = styled.h1`
-  color: #058689;
-  margin-bottom: 1.5rem;
-  font-size: 2.2rem;
-  font-family: "DM Sans", sans-serif;
-  font-weight: 800;
+const modalOverlayStyle = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 1000,
+};
 
-  @media (max-width: 768px) {
-    font-size: 1.75rem;
-  }
+const modalStyle = {
+  backgroundColor: '#fff',
+  padding: '20px',
+  borderRadius: '5px',
+  width: '80%',
+  maxWidth: '500px',
+  textAlign: 'center',
+};
 
-  @media (max-width: 480px) {
-    font-size: 1.5rem;
-  }
-`;
-
-const OrText = styled.h1`
-  margin: 20px 0;
-  color: #333;
-  font-weight: bold;
-  font-size: 1.5rem;
-
-  @media (max-width: 768px) {
-    font-size: 1.25rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1rem;
-  }
-`;
-
-const InputContainer = styled.div`
-  width: 80%;
-  max-width: 500px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-
-  @media (max-width: 768px) {
-    width: 90%;
-  }
-
-  @media (max-width: 480px) {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  @media (max-width: 400px) {
-    width: 80%;
-  }
-`;
-
-const Input = styled.input`
-  flex: 2;
-  padding: 1rem;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #f5f5f5;
-
-  @media (max-width: 768px) {
-    padding: 0.75rem;
-    font-size: 14px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 12px;
-  }
-`;
-
-const Button = styled.button`
-  background-color: #c62828;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #b71c1c;
-  }
-
-  @media (max-width: 768px) {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 8px 16px;
-    font-size: 12px;
-  }
-`;
-
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-`;
-
-const ModalContent = styled.div`
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
-`;
-
-const ModalButton = styled.button`
-  background-color: #058689;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #04656d;
-  }
-
-  @media (max-width: 768px) {
-    padding: 8px 16px;
-    font-size: 14px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 6px 12px;
-    font-size: 12px;
-  }
-`;
+const modalButtonStyle = {
+  fontSize: '18px',
+  padding: '10px 20px',
+  cursor: 'pointer',
+  borderRadius: '5px',
+  backgroundColor: '#007BFF',
+  color: '#fff',
+  border: 'none',
+  transition: 'background-color 0.3s',
+  width: '100px', // Adjust width as needed
+};
 
 export default BarcodeScanner;
