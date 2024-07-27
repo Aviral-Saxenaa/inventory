@@ -7,11 +7,14 @@ import VariantDetails from './VariantDetails';
 import NewProduct from './NewProduct';
 import NewProductType from './NewProductType'; // Import NewProductType component
 import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress from Material-UI
-
+import { Sheet } from 'react-modal-sheet';
+import { IoArrowBack } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
+import { RxLetterSpacing } from 'react-icons/rx';
 const TotalCategory = () => {
     const location = useLocation();
-    const { productIDs, productTitle, productImage } = location.state || {};
-
+    const { productIDs, productTitle, productImage,barcodeName } = location.state || {};
+    const navigate = useNavigate(); // Corre
     const [loading, setLoading] = useState(true); // State to track loading state
     const [productImages, setProductImages] = useState({});
     const [variantImages, setVariantImages] = useState({});
@@ -23,10 +26,23 @@ const TotalCategory = () => {
     const [documents, setDocuments] = useState([]);
     const [showAddScreenType, setShowAddScreenType] = useState(null); // State to track which add screen to show
     const [uniqueProductIDs, setUniqueProductIDs] = useState([]); // State to store uniqueProductIDs
+    const [isOpen, setOpen] = useState(false);
+    const [variantListMessage, setVariantListMessage] = useState('');
+
 
     const handleShowAddScreen = (type) => {
+
+        // if(type==='variant'){
+            setOpen(true);
+        // }
+
         setShowAddScreenType(type); // Set the type of add screen to show
     };
+
+    const handleClick = () => {
+        navigate('/'); // Use navigate to go to a different route
+      };
+
 
     useEffect(() => {
         const client = new Client();
@@ -47,8 +63,8 @@ const TotalCategory = () => {
                         Query.equal('ProductID', `${id}.1`),
                     ]);
                     if (response.documents.length > 0) {
-                        const { Product_Image, Product_Name } = response.documents[0];
-                        return { [id]: { image: Product_Image, name: Product_Name } };
+                        const { Product_Image, ProductName } = response.documents[0];
+                        return { [id]: { image: Product_Image, name: ProductName } };
                     }
                 } catch (error) {
                     console.error(`Error fetching product image from collection ${collectionId}:`, error);
@@ -70,6 +86,7 @@ const TotalCategory = () => {
     }, [productIDs]);
 
     useEffect(() => {
+        console.log(barcodeName)
         if (selectedProductID !== null) {
             const client = new Client();
             const databases = new Databases(client);
@@ -90,8 +107,8 @@ const TotalCategory = () => {
                         return acc;
                     }, {});
                     const names = response.documents.reduce((acc, doc) => {
-                        if (doc.Product_Name) {
-                            acc[doc.ProductID] = doc.Product_Name;
+                        if (doc.ProductName) {
+                            acc[doc.ProductID] = doc.ProductName;
                         }
                         return acc;
                     }, {});
@@ -140,6 +157,7 @@ const TotalCategory = () => {
     }, [productIDs]);
 
     const handleVariantClick = (variant) => {
+        setOpen(true)
         setSelectedVariant(variant);
         setShowAddScreenType(null); // Reset add screen type when variant is clicked
     
@@ -190,7 +208,17 @@ const TotalCategory = () => {
     }
 
     return (
+        <>
+        <div style={styles.topbar}>
+        <IoArrowBack 
+          style={styles.backButton} 
+          onClick={handleClick} 
+          size={23} // Adjust icon size as needed 
+        />
+        <div style={{...styles.title,letterSpacing:0.5,marginLeft:2}}>Select Product</div>
+      </div>
         <div style={styles.container}>
+        
             <ProductSelector
                 productImages={productImages}
                 productNames={Object.fromEntries(Object.entries(productImages).map(([id, data]) => [id, data.name]))}
@@ -212,6 +240,7 @@ const TotalCategory = () => {
                         productImage={productImage}
                         variantWeights={variantWeights}
                         uniqueProductIDs={uniqueProductIDs} 
+                        barcodeName={barcodeName}
                         // productImages={productImages}
                     />
                 ) : showAddScreenType === 'variant' ? (
@@ -220,6 +249,7 @@ const TotalCategory = () => {
                         productImage={productImage}
                         variantWeights={variantWeights}
                         selectedProductID={selectedProductID} 
+                        barcodeName={barcodeName}
                         // variantImages={variantImages}
                         // uniqueProductIDs={uniqueProductIDs} // Pass uniqueProductIDs to NewProduct
                         // productImages={productImages}
@@ -231,15 +261,91 @@ const TotalCategory = () => {
                         variantInfo={variantInfo}
                         variantName={variantNames[selectedVariant]}
                         variantWeights={variantWeights}
+                        open={false}
+                        barcodeName={barcodeName}
                         
                     />
                 )}
+
+<Sheet isOpen={isOpen}  snapPoints={[0.6]} onClose={() => setOpen(false)}>
+        <Sheet.Container>
+          <Sheet.Header />
+          <Sheet.Content>
+    
+          
+          {showAddScreenType === 'type' ? (
+                    <NewProductType
+                        productTitle={productTitle}
+                        productImage={productImage}
+                        variantWeights={variantWeights}
+                        uniqueProductIDs={uniqueProductIDs} 
+                        open={true}
+                        barcodeName={barcodeName}
+                        // productImages={productImages}
+                    />
+                ) : showAddScreenType === 'variant' ? (
+                    <NewProduct
+                        productTitle={productTitle}
+                        productImage={productImage}
+                        variantWeights={variantWeights}
+                        selectedProductID={selectedProductID} 
+                        open={true}
+                        barcodeName={barcodeName}
+                        // variantImages={variantImages}
+                        // uniqueProductIDs={uniqueProductIDs} // Pass uniqueProductIDs to NewProduct
+                        // productImages={productImages}
+                    />
+                ) : (
+                    <VariantDetails
+                        selectedVariant={selectedVariant}
+                        variantImages={variantImages}
+                        variantInfo={variantInfo}
+                        variantName={variantNames[selectedVariant]}
+                        variantWeights={variantWeights}
+                        open={true}
+                        barcodeName={barcodeName}
+                        
+                    />
+                )}
+            
+          </Sheet.Content>
+        </Sheet.Container>
+        <Sheet.Backdrop />
+      </Sheet>
             </div>
         </div>
+        
+      </>
     );
 };
 
 const styles = {
+    topbar: {
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: '#1a1c1e',
+        padding: 0, // Remove default padding
+        paddingHorizontal: '0.2rem',
+paddingTop:'1rem',
+paddingBottom:'1rem',        color: '#fff',
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+        position: 'fixed', // Fix the topbar to the top
+        top: 0, 
+        left: 0,
+        width: '100%', // Make it span the full width
+        zIndex: 100 // Ensure it stays on top of other elements
+      },
+      backButton: {
+        cursor: 'pointer',
+        marginRight: '0.5rem',
+        fontSize: '1rem', 
+        marginLeft: '0.3rem'  // Add left margin to move the icon 
+      },
+      title: {
+        fontSize: '1.2rem',
+        fontWeight: 'bold',
+        fontFamily: 'DMSans',
+      },
     container: {
         display: 'flex',
         flexDirection: 'column',
@@ -266,7 +372,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         width: '100%',
-        height: '80%',
+        height: '100%',
     },
 };
 

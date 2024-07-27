@@ -1,46 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { IoIosAddCircle } from 'react-icons/io';
-import { FaArrowCircleDown } from "react-icons/fa";
-import './FontLoader.css'
+import './FontLoader.css';
 
 const ListContainer = styled.div`
   width: 40%;
   padding: 1rem;
-  background-color: #000356a;
-  border-radius: 8px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  background-color: #f1f1f4;
+  border-radius: 0px;
   overflow-y: auto;
-  height: 100%;
-  // max-height: 79vh;
-  padding-bottom:0rem;
-  // background-color:red;
-
-  @media (max-width: 2000px) {
-    width: 50%;
-    height:104%;
-  }
-
-    @media (max-width: 900px) {
-    width: 60%;
-    height:81vh;
-  }
-
-@media (max-width: 727px) {
-    width: 60%;
-    height:104% ;
-  }
-
-
+  display: flex;
+  flex-direction: column;
+  // height: calc(100vh - 10rem); /* Take up full viewport height minus button height */
 
   @media (max-width: 600px) {
-    width: 50%;
-    // padding: .4rem;
+    width: 100%;
   }
 `;
 
 const VariantButton = styled.button`
-  background: ${props => (props.isSelected ? '#f0f0f0' : '#fff')};
+  background: ${props => (props.isSelected ? '#f1f1f1' : '#fff')};
   color: ${props => (props.isSelected ? '#333' : '#000')};
   border: none;
   padding: .5rem;
@@ -59,137 +37,116 @@ const VariantButton = styled.button`
 `;
 
 const VariantImage = styled.img`
-  width: 60px;
+  width: 80px;
   height: 80px;
   border-radius: 8px;
   border: 1px solid #ddd;
   margin-right: 1rem;
   flex-shrink: 0;
-
-  @media (max-width: 900px) {
-    width: 50px;
-    height: 70px;
-  }
-
-  @media (max-width: 600px) {
-    width: 40px;
-    height: 60px;
+object-fit:contain;
+  @media (max-width: 576px) {
+    width: 80px;
+    height: 80px;
   }
 
   @media (max-width: 400px) {
-    width: 35px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
   }
 `;
 
 const VariantInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 `;
 
 const VariantTitle = styled.span`
-  font-size: 1rem;
   color: #333;
   margin-bottom: 0.5rem;
+  font-size: ${props => (props.isMobileView ? '0.8rem' : '1rem')};
+`;
 
-  @media (max-width: 900px) {
-    font-size: 0.9rem;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 0.8rem;
-  }
-
-  @media (max-width: 400px) {
-    font-size: 0.7rem;
-  }
+const VariantDetails = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const VariantWeight = styled.span`
-  font-size: 0.9rem;
-  color: red;
+  font-size: ${props => (props.isMobileView ? '0.9rem' : '1rem')};
+  color: #212121;
   font-weight: bold;
-  background-color: #f0f0f0;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
+  text-align: left;
+`;
 
-  @media (max-width: 900px) {
-    font-size: 0.8rem;
-    padding: 0.2rem 0.4rem;
-  }
+const HighlightedText = styled.span`
+  background-color: #f5f6f8;
+  border-radius: 1px;
+  padding: 2px 10px;
+  border: 1px solid #ccc;
+`;
 
-  @media (max-width: 600px) {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.3rem;
-  }
+const SelectButton = styled.button`
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
 
-  @media (max-width: 400px) {
-    font-size: 0.6rem;
-    padding: 0.1rem 0.2rem;
+  &:hover {
+    background-color: #45a049;
   }
 `;
 
 const AddButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 0rem; /* Match ListContainer's padding */
+  box-sizing: border-box; /* Include padding in width calculation */
+
+  @media (min-width: 601px) {
+    width: 40%; /* Match ListContainer's width on larger screens */
+  }
 `;
 
-const AddIcon = styled(IoIosAddCircle)`
-  color: #4caf50;
-  font-size: 4rem;
+const AddButton = styled.button`
+  width: 100%;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 1rem;
   cursor: pointer;
-  margin-left: 1rem;
-  transition: color 0.2s;
-  flex-shrink: 0;
-
-  @media (max-width: 1200px) {
-    font-size: 3.5rem;
-  }
-
-  @media (max-width: 900px) {
-    font-size: 3rem;
-  }
-
-  @media (max-width: 721px) {
-    font-size: 2.5rem;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 2.5rem;
-  }
-
-  @media (max-width: 400px) {
-    font-size: 2.2rem;
-  }
+  font-size: 1.2rem;
+  transition: background-color 0.2s;
+  margin-top: auto;
 
   &:hover {
-    color: darkgreen;
-  }
-`;
-
-const EnterNewVariantWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-  cursor: pointer;
-  background-color: #405D72;
-
-  @media (max-width: 900px) {
-    padding: 0.5rem;
-  }
-
-  @media (max-width: 600px) {
-    padding: 0.4rem;
-  }
-
-  @media (max-width: 400px) {
-    padding: 0.3rem;
+    background-color: #45a049;
   }
 `;
 
 const VariantList = ({ variantImages, variantNames, variantWeights, handleVariantClick, handleButtonClick }) => {
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 615);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 615);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   const [selectedVariant, setSelectedVariant] = useState(null);
 
   const handleClickVariant = (variant) => {
@@ -203,28 +160,35 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
   };
 
   return (
-    <ListContainer>
-      <EnterNewVariantWrapper>
-        <FaArrowCircleDown style={{ fontSize: "32px", color: "#FE7A00" }} />
-        <p style={{ marginLeft: '0.5rem', color: "white", fontFamily:"DMSansB" }}>New Variant</p>
-      </EnterNewVariantWrapper>
-      {Object.keys(variantImages).map((variant) => (
-        <VariantButton
-          key={variant}
-          isSelected={selectedVariant === variant}
-          onClick={() => handleClickVariant(variant)}
-        >
-          <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
-          <VariantInfoContainer>
-            <VariantTitle style={{fontFamily:"DMSans",textAlign:"left" }}>{variantNames[variant]}</VariantTitle>
-            <VariantWeight style={{fontFamily:"DMSansB" }}>Weight: {variantWeights[variant]}</VariantWeight>
-          </VariantInfoContainer>
-        </VariantButton>
-      ))}
-      <AddButtonContainer>
-        <AddIcon onClick={handleAddIconClick} />
+    <>
+      <ListContainer style={{ width: isMobileView ? '100%' : '50%' }}>
+        {Object.keys(variantImages).map((variant) => (
+          <VariantButton
+            key={variant}
+            isSelected={selectedVariant === variant}
+            onClick={() => handleClickVariant(variant)}
+          >
+            <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
+            <VariantInfoContainer>
+              <VariantTitle style={{ fontFamily: "DMSans", textAlign: "left" }}>
+                {variantNames[variant]}
+              </VariantTitle>
+              <VariantDetails>
+                <VariantWeight isMobileView={isMobileView} style={{ fontFamily: "DMSansB", textAlign: 'left' }}>
+                  <HighlightedText>{variantWeights[variant]}</HighlightedText>
+                </VariantWeight>
+                <SelectButton>Select</SelectButton>
+              </VariantDetails>
+            </VariantInfoContainer>
+          </VariantButton>
+        ))}
+        <AddButtonContainer>
+        <AddButton onClick={handleAddIconClick} style={{ fontFamily: 'DMSansSB' }}>
+          Add New Variant
+        </AddButton>
       </AddButtonContainer>
-    </ListContainer>
+      </ListContainer>
+    </>
   );
 };
 

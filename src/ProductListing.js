@@ -39,7 +39,7 @@ const ProductListing = () => {
         [
           Query.or([
             Query.contains('Product_Barcode', [barcodeName]),
-            Query.search('Product_Name', barcodeName)
+            Query.search('ProductName', barcodeName)
           ])
         ]
       );
@@ -52,7 +52,7 @@ const ProductListing = () => {
         // Process all matching documents
         const selectedProducts = response.documents.map((productData) => ({
           ProductID: productData.ProductID,
-          Product_Name: productData.Product_Name,
+          ProductName: productData.ProductName,
           Product_Image: productData.Product_Image,
         }));
 
@@ -70,6 +70,10 @@ const ProductListing = () => {
     } finally {
       setIsLoading(false); // Stop loading
     }
+  };
+
+  const truncateTitle = (title) => {
+    return title.length > 100 ? `${title.slice(0, 100)}...` : title;
   };
 
   const fetchProductAttributes = async (productID) => {
@@ -119,8 +123,14 @@ const ProductListing = () => {
         }
       });
       const data = await response.json();
+      const truncatedProducts = data.data.slice(0, 12).map(product => ({
+        ...product,
+        product_title: truncateTitle(product.product_title)
+      }));
+
       console.log('Search API response:', data); // Log the response data
-      setProducts(data.data.slice(0, 6)); // Display only the top 6 results
+      setProducts(truncatedProducts); // Display only the top 6 results
+
     } catch (error) {
       console.error('Error fetching data', error);
     } finally {
@@ -139,8 +149,8 @@ const ProductListing = () => {
       console.log('Added to cart:', product.product_title);
     } else {
       console.log('APPWRITE ID BUTTON');
-      queryAppwriteProducts(product.Product_Name);
-      console.log('Added to cart:', product.Product_Name);
+      queryAppwriteProducts(product.ProductName);
+      console.log('Added to cart:', product.ProductName);
       
     }
     setIsProductsFetchedFromAppwrite(false);
@@ -155,7 +165,7 @@ const ProductListing = () => {
         'data-level-1', // Replace with your actual database ID
         '664f1ca60037dad0be9c', // Replace with your actual collection ID
         [
-          Query.search('Product_Name', productTitle) // Ensure 'Product_Name' is the correct field name in your collection
+          Query.search('ProductName', productTitle) // Ensure 'ProductName' is the correct field name in your collection
         ]
       );
 
@@ -173,10 +183,10 @@ const ProductListing = () => {
     let productTitle, productImage;
 
     if (Array.isArray(selectedProduct) && selectedProduct.length > 0) {
-      productTitle = selectedProduct[0].product_title || selectedProduct[0].Product_Name;
+      productTitle = selectedProduct[0].product_title || selectedProduct[0].ProductName;
       productImage = selectedProduct[0].product_photos ? selectedProduct[0].product_photos[0] : selectedProduct[0].Product_Image;
     } else {
-      productTitle = selectedProduct.product_title || selectedProduct.Product_Name;
+      productTitle = selectedProduct.product_title || selectedProduct.ProductName;
       productImage = selectedProduct.product_photos ? selectedProduct.product_photos[0] : selectedProduct.Product_Image;
     }
 
@@ -189,6 +199,7 @@ const ProductListing = () => {
         productIDs: appwriteProductIDs,
         productTitle: productTitle,
         productImage: productImage,
+        barcodeName:barcodeName
       },
     });
   };
@@ -259,13 +270,13 @@ const ProductListing = () => {
             component="img"
             height="100"
             image={product.Product_Image}
-            alt={product.Product_Name}
+            alt={product.ProductName}
             sx={{ objectFit: 'contain',alignSelf:'flex-start',backgroundColor:'transparent',width:100,height:100,marginTop:2 }}
           />
       </div>
         <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' ,width:'100%'}}>
           <Typography gutterBottom variant="h7" component="div" sx={{ color: '#333', textAlign: 'left',fontFamily:"DMSansSB",backgroundColor:'transparent',letterSpacing:-0.2 }}>
-            {product.Product_Name}
+          {truncateTitle(product.ProductName)}
           </Typography>
           {/* Conditionally render details only if fetched from Appwrite */}
           {isProductsFetchedFromAppwrite && (
@@ -368,16 +379,29 @@ const ProductListing = () => {
       )}
 
       {isNext && (
-        <Button
-          ref={nextButtonRef}
-          variant="contained"
-          size="large"
-          sx={{ mt: 4, backgroundColor: '#C62828', color: '#fff',fontFamily:"DMSansB", borderRadius: 20, px: 4, '&:hover': { backgroundColor: '#e64a19' } }}
-          onClick={handleTotalCategory}
-        >
-          Next
-          <GrLinkNext style={{ marginRight: '10px',marginLeft:"1rem" }} />
-        </Button>
+       <Button
+       ref={nextButtonRef}
+       variant="contained"
+       size="large"
+       sx={{
+         mt: 4,
+         backgroundColor: '#384aed',
+         color: '#fff',
+         fontFamily: "DMSansB",
+         borderRadius: 0,
+         px: 4,
+         position: 'fixed',
+         bottom: 0, // Adjust this value as needed
+         left: '50%',
+         transform: 'translateX(-50%)',
+         '&:hover': { backgroundColor: '#e64a19' },width:'100%',py:2
+       }}
+       onClick={handleTotalCategory}
+     >
+       Next
+       <GrLinkNext style={{ marginRight: '10px', marginLeft: "1rem" }} />
+     </Button>
+     
       )}
 
       {isProductsFetchedFromAppwrite && (
