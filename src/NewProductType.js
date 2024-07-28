@@ -182,16 +182,6 @@ const InputWrapper = styled.div`
   }
 `;
 
-const Prefix = styled.span`
-  padding: 0.5rem;
-  background-color: #fff;
-  border: 1px solid black;
-  border-radius: 4px 0 0 4px;
-  font-size: 1rem;
-  border-right: none;
-  color: black;
-  background-color: whitesmoke;
-`;
 
 const Button = styled.button`
   background-color: #385aeb;
@@ -223,43 +213,6 @@ font-family:'DMSansB'
     font-size: 0.9rem;
   }
 `;
-
-const MeasurementButton = styled.button`
-  background-color: #fbc02d;
-  color: #000;
-  border: 1px solid #ccc;
-  padding: 0.5rem;
-  margin: 0.3rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
-
-  &:hover {
-    background-color: #f1a303;
-  }
-
-  @media (max-width: 480px) {
-    padding: 0.2rem;
-    margin: 0.2rem;
-  }
-
-  @media (max-width: 400px) {
-    padding: 0.2rem;
-    margin: 0.1rem;
-    font-size: 0.9rem;
-  }
-`;
-
-const MeasurementButtonContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 1rem;
-`;
-
 
 
 const NewProductType = ({ productTitle, productImage ,open,barcodeName}) => {
@@ -578,7 +531,7 @@ const updateProductKey = async () => {
 <DetailRow>
             <Label style={{ fontFamily: 'DMSansB' }}>SP:</Label>
             <InputWrapper small>
-            <Prefix>₹</Prefix>
+            
             <Input
       type="text"
       className="sp-input"
@@ -592,7 +545,7 @@ const updateProductKey = async () => {
 <DetailRow>
   <Label style={{fontFamily:"DMSansB"}}>MRP:</Label>
   <InputWrapper small>
-    <Prefix>₹</Prefix>
+    
     <Input
       type="text"
       className="mrp-input"
@@ -604,7 +557,8 @@ const updateProductKey = async () => {
 </DetailRow>
 <DetailRow>
   <Label style={{fontFamily:"DMSansB"}}>Stocks:</Label>
-  <div style={{ width: '70%' }}> 
+  <InputWrapper small>
+    
     <Input
       type="text"
       className="weight-input"
@@ -612,13 +566,14 @@ const updateProductKey = async () => {
       onChange={handleStocksChange}
       small
     />
-  </div>
+  </InputWrapper>
 </DetailRow>
 
 
 <DetailRow>
   <Label style={{fontFamily:"DMSansB"}}>Weight:</Label>
-  <div style={{ width: '70%' }}> 
+  <InputWrapper small>
+    
     <Input
       type="text"
       className="weight-input"
@@ -626,7 +581,7 @@ const updateProductKey = async () => {
       onChange={handleWeightChange}
       small
     />
-  </div>
+  </InputWrapper>
 </DetailRow>
 
 <UnitButtonContainer>

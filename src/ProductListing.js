@@ -348,7 +348,7 @@ const ProductListing = () => {
              <div style={{width:90,height:100}}>
                 <CardMedia
                   component="img"
-                  height="100"
+                  // height="50"
                   image={product.product_photos[0]}
                   alt={product.product_title}
                   sx={{ objectFit: 'contain',alignSelf:'flex-start',backgroundColor:'transparent',width:100,height:100,marginTop:0 }}

@@ -105,7 +105,7 @@ const ProductName = styled.p`
 
 const AddIcon = styled(IoIosAddCircle)`
   color: #1f8cdc;
-  font-size: 10rem;
+  font-size: 5rem;
   cursor: pointer;
   transition: color 0.2s;
   margin-right: 1.1rem;

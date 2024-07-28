@@ -49,19 +49,6 @@ const Card = styled.div`
   }
 `;
 
-const InnerContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-
-  @media (max-width: 576px) {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-`;
 
 const ImageNameContainer = styled.div`
   display: flex;
@@ -141,7 +128,7 @@ const Input = styled.input`
   box-sizing: border-box;
 
   @media (max-width: 576px) {
-    width: 100%;
+    width: 50%;
     margin-top: 0.3rem;
   }
 `;
@@ -253,16 +240,7 @@ const InputWrapper = styled.div`
   }
 `;
 
-const Prefix = styled.span`
-  padding: 0.5rem;
-  background-color: #fff;
-  border: 1px solid black;
-  border-radius: 4px 0 0 4px;
-  font-size: 1rem;
-  border-right: none;
-  color: black;
-  background-color: whitesmoke;
-`;
+
 
 const NoInfoText = styled.p`
   text-align: center;
@@ -541,14 +519,14 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
             {variantImages[selectedVariant] && (
               <Image src={variantImages[selectedVariant]} alt="Selected Variant" />
             )}
-            <VariantName>{variantName}</VariantName>
+            <VariantName style={{marginLeft:"3rem",fontFamily:"DMSansB"}}>{variantName}</VariantName>
           </ImageNameContainer>
           {showVariantDetails ? (
             <DetailsContainer>
               <DetailRow>
               <Label>SP:</Label>
               <InputWrapper small>
-              <Prefix>₹</Prefix>
+              
               
                 <Input type="text" value={spValue} onChange={handleSPChange} readOnly={!isEditable} />
                 </InputWrapper>
@@ -556,14 +534,17 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
               <DetailRow>
               <Label>MRP:</Label>
               <InputWrapper small>
-              <Prefix>₹</Prefix>
+              
             
                 <Input type="text" value={mrpValue} onChange={handleMRPChange} readOnly={!isEditable} />
                 </InputWrapper>
               </DetailRow>
               <DetailRow>
                 <Label>Weight:</Label>
+                <InputWrapper small>
+                
                 <Input type="text" value={weightValue} onChange={handleWeightChange} readOnly={!isEditable} />
+                </InputWrapper>
               </DetailRow>
               <UnitButtonContainer>
                 {['GM', 'KG', 'ML', 'LTR'].map((unit) => (

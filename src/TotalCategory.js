@@ -267,7 +267,7 @@ const TotalCategory = () => {
                     />
                 )}
 
-<Sheet isOpen={isOpen}  snapPoints={[0.6]} onClose={() => setOpen(false)}>
+<Sheet isOpen={isOpen}  snapPoints={[0.7]} onClose={() => setOpen(false)}>
         <Sheet.Container>
           <Sheet.Header />
           <Sheet.Content>
