@@ -104,13 +104,14 @@ const ImageTitleContainer = styled.div`
 `;
 
 const WidthSetter = styled.div`
-  width:100%;
+  width:65%;
+  margin-right:5rem;
 
   @media (max-width: 576px) {
-    width:65%;
+    width:70%;
+    margin-right:0rem;
   }
 `;
-
 const Image = styled.img`
   max-width: 100px;
   max-height: 100px;
@@ -167,7 +168,7 @@ const Input = styled.input`
   border-radius: 4px;
   font-size: 1rem;
   text-align: left;
-  width: 70%;
+  width: 100%;
   box-sizing: border-box;
 
   @media (max-width: 576px) {

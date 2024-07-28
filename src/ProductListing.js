@@ -221,9 +221,6 @@ const ProductListing = () => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-      
-  
-
         backgroundColor: '#f5f5f5',
         minHeight: '100vh'
       }}
@@ -266,16 +263,19 @@ const ProductListing = () => {
         justifyContent: 'center', // Center align the Grid item horizontally
         maxWidth: isSmallScreen ? '100%' : isMediumScreen ?  '50%' : 'auto',
         marginBottom: 3, 
+        backgroundColor:"transparent"
+        // here changed code
       }}
+      
     >
-      <Card sx={{ display: 'flex', width: '100%', backgroundColor: '#fff', borderRadius: 2.4, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', flexDirection: 'row',justifyContent:'flex-start' }}>
+      <Card sx={{ display: 'flex', width: '100%', backgroundColor: '#fff', borderRadius: 2.4, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', flexDirection: 'row',justifyContent:'flex-start',margin:"0rem 1rem" ,alignItems:"center"}}>
         <div style={{width:90,height:100}}>
           <CardMedia
             component="img"
             height="100"
             image={product.Product_Image}
             alt={product.ProductName}
-            sx={{ objectFit: 'contain',alignSelf:'flex-start',backgroundColor:'transparent',width:100,height:100,marginTop:2 }}
+            sx={{ objectFit: 'contain',alignSelf:'flex-start',backgroundColor:'transparent',width:100,height:100}}
           />
       </div>
         <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' ,width:'100%'}}>
@@ -288,12 +288,12 @@ const ProductListing = () => {
             <div style={{display:'flex',flexDirection:'row'}}>
               <Box sx={{ textAlign: 'left', backgroundColor:'transparent',width:'60%' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '0' }}>
-                      <Typography color="text.secondary" sx={{ fontSize: '1rem', marginTop: '0rem',backgroundColor:"#f5f6f8",borderRadius:1,paddingInline:2,color:"#212121" ,borderWidth:1,borderColor:"#ccc",borderStyle:"solid"}}>
+                      <Typography color="text.secondary" sx={{ fontSize: '1rem', marginTop: '0.5rem',backgroundColor:"#f5f6f8",borderRadius:1,paddingInline:2,color:"#212121" ,borderWidth:1,borderColor:"#ccc",borderStyle:"solid"}}>
 
                     {appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_Weight}
                     </Typography>
                 </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem', marginTop: '0.2rem' }}>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem', marginTop: '0.5rem' }}>
                   <span style={{ color: 'black', fontSize: "1.2rem", marginRight: '.2rem',fontFamily:"DMSans" }}>
                     ₹{appwriteProductDetails.find(details => details.ProductID === product.ProductID)?.Shop_Items_SP}
                   </span>
@@ -344,7 +344,7 @@ const ProductListing = () => {
                 marginBottom: 3, 
               }}
             >
-             <Card sx={{ display: 'flex', width: '100%', backgroundColor: '#fff', borderRadius: 2.4, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', flexDirection: 'row',justifyContent:'flex-start' }}>
+             <Card sx={{ display: 'flex', width: '100%', backgroundColor: '#fff', borderRadius: 2.4, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', flexDirection: 'row',justifyContent:'space-between',alignItems:"center" ,margin:"0rem 1rem"}}>
              <div style={{width:90,height:100}}>
                 <CardMedia
                   component="img"
@@ -359,7 +359,7 @@ const ProductListing = () => {
                     {product.product_title}
                   </Typography>
                 </CardContent>
-                <CardActions sx={{ justifyContent: 'center' }}>
+                <CardActions >
                   <Button
                     size="medium"
                     variant="contained"
@@ -397,6 +397,7 @@ const ProductListing = () => {
          position: 'fixed',
          bottom: 0, // Adjust this value as needed
          left: '50%',
+         fontSize:21,
          transform: 'translateX(-50%)',
          '&:hover': { backgroundColor: '#e64a19' },width:'100%',py:2
        }}
@@ -422,6 +423,7 @@ const ProductListing = () => {
        position: 'fixed',
        bottom: 0,  // You can adjust this value as needed
        left: '50%',
+       fontSize:21,
        transform: 'translateX(-50%)',
        '&:hover': { backgroundColor: '#ff5722' },width:'100%',py:2
      }}

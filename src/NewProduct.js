@@ -27,6 +27,17 @@ const Container = styled.div`
   }
 `;
 
+const WidthSetter = styled.div`
+  width:65%;
+  margin-right:5rem;
+
+  @media (max-width: 576px) {
+    width:70%;
+    margin-right:0rem;
+  }
+`;
+
+
 const UnitButtonContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -180,17 +191,16 @@ const InputWrapper = styled.div`
     margin-top: 0.3rem;
   }
 `;
-
-const Prefix = styled.span`
-  padding: 0.5rem;
-  background-color: #fff;
-  border: 1px solid black;
-  border-radius: 4px 0 0 4px;
-  font-size: 1rem;
-  border-right: none;
-  color: black;
-  background-color: whitesmoke;
-`;
+// const Prefix = styled.span`
+//   padding: 0.5rem;
+//   background-color: #fff;
+//   border: 1px solid black;
+//   border-radius: 4px 0 0 4px;
+//   font-size: 1rem;
+//   border-right: none;
+//   color: black;
+//   background-color: whitesmoke;
+// `;
 
 const Button = styled.button`
   background-color: #385aeb;
@@ -499,22 +509,22 @@ const NewProduct = ({ productTitle, productImage, variantWeights, selectedProduc
     <Container open={open}>
     
       <Card>
-        <ImageTitleContainer>
+      <ImageTitleContainer>
           <Image src={productImage} alt={title} />
-          <div style={{ width: '70%' }}>
+          <WidthSetter>
             <DetailRow style={{display:'flex',flexDirection:'column'}}>
               {/* <Label style={{ fontFamily: 'DMSansB' }}>
                 Title
               </Label> */}
-              <Input type="text" value={title} onChange={handleTitleChange} />
+              <Input type="text" value={title} onChange={handleTitleChange} style={{fontStyle:"DMSansR"}}/>
             </DetailRow>
-          </div>
+          </WidthSetter>
         </ImageTitleContainer>
-        <DetailsContainer>
+          <DetailsContainer>
           <DetailRow>
             <Label style={{ fontFamily: 'DMSansB' }}>SP:</Label>
             <InputWrapper small>
-            <Prefix>₹</Prefix>
+            
               <Input type="numeric" className="sp-input" value={spValue} onChange={handleSPChange} small placeholder='₹'
       style={{fontSize:"18px",fontFamily:"DMSans"}}/>
             </InputWrapper>
@@ -522,14 +532,15 @@ const NewProduct = ({ productTitle, productImage, variantWeights, selectedProduc
           <DetailRow>
             <Label style={{ fontFamily: 'DMSansB' }}>MRP:</Label>
             <InputWrapper small>
-              <Prefix>₹</Prefix>
+              
               <Input type="text" value={mrpValue} onChange={handleMRPChange} small placeholder='₹'
       style={{fontSize:"18px",fontFamily:"DMSans"}}/>
             </InputWrapper>
           </DetailRow>
           <DetailRow>
   <Label style={{fontFamily:"DMSansB"}}>Stocks:</Label>
-  <div style={{ width: '70%' }}> 
+  <InputWrapper small>
+              
     <Input
       type="text"
       className="stocks-input"
@@ -537,7 +548,7 @@ const NewProduct = ({ productTitle, productImage, variantWeights, selectedProduc
       onChange={handleStocksChange}
       small
     />
-  </div>
+  </InputWrapper>
 </DetailRow>
           <DetailRow>
             
@@ -556,14 +567,7 @@ const NewProduct = ({ productTitle, productImage, variantWeights, selectedProduc
                   </UnitButton>
                 ))}
               </UnitButtonContainer>
-          {/* <MeasurementButtonContainer>
-            <MeasurementButton onClick={() => handleMeasurementClick('g')}>GM</MeasurementButton>
-            <MeasurementButton onClick={() => handleMeasurementClick('kg')}>KG</MeasurementButton>
-            <MeasurementButton onClick={() => handleMeasurementClick('ml')}>ML</MeasurementButton>
-            <MeasurementButton onClick={() => handleMeasurementClick('l')}>L</MeasurementButton>
-            <MeasurementButton onClick={() => handleMeasurementClick('pcs')}>PCS</MeasurementButton>
-
-          </MeasurementButtonContainer> */}
+         
           <Button style={{fontFamily:'DMSansSB'}}onClick={handleAddToCart}>SUBMIT</Button>
         </DetailsContainer>
       </Card>
