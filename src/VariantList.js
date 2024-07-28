@@ -10,6 +10,7 @@ const ListContainer = styled.div`
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   @media (max-width: 600px) {
     width: 100%;
@@ -103,20 +104,14 @@ const SelectButton = styled.button`
 `;
 
 const AddButtonContainer = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
   width: 100%;
-  padding: 0 0rem; /* Match ListContainer's padding */
-  box-sizing: border-box; /* Include padding in width calculation */
-
-  @media (min-width: 601px) {
-    width: 40%; /* Match ListContainer's width on larger screens */
-  }
+  padding: 0;
+  box-sizing: border-box;
+  margin-top: auto;
 `;
 
 const AddButton = styled.button`
-  width: 98%;
+  width: 100%;
   background-color: #4caf50;
   color: white;
   border: none;
@@ -124,7 +119,6 @@ const AddButton = styled.button`
   cursor: pointer;
   font-size: 1.2rem;
   transition: background-color 0.2s;
-  margin-top: auto;
 
   @media (max-width: 576px) {
     width: 100%; /* Match ListContainer's width on larger screens */
@@ -178,39 +172,36 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
     handleButtonClick();
   };
 
-
   return (
-    <>
-      <ListContainer style={{ width: isMobileView ? '100%' : '50%' }}>
-        {Object.keys(variantImages).map((variant) => (
-          <VariantButton
-            key={variant}
-            isSelected={selectedVariant === variant}
-            onClick={() => handleClickVariant(variant)}
-          >
-            <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
-            <VariantInfoContainer>
-              <VariantTitle style={{ fontFamily: 'DMSans', textAlign: 'left' }}>
-                {variantNames[variant]}
-              </VariantTitle>
-              <VariantDetails>
-                <VariantWeight isMobileView={isMobileView} style={{ fontFamily: 'DMSansB', textAlign: 'left' }}>
-                  <HighlightedText>{variantWeights[variant]}</HighlightedText>
-                </VariantWeight>
-                <SelectButton>Select</SelectButton>
-              </VariantDetails>
-            </VariantInfoContainer>
-          </VariantButton>
-        ))}
-        {showAddButton && (
-          <AddButtonContainer>
-            <AddButton onClick={handleAddIconClick} style={{ fontFamily: 'DMSansSB' }}>
-              Add New Variant
-            </AddButton>
-          </AddButtonContainer>
-        )}
-      </ListContainer>
-    </>
+    <ListContainer style={{ width: isMobileView ? '100%' : '40%' }}>
+      {Object.keys(variantImages).map((variant) => (
+        <VariantButton
+          key={variant}
+          isSelected={selectedVariant === variant}
+          onClick={() => handleClickVariant(variant)}
+        >
+          <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
+          <VariantInfoContainer>
+            <VariantTitle style={{ fontFamily: 'DMSans', textAlign: 'left' }}>
+              {variantNames[variant]}
+            </VariantTitle>
+            <VariantDetails>
+              <VariantWeight isMobileView={isMobileView} style={{ fontFamily: 'DMSansB', textAlign: 'left' }}>
+                <HighlightedText>{variantWeights[variant]}</HighlightedText>
+              </VariantWeight>
+              <SelectButton>Select</SelectButton>
+            </VariantDetails>
+          </VariantInfoContainer>
+        </VariantButton>
+      ))}
+      {showAddButton && (
+        <AddButtonContainer>
+          <AddButton onClick={handleAddIconClick} style={{ fontFamily: 'DMSansSB' }}>
+            Add New Variant
+          </AddButton>
+        </AddButtonContainer>
+      )}
+    </ListContainer>
   );
 };
 

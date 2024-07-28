@@ -5,7 +5,8 @@ import './FontLoader.css'
 
 const Container = styled.div`
   background-color: #fcfcfb;
-  width: 81%;
+  // background-color: black;
+  width: 100%;  /* Set width to 100% */
   padding: 1rem;
   display: ${({ open }) => (open ? 'flex' : 'none')};
   justify-content: center;
@@ -14,16 +15,15 @@ const Container = styled.div`
 
   @media (min-width: 576px) {
     display: flex;
+    
   }
 
   @media (max-width: 2000px) {
-    width: 80%;
     padding: 0.5rem;
-    height: 104%;
+    height: 100%; /* Ensure height is 100% */
   }
 
   @media (max-width: 576px) {
-    width: 95%;
     padding: 0.3rem;
   }
 `;
@@ -70,6 +70,7 @@ const UnitButton = styled.button`
 `;
 const Card = styled.div`
   background-color: #f4f6fc;
+  // background-color: black;
   color: #000;
   padding: 1.5rem;
   border-radius: 12px;
@@ -79,6 +80,7 @@ const Card = styled.div`
   position: relative;
   overflow: hidden;
   animation: fadeIn 0.5s ease-in-out;
+  margin: 0 auto; /* Center horizontally */
 
   @keyframes fadeIn {
     0% { opacity: 0; transform: translateY(-20px); }

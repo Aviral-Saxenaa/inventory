@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { Client, Databases, Query } from 'appwrite';
 const Container = styled.div`
   background-color: #fcfcfb;
-  width: 81%;
+  // background-color: black;
+  width: 100%;  /* Set width to 100% */
   padding: 1rem;
   display: ${({ open }) => (open ? 'flex' : 'none')};
   justify-content: center;
@@ -12,16 +13,15 @@ const Container = styled.div`
 
   @media (min-width: 576px) {
     display: flex;
+    
   }
 
   @media (max-width: 2000px) {
-    width: 80%;
     padding: 0.5rem;
-    height: 104%;
+    height: 100%; /* Ensure height is 100% */
   }
 
   @media (max-width: 576px) {
-    width: 95%;
     padding: 0.3rem;
   }
 `;
@@ -36,6 +36,7 @@ const Card = styled.div`
   width: 60%;
   position: relative;
   overflow: hidden;
+  margin: 0 auto;
   animation: fadeIn 0.5s ease-in-out;
 
   @keyframes fadeIn {

@@ -43,6 +43,21 @@ const TotalCategory = () => {
         navigate('/'); // Use navigate to go to a different route
       };
 
+      useEffect(() => {
+        // Apply body styles on component mount
+        Object.assign(document.body.style, {
+            overflow: 'hidden',
+            height: '100vh',
+        });
+
+        // Cleanup styles on component unmount
+        return () => {
+            Object.assign(document.body.style, {
+                overflow: 'auto',
+                height: 'auto',
+            });
+        };
+    }, []);
 
     useEffect(() => {
         const client = new Client();

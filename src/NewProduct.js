@@ -4,7 +4,8 @@ import './FontLoader.css';
 import { Client, Databases, Query } from 'appwrite';
 const Container = styled.div`
   background-color: #fcfcfb;
-  width: 81%;
+  // background-color: black;
+  width: 100%;  /* Set width to 100% */
   padding: 1rem;
   display: ${({ open }) => (open ? 'flex' : 'none')};
   justify-content: center;
@@ -13,19 +14,19 @@ const Container = styled.div`
 
   @media (min-width: 576px) {
     display: flex;
+    
   }
 
   @media (max-width: 2000px) {
-    width: 80%;
     padding: 0.5rem;
-    height: 104%;
+    height: 100%; /* Ensure height is 100% */
   }
 
   @media (max-width: 576px) {
-    width: 95%;
     padding: 0.3rem;
   }
 `;
+
 
 const WidthSetter = styled.div`
   width:65%;
@@ -80,6 +81,7 @@ const UnitButton = styled.button`
 `;
 const Card = styled.div`
   background-color: #f4f6fc;
+  // background-color: black;
   color: #000;
   padding: 1.5rem;
   border-radius: 12px;
@@ -89,11 +91,17 @@ const Card = styled.div`
   position: relative;
   overflow: hidden;
   animation: fadeIn 0.5s ease-in-out;
+  margin: 0 auto; /* Center horizontally */
+
 
   @keyframes fadeIn {
     0% { opacity: 0; transform: translateY(-20px); }
     100% { opacity: 1; transform: translateY(0); }
   }
+ @media (max-width: 576px) {
+    margin: 0rem 1rem;
+  }
+  
 
   @media (max-width: 1050px) {
     padding: 0.5rem;
@@ -261,13 +269,6 @@ const MeasurementButton = styled.button`
   }
 `;
 
-const MeasurementButtonContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 1rem;
-`;
 
 const NewProduct = ({ productTitle, productImage, variantWeights, selectedProductID, open,barcodeName }) => {
  
@@ -507,8 +508,8 @@ const NewProduct = ({ productTitle, productImage, variantWeights, selectedProduc
   return (
     
     <Container open={open}>
-    
       <Card>
+        
       <ImageTitleContainer>
           <Image src={productImage} alt={title} />
           <WidthSetter>
