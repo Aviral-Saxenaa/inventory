@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { IoIosAddCircle } from 'react-icons/io';
 import styled, { css } from 'styled-components';
-import './FontLoader.css'
+import './FontLoader.css';
+import { Alert } from '@mui/material';
 
 const Container = styled.div`
   background-color: #fafaf8;
@@ -9,12 +10,12 @@ const Container = styled.div`
   margin-top: 3.7rem;
   align-items: center;
   height: 110px;
+
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
   position: relative;
-  box-shadow: 0px 4px 6px -6px rgba(0, 0, 0, 0.2); 
-
+  box-shadow: 0px 4px 6px -6px rgba(0, 0, 0, 0.2);
   @media (max-width: 1200px) {
     padding: 1.6rem 0.5rem;
   }
@@ -48,7 +49,6 @@ const ProductContainer = styled.div`
   background-color: #fff;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
   border: 0.1px solid grey;
-
   ${(props) =>
     props.isSelected &&
     css`
@@ -74,13 +74,14 @@ const ProductName = styled.p`
   font-size: 15px;
   text-align: center;
   margin-top: 0.2rem;
-  margin-bottom: 0;
+  margin-bottom: 0; /* Remove bottom margin */
   overflow: hidden;
   max-width: 100%;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  word-wrap: break-word;
   color: black;
-  
+
   @media (max-width: 1200px) {
     font-size: 0.85rem;
   }
@@ -104,7 +105,7 @@ const ProductName = styled.p`
 
 const AddIcon = styled(IoIosAddCircle)`
   color: #1f8cdc;
-  font-size: 5rem;
+  font-size: 10rem;
   cursor: pointer;
   transition: color 0.2s;
   margin-right: 1.1rem;
@@ -137,6 +138,7 @@ const AddIcon = styled(IoIosAddCircle)`
 
 const ProductSelector = ({ productImages, productNames, setSelectedProductID, setSelectedVariant, handleButtonClick }) => {
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const addIconRef = useRef(null);
 
   const handleProductClick = (id) => {
     setSelectedProductId(id);
@@ -150,27 +152,32 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
     setSelectedVariant(null);
     handleButtonClick();
   };
+  useEffect(() => {
+    if (localStorage.getItem('inDB') === 'false') {
+      handleButtonClick();
+    }
+  }, []);
 
   return (
     <Container>
       <ProductList>
-        <AddIcon onClick={handleAddButtonClick} style={{marginLeft: "2rem" }} />
-        {Object.keys(productImages).map((id) => (
-          <ProductContainer
-            key={id}
-            onClick={() => handleProductClick(id)}
-            isSelected={selectedProductId === id}
-            style={{marginLeft:"1rem"}}
-          >
-            <ProductImage
-              src={productImages[id].image}
-              alt={`Product ${id}`}
-            />
-            <ProductName style={{ fontFamily: "DMSans", alignSelf: 'center', marginLeft: 2, marginRight: 2 }}>
-              {productNames[id].length > 10 ? `${productNames[id].substring(0, 15)}...` : productNames[id]}
-            </ProductName>
-          </ProductContainer>
-        ))}
+        <AddIcon ref={addIconRef} onClick={handleAddButtonClick} />
+        {Object.keys(productImages).map((id) => {
+          const name = productNames[id];
+          const truncatedName = name.length > 15 ? name.substring(0, 10) + '...' : name;
+          return (
+            <ProductContainer
+              key={id}
+              onClick={() => handleProductClick(id)}
+              isSelected={selectedProductId === id}
+            >
+              <ProductImage src={productImages[id].image} alt={`Product ${id}`} />
+              <ProductName style={{ fontFamily: 'DMSans', alignSelf: 'center', marginLeft: 2, marginRight: 2 }}>
+                {truncatedName}
+              </ProductName>
+            </ProductContainer>
+          );
+        })}
       </ProductList>
     </Container>
   );

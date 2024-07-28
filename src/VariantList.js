@@ -4,13 +4,12 @@ import './FontLoader.css';
 
 const ListContainer = styled.div`
   width: 40%;
-  padding: 1.6rem;
+  padding: 1rem;
   background-color: #f1f1f4;
   border-radius: 0px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  // height: calc(100vh - 10rem); /* Take up full viewport height minus button height */
 
   @media (max-width: 600px) {
     width: 100%;
@@ -18,10 +17,10 @@ const ListContainer = styled.div`
 `;
 
 const VariantButton = styled.button`
-  background: ${props => (props.isSelected ? '#f1f1f1' : '#fff')};
-  color: ${props => (props.isSelected ? '#333' : '#000')};
+  background: ${(props) => (props.isSelected ? '#f1f1f1' : '#fff')};
+  color: ${(props) => (props.isSelected ? '#333' : '#000')};
   border: none;
-  padding: .5rem;
+  padding: 0.5rem;
   border-radius: 8px;
   margin-bottom: 0.5rem;
   cursor: pointer;
@@ -43,7 +42,8 @@ const VariantImage = styled.img`
   border: 1px solid #ddd;
   margin-right: 1rem;
   flex-shrink: 0;
-object-fit:contain;
+  object-fit: contain;
+
   @media (max-width: 576px) {
     width: 80px;
     height: 80px;
@@ -64,7 +64,7 @@ const VariantInfoContainer = styled.div`
 const VariantTitle = styled.span`
   color: #333;
   margin-bottom: 0.5rem;
-  font-size: ${props => (props.isMobileView ? '0.8rem' : '1rem')};
+  font-size: ${(props) => (props.isMobileView ? '0.8rem' : '1rem')};
 `;
 
 const VariantDetails = styled.div`
@@ -74,7 +74,7 @@ const VariantDetails = styled.div`
 `;
 
 const VariantWeight = styled.span`
-  font-size: ${props => (props.isMobileView ? '0.9rem' : '1rem')};
+  font-size: ${(props) => (props.isMobileView ? '0.9rem' : '1rem')};
   color: #212121;
   font-weight: bold;
   text-align: left;
@@ -133,11 +133,22 @@ const AddButton = styled.button`
 
 const VariantList = ({ variantImages, variantNames, variantWeights, handleVariantClick, handleButtonClick }) => {
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 615);
+  const [showAddButton, setShowAddButton] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobileView(window.innerWidth <= 615);
     };
+
+    const checkLocalStorage = () => {
+      const inDB = localStorage.getItem('inDB');
+      if (inDB === 'false') {
+        setShowAddButton(false);
+      }
+    };
+
+    handleResize();
+    checkLocalStorage();
 
     window.addEventListener('resize', handleResize);
 
@@ -175,11 +186,11 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
           >
             <VariantImage src={variantImages[variant]} alt={`Variant ${variant}`} />
             <VariantInfoContainer>
-              <VariantTitle style={{ fontFamily: "DMSans", textAlign: "left" }}>
+              <VariantTitle style={{ fontFamily: 'DMSans', textAlign: 'left' }}>
                 {variantNames[variant]}
               </VariantTitle>
               <VariantDetails>
-                <VariantWeight isMobileView={isMobileView} style={{ fontFamily: "DMSansB", textAlign: 'left' }}>
+                <VariantWeight isMobileView={isMobileView} style={{ fontFamily: 'DMSansB', textAlign: 'left' }}>
                   <HighlightedText>{variantWeights[variant]}</HighlightedText>
                 </VariantWeight>
                 <SelectButton>Select</SelectButton>
@@ -187,11 +198,13 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
             </VariantInfoContainer>
           </VariantButton>
         ))}
-        <AddButtonContainer>
-        <AddButton onClick={handleAddIconClick} style={{ fontFamily: 'DMSansSB'}}>
-          Add New Variant
-        </AddButton>
-      </AddButtonContainer>
+        {showAddButton && (
+          <AddButtonContainer>
+            <AddButton onClick={handleAddIconClick} style={{ fontFamily: 'DMSansSB' }}>
+              Add New Variant
+            </AddButton>
+          </AddButtonContainer>
+        )}
       </ListContainer>
     </>
   );
