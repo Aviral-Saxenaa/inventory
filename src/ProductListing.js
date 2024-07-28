@@ -61,7 +61,10 @@ const ProductListing = () => {
 
         // Fetch attributes for each product
         selectedProducts.forEach((product) => fetchProductAttributes(product.ProductID));
+        
+
       } else {
+        localStorage.setItem("inDB", false);
         handleSearch();
       }
     } catch (error) {
@@ -123,7 +126,9 @@ const ProductListing = () => {
         }
       });
       const data = await response.json();
-      const truncatedProducts = data.data.slice(0, 12).map(product => ({
+      const truncatedProducts = data.data.slice(0, 12
+
+      ).map(product => ({
         ...product,
         product_title: truncateTitle(product.product_title)
       }));
