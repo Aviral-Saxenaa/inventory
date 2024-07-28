@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import { IoIosAddCircle } from 'react-icons/io';
-import { FaArrowCircleRight } from "react-icons/fa";
 import styled, { css } from 'styled-components';
 import './FontLoader.css'
 
 const Container = styled.div`
   background-color: #fafaf8;
   display: flex;
-  margin-top:3.7rem;
+  margin-top: 3.7rem;
   align-items: center;
   height: 110px;
-
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
   position: relative;
- box-shadow: 0px 4px 6px -6px rgba(0, 0, 0, 0.2); 
+  box-shadow: 0px 4px 6px -6px rgba(0, 0, 0, 0.2); 
+
   @media (max-width: 1200px) {
     padding: 1.6rem 0.5rem;
   }
@@ -45,11 +44,11 @@ const ProductContainer = styled.div`
   border-radius: 5px;
   padding: 0rem;
   width: 110px;
-  // height: 90px;
   margin: 0.2rem;
   background-color: #fff;
-box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
-      border: 0.1px solid grey;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+  border: 0.1px solid grey;
+
   ${(props) =>
     props.isSelected &&
     css`
@@ -75,14 +74,13 @@ const ProductName = styled.p`
   font-size: 15px;
   text-align: center;
   margin-top: 0.2rem;
-  margin-bottom: 0; /* Remove bottom margin */
+  margin-bottom: 0;
   overflow: hidden;
   max-width: 100%;
   text-overflow: ellipsis;
-  white-space: normal;
-  word-wrap: break-word;
+  white-space: nowrap;
   color: black;
-
+  
   @media (max-width: 1200px) {
     font-size: 0.85rem;
   }
@@ -106,11 +104,11 @@ const ProductName = styled.p`
 
 const AddIcon = styled(IoIosAddCircle)`
   color: #1f8cdc;
-  font-size: 10rem;
+  font-size: 5rem;
   cursor: pointer;
   transition: color 0.2s;
   margin-right: 1.1rem;
-  margin-left:0.2rem;
+  margin-left: 0.2rem;
 
   @media (max-width: 1200px) {
     font-size: 3.5rem;
@@ -156,19 +154,20 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
   return (
     <Container>
       <ProductList>
-        <AddIcon onClick={handleAddButtonClick} />
+        <AddIcon onClick={handleAddButtonClick} style={{marginLeft: "2rem" }} />
         {Object.keys(productImages).map((id) => (
           <ProductContainer
             key={id}
             onClick={() => handleProductClick(id)}
             isSelected={selectedProductId === id}
+            style={{marginLeft:"1rem"}}
           >
             <ProductImage
               src={productImages[id].image}
               alt={`Product ${id}`}
             />
             <ProductName style={{ fontFamily: "DMSans", alignSelf: 'center', marginLeft: 2, marginRight: 2 }}>
-              {productNames[id]}
+              {productNames[id].length > 10 ? `${productNames[id].substring(0, 15)}...` : productNames[id]}
             </ProductName>
           </ProductContainer>
         ))}

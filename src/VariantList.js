@@ -4,7 +4,7 @@ import './FontLoader.css';
 
 const ListContainer = styled.div`
   width: 40%;
-  padding: 1rem;
+  padding: 1.6rem;
   background-color: #f1f1f4;
   border-radius: 0px;
   overflow-y: auto;
@@ -188,7 +188,7 @@ const VariantList = ({ variantImages, variantNames, variantWeights, handleVarian
           </VariantButton>
         ))}
         <AddButtonContainer>
-        <AddButton onClick={handleAddIconClick} style={{ fontFamily: 'DMSansSB' }}>
+        <AddButton onClick={handleAddIconClick} style={{ fontFamily: 'DMSansSB'}}>
           Add New Variant
         </AddButton>
       </AddButtonContainer>
