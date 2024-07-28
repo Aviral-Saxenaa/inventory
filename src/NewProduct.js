@@ -515,14 +515,16 @@ const NewProduct = ({ productTitle, productImage, variantWeights, selectedProduc
             <Label style={{ fontFamily: 'DMSansB' }}>SP:</Label>
             <InputWrapper small>
             <Prefix>₹</Prefix>
-              <Input type="numeric" className="sp-input" value={spValue} onChange={handleSPChange} small />
+              <Input type="numeric" className="sp-input" value={spValue} onChange={handleSPChange} small placeholder='₹'
+      style={{fontSize:"18px",fontFamily:"DMSans"}}/>
             </InputWrapper>
           </DetailRow>
           <DetailRow>
             <Label style={{ fontFamily: 'DMSansB' }}>MRP:</Label>
             <InputWrapper small>
               <Prefix>₹</Prefix>
-              <Input type="text" value={mrpValue} onChange={handleMRPChange} small />
+              <Input type="text" value={mrpValue} onChange={handleMRPChange} small placeholder='₹'
+      style={{fontSize:"18px",fontFamily:"DMSans"}}/>
             </InputWrapper>
           </DetailRow>
           <DetailRow>

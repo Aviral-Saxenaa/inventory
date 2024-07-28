@@ -334,6 +334,7 @@ paddingBottom:'1rem',        color: '#fff',
         left: 0,
         width: '100%', // Make it span the full width
         zIndex: 100 // Ensure it stays on top of other elements
+        
       },
       backButton: {
         cursor: 'pointer',

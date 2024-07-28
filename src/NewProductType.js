@@ -547,7 +547,7 @@ const updateProductKey = async () => {
       onChange={handleSPChange}
       small
       placeholder='₹'
-      style={{fontSize:"18px",fontFamily:"DMSansSB"}}
+      style={{fontSize:"18px",fontFamily:"DMSans"}}
     />
             </InputWrapper>
           </DetailRow>
@@ -563,7 +563,7 @@ const updateProductKey = async () => {
       onChange={handleMRPChange}
       small
       placeholder='₹'
-      style={{fontSize:"18px",fontFamily:"DMSansSB"}}
+      style={{fontSize:"18px",fontFamily:"DMSans"}}
     />
   </InputWrapper>
 </DetailRow>

@@ -128,7 +128,7 @@ const Input = styled.input`
   box-sizing: border-box;
 
   @media (max-width: 576px) {
-    width: 50%;
+    width: 80%;
     margin-top: 0.3rem;
   }
 `;
@@ -231,7 +231,7 @@ const InputWrapper = styled.div`
   width: 80%;
 
   @media (max-width: 480px) {
-    width: 70%;
+    width: 100%;
   }
 
   @media (max-width: 400px) {
@@ -528,7 +528,8 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
               <InputWrapper small>
               
               
-                <Input type="text" value={spValue} onChange={handleSPChange} readOnly={!isEditable} />
+                <Input type="text" value={spValue} onChange={handleSPChange} readOnly={!isEditable} small placeholder='₹'
+      style={{fontSize:"18px",fontFamily:"DMSans"}}/>
                 </InputWrapper>
               </DetailRow>
               <DetailRow>
@@ -536,7 +537,8 @@ const VariantDetails = ({ selectedVariant, variantImages, variantInfo, variantNa
               <InputWrapper small>
               
             
-                <Input type="text" value={mrpValue} onChange={handleMRPChange} readOnly={!isEditable} />
+                <Input type="text" value={mrpValue} onChange={handleMRPChange} readOnly={!isEditable} small placeholder='₹'
+      style={{fontSize:"18px",fontFamily:"DMSans"}}/>
                 </InputWrapper>
               </DetailRow>
               <DetailRow>

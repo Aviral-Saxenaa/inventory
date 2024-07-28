@@ -43,12 +43,17 @@ const ProductContainer = styled.div`
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   border-radius: 5px;
-  padding: 0rem;
-  width: 110px;
+  padding: .4rem 0rem;
+  width: 8rem;
   margin: 0.2rem;
   background-color: #fff;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
   border: 0.1px solid grey;
+
+  @media (min-width: 576px) {
+    margin-left:2rem;
+  }
+
   ${(props) =>
     props.isSelected &&
     css`
@@ -72,8 +77,8 @@ const ProductImage = styled.img`
 
 const ProductName = styled.p`
   font-size: 15px;
-  text-align: center;
-  margin-top: 0.2rem;
+  text-align: left;
+  margin-top: 0.3rem;
   margin-bottom: 0; /* Remove bottom margin */
   overflow: hidden;
   max-width: 100%;
@@ -108,8 +113,8 @@ const AddIcon = styled(IoIosAddCircle)`
   font-size: 5rem;
   cursor: pointer;
   transition: color 0.2s;
-  margin-right: 1.1rem;
-  margin-left: 0.2rem;
+  margin-right: .5rem;
+  margin-left: 0.8rem;
 
   @media (max-width: 1200px) {
     font-size: 3.5rem;
@@ -164,7 +169,7 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
         <AddIcon ref={addIconRef} onClick={handleAddButtonClick} />
         {Object.keys(productImages).map((id) => {
           const name = productNames[id];
-          const truncatedName = name.length > 15 ? name.substring(0, 10) + '...' : name;
+          const truncatedName = name.length > 15 ? name.substring(0, 15) + '...' : name;
           return (
             <ProductContainer
               key={id}
@@ -172,7 +177,7 @@ const ProductSelector = ({ productImages, productNames, setSelectedProductID, se
               isSelected={selectedProductId === id}
             >
               <ProductImage src={productImages[id].image} alt={`Product ${id}`} />
-              <ProductName style={{ fontFamily: 'DMSans', alignSelf: 'center', marginLeft: 2, marginRight: 2 }}>
+              <ProductName style={{ fontFamily: 'DMSans', textAlign:"left" }}>
                 {truncatedName}
               </ProductName>
             </ProductContainer>
