@@ -116,7 +116,7 @@ const AddButtonContainer = styled.div`
 `;
 
 const AddButton = styled.button`
-  width: 100%;
+  width: 98%;
   background-color: #4caf50;
   color: white;
   border: none;
@@ -125,6 +125,10 @@ const AddButton = styled.button`
   font-size: 1.2rem;
   transition: background-color 0.2s;
   margin-top: auto;
+
+  @media (max-width: 576px) {
+    width: 100%; /* Match ListContainer's width on larger screens */
+  }
 
   &:hover {
     background-color: #45a049;

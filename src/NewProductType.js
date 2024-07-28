@@ -103,6 +103,14 @@ const ImageTitleContainer = styled.div`
   }
 `;
 
+const WidthSetter = styled.div`
+  width:100%;
+
+  @media (max-width: 576px) {
+    width:65%;
+  }
+`;
+
 const Image = styled.img`
   max-width: 100px;
   max-height: 100px;
@@ -517,14 +525,14 @@ const updateProductKey = async () => {
   
       <ImageTitleContainer>
           <Image src={productImage} alt={title} />
-          <div style={{ width: '70%' }}>
+          <WidthSetter>
             <DetailRow style={{display:'flex',flexDirection:'column'}}>
               {/* <Label style={{ fontFamily: 'DMSansB' }}>
                 Title
               </Label> */}
-              <Input type="text" value={title} onChange={handleTitleChange} />
+              <Input type="text" value={title} onChange={handleTitleChange} style={{fontStyle:"DMSansR"}}/>
             </DetailRow>
-          </div>
+          </WidthSetter>
         </ImageTitleContainer>
           <DetailsContainer>
      
@@ -538,6 +546,8 @@ const updateProductKey = async () => {
       value={spValue}
       onChange={handleSPChange}
       small
+      placeholder='₹'
+      style={{fontSize:"18px",fontFamily:"DMSansSB"}}
     />
             </InputWrapper>
           </DetailRow>
@@ -552,6 +562,8 @@ const updateProductKey = async () => {
       value={mrpValue}
       onChange={handleMRPChange}
       small
+      placeholder='₹'
+      style={{fontSize:"18px",fontFamily:"DMSansSB"}}
     />
   </InputWrapper>
 </DetailRow>
@@ -565,6 +577,7 @@ const updateProductKey = async () => {
       value={stocksValue}
       onChange={handleStocksChange}
       small
+      
     />
   </InputWrapper>
 </DetailRow>
@@ -599,7 +612,7 @@ const updateProductKey = async () => {
 
             
           </DetailsContainer>
-          <Button onClick={handleAddToCart} disabled={!isMeasurementSelected} style={{fontFamily:"DMSansB"}}>SUBMIT</Button>
+          <Button onClick={handleAddToCart} disabled={!isMeasurementSelected} style={{fontFamily:"DMSansB",marginBottom:"1rem"}}>SUBMIT</Button>
 
        
       </Card>

@@ -62,7 +62,7 @@ const ProductListing = () => {
         // Fetch attributes for each product
         selectedProducts.forEach((product) => fetchProductAttributes(product.ProductID));
         
-
+        localStorage.setItem("inDB",true);
       } else {
         localStorage.setItem("inDB", false);
         handleSearch();
